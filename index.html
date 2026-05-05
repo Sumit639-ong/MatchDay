@@ -422,6 +422,84 @@ body.light-mode .admin-login-overlay{background:linear-gradient(135deg,rgba(240,
 .admin-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(167,139,250,.12);border:1px solid rgba(167,139,250,.3);border-radius:8px;padding:5px 12px;font-size:11px;color:var(--delivery-acc);margin-bottom:24px;font-weight:600}
 .admin-logout-btn{display:flex;align-items:center;gap:5px;padding:5px 11px;border-radius:8px;border:1px solid rgba(255,100,100,.3);background:rgba(255,61,90,.07);color:#ff8a80;font-size:11px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .15s}
 .admin-logout-btn:hover{background:rgba(255,61,90,.18);border-color:rgba(255,61,90,.5)}
+
+/* ===== VIEW TOGGLE BUTTON ===== */
+.view-toggle-btn{display:flex;align-items:center;gap:5px;padding:5px 11px;border-radius:8px;border:1px solid rgba(124,111,255,.35);background:rgba(124,111,255,.1);color:#a09bff;font-size:11px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s;white-space:nowrap}
+.view-toggle-btn:hover{background:rgba(124,111,255,.22);border-color:rgba(124,111,255,.6)}
+.view-toggle-btn.mobile-active{border-color:rgba(0,230,118,.4);background:rgba(0,230,118,.1);color:#00e676}
+
+/* ===== MOBILE MODE ===== */
+body.mobile-view .site-header{padding:0 12px}
+body.mobile-view .header-inner{height:54px;gap:8px}
+body.mobile-view .logo{font-size:22px;letter-spacing:2px}
+body.mobile-view .live-ticker{display:none}
+body.mobile-view .date-badge{display:none}
+body.mobile-view .btn-history-header span:not(.btn-history-count){display:none}
+body.mobile-view .btn-add-header span#addBtnLabel{display:none}
+body.mobile-view .hero{padding:10px 12px}
+body.mobile-view .league-tab{padding:8px 10px;gap:6px}
+body.mobile-view .league-tab .tab-info{display:none}
+body.mobile-view .tab-icon{font-size:20px}
+body.mobile-view .main{padding:10px 12px;gap:12px}
+body.mobile-view .sidebar{display:none!important}
+body.mobile-view .filter-bar{gap:5px}
+body.mobile-view .filter-btn{padding:5px 10px;font-size:11px}
+body.mobile-view .match-card{border-radius:10px}
+body.mobile-view .card-content{padding:10px 12px}
+body.mobile-view .team-name{font-size:12px}
+body.mobile-view .score-num{font-size:22px}
+body.mobile-view .kickoff-time{font-size:16px}
+body.mobile-view .card-actions{min-width:36px;padding:6px}
+body.mobile-view .card-btn{width:26px;height:26px}
+body.mobile-view .prob-section{display:none}
+body.mobile-view .order-table{font-size:11px}
+body.mobile-view .order-table th,.order-table td{padding:6px 8px}
+body.mobile-view .delivery-controls{flex-direction:column;gap:8px}
+body.mobile-view .delivery-search{font-size:13px}
+body.mobile-view .club-selector{gap:5px}
+body.mobile-view .club-btn{padding:6px 10px;font-size:11px}
+body.mobile-view .modal{margin:8px;border-radius:14px;max-height:92vh}
+body.mobile-view .form-grid{gap:10px}
+body.mobile-view .analytics-grid{grid-template-columns:1fr!important}
+body.mobile-view .sync-bar{font-size:10px;padding:6px 10px}
+
+/* Auto mobile detection */
+@media(max-width:640px){
+  .site-header{padding:0 12px}
+  .header-inner{height:54px;gap:8px}
+  .logo{font-size:22px;letter-spacing:2px}
+  .live-ticker{display:none}
+  .date-badge{display:none}
+  .btn-history-header span:not(.btn-history-count){display:none}
+  #addBtnLabel{display:none}
+  .hero{padding:10px 12px}
+  .league-tab{padding:8px 10px;gap:6px}
+  .league-tab .tab-info{display:none}
+  .tab-icon{font-size:20px}
+  .main{padding:10px 12px;gap:12px;grid-template-columns:1fr!important}
+  .sidebar{display:none!important}
+  .filter-bar{gap:5px}
+  .filter-btn{padding:5px 10px;font-size:11px}
+  .match-card{border-radius:10px}
+  .card-content{padding:10px 12px}
+  .team-name{font-size:12px}
+  .score-num{font-size:22px}
+  .kickoff-time{font-size:16px}
+  .card-actions{min-width:36px;padding:6px}
+  .card-btn{width:26px;height:26px}
+  .prob-section{display:none}
+  .order-table{font-size:11px}
+  .delivery-controls{flex-direction:column;gap:8px}
+  .club-selector{gap:5px}
+  .club-btn{padding:6px 10px;font-size:11px}
+  .analytics-grid{grid-template-columns:1fr!important}
+  .sync-bar{font-size:10px;padding:6px 10px}
+  .tab-count{font-size:9px;padding:1px 5px}
+  .soon-banner{padding:4px 8px}
+  .soon-text{font-size:10px}
+  .btn-add-header{padding:6px 10px}
+  .btn-history-header{padding:6px 10px}
+}
 </style>
 </head>
 <script src="/socket.io/socket.io.js"></script>
@@ -464,6 +542,11 @@ body.light-mode .admin-login-overlay{background:linear-gradient(135deg,rgba(240,
             <div class="notif-empty">No new notifications</div>
           </div>
         </div>
+      </div>
+      <!-- View Toggle Button -->
+      <div class="view-toggle-btn" id="viewToggleBtn" onclick="toggleViewMode()" title="Mobile/Desktop toggle">
+        <span id="viewToggleIcon">📱</span>
+        <span id="viewToggleLabel">Mobile</span>
       </div>
       <button class="btn-history-header" onclick="switchLeague('history')" id="historyHeaderBtn">
         <span>📁</span>
@@ -1723,6 +1806,42 @@ function showToast(msg,type='success'){
 }
 
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeDeliveryModal();closeConfirm();}});
+
+// ===== VIEW MODE TOGGLE (Mobile / Desktop) =====
+let isMobileView = window.innerWidth <= 640;
+
+function applyViewMode(mobile) {
+  isMobileView = mobile;
+  const btn = document.getElementById('viewToggleBtn');
+  const icon = document.getElementById('viewToggleIcon');
+  const label = document.getElementById('viewToggleLabel');
+  if (mobile) {
+    document.body.classList.add('mobile-view');
+    btn.classList.add('mobile-active');
+    icon.textContent = '🖥️';
+    label.textContent = 'Desktop';
+  } else {
+    document.body.classList.remove('mobile-view');
+    btn.classList.remove('mobile-active');
+    icon.textContent = '📱';
+    label.textContent = 'Mobile';
+  }
+  localStorage.setItem('matchday_view', mobile ? 'mobile' : 'desktop');
+}
+
+function toggleViewMode() {
+  applyViewMode(!isMobileView);
+}
+
+// Auto detect on load
+(function(){
+  const saved = localStorage.getItem('matchday_view');
+  if (saved) {
+    applyViewMode(saved === 'mobile');
+  } else {
+    applyViewMode(window.innerWidth <= 640);
+  }
+})();
 
 // ===== INIT =====
 checkAdminSession();
