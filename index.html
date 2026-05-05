@@ -499,7 +499,46 @@ body.mobile-view .sync-bar{font-size:10px;padding:6px 10px}
   .soon-text{font-size:10px}
   .btn-add-header{padding:6px 10px}
   .btn-history-header{padding:6px 10px}
+  /* Delivery mobile fixes */
+  .delivery-header-banner{padding:14px 16px;gap:10px}
+  .delivery-icon{font-size:28px}
+  .delivery-header-text h2{font-size:18px;letter-spacing:2px}
+  .delivery-stats-grid{grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px}
+  .delivery-stat-num{font-size:24px}
+  .order-table-wrap{border-radius:10px}
+  .order-table{min-width:unset;width:100%;display:block}
+  .order-table thead{display:none}
+  .order-table tbody{display:block}
+  .order-table tr{display:flex;flex-direction:column;padding:12px;border-bottom:1px solid var(--border);background:var(--surface);margin-bottom:6px;border-radius:10px;border:1px solid var(--border)}
+  .order-table tr:last-child{border-bottom:1px solid var(--border)}
+  .order-table td{display:flex;align-items:center;justify-content:space-between;padding:3px 0;border:none;font-size:12px}
+  .order-table td::before{content:attr(data-label);font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);min-width:80px;flex-shrink:0}
+  .row-actions{opacity:1!important;justify-content:flex-end;padding-top:6px;border-top:1px solid var(--border);margin-top:4px}
+  .btn-add-order{margin-left:0;width:100%}
+  .delivery-controls{flex-direction:column}
+  .col-hide-btn{display:none}
+  .col-panel{display:none!important}
+  .match-btns{gap:5px}
+  .match-sel-btn{font-size:10px;padding:4px 10px}
 }
+
+/* Mobile view class delivery fixes */
+body.mobile-view .order-table{min-width:unset;width:100%;display:block}
+body.mobile-view .order-table thead{display:none}
+body.mobile-view .order-table tbody{display:block}
+body.mobile-view .order-table tr{display:flex;flex-direction:column;padding:12px;border-bottom:1px solid var(--border);background:var(--surface);margin-bottom:6px;border-radius:10px;border:1px solid var(--border)}
+body.mobile-view .order-table td{display:flex;align-items:center;justify-content:space-between;padding:3px 0;border:none;font-size:12px}
+body.mobile-view .order-table td::before{content:attr(data-label);font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);min-width:80px;flex-shrink:0}
+body.mobile-view .row-actions{opacity:1!important;justify-content:flex-end;padding-top:6px;border-top:1px solid var(--border);margin-top:4px}
+body.mobile-view .btn-add-order{margin-left:0;width:100%}
+body.mobile-view .delivery-header-banner{padding:14px 16px;gap:10px}
+body.mobile-view .delivery-icon{font-size:28px}
+body.mobile-view .delivery-header-text h2{font-size:18px}
+body.mobile-view .delivery-stats-grid{grid-template-columns:repeat(2,1fr);gap:8px}
+body.mobile-view .delivery-stat-num{font-size:24px}
+body.mobile-view .col-hide-btn{display:none}
+body.mobile-view .col-panel{display:none!important}
+body.mobile-view .match-sel-btn{font-size:10px;padding:4px 10px}
 </style>
 </head>
 <script src="/socket.io/socket.io.js"></script>
