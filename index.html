@@ -6,6 +6,17 @@
 <title>MatchDay</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
+  /* Override all font-family to Constantia */
+  body, input, select, button, textarea, .form-input, .form-select, .form-label,
+  .tab-name, .tab-sub, .delivery-header-text p, .notif-text, .admin-label,
+  .admin-input, .widget-title, .stat-label, .filter-btn, .delivery-filter-btn,
+  .btn-add-order, .btn-add-header, .btn-history-header, .btn-cancel, .btn-save,
+  .club-btn, .match-sel-btn, .notif-clear, .delivery-search,
+  .admin-btn, .admin-sub, .confirm-title, .confirm-sub {
+    font-family: 'Constantia', Georgia, 'Times New Roman', serif !important;
+  }
+</style>
+<style>
 :root{--bg:#060710;--surface:#0e1020;--surface2:#161829;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.14);--text:#eef0ff;--muted:#6b7490;--dim:#2e3354;--epl:#38003c;--epl-acc:#00ff87;--ucl:#1a1464;--ucl-acc:#60b3ff;--fifa:#006633;--fifa-acc:#ffd700;--live:#ff3d5a;--upcoming:#00e676;--final:#747d8c;--accent:#7c6fff;--delivery-acc:#a78bfa;--shadow:rgba(0,0,0,0.5)}
 body.light-mode{--bg:#f0f2ff;--surface:#ffffff;--surface2:#e8eaf6;--border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.14);--text:#1a1d35;--muted:#6b7490;--dim:#c5c8e0;--epl-acc:#006633;--ucl-acc:#1a1464;--fifa-acc:#b8860b;--live:#e0001a;--upcoming:#007a3d;--final:#4a5568;--accent:#5b4df5;--delivery-acc:#7c5cbf;--shadow:rgba(100,100,150,0.15)}
 body.light-mode .match-card{background:#fff;border-color:rgba(0,0,0,0.1)}
@@ -18,7 +29,7 @@ body.light-mode .modal{background:#f0f2ff}
 body.light-mode .col-ordnum{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.1);color:#4a5568}
 body.light-mode .logo{background:linear-gradient(120deg,#3730a3,#5b4df5 50%,#7c6fff);background-clip:text;-webkit-background-clip:text;color:transparent}
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;min-height:100vh;overflow-x:hidden}
+body{background:var(--bg);color:var(--text);font-family:'Constantia',Georgia,'Times New Roman',serif;min-height:100vh;overflow-x:hidden}
 .site-header{background:linear-gradient(180deg,rgba(6,7,16,.98),rgba(14,16,32,.95));border-bottom:1px solid rgba(124,111,255,.2);padding:0 24px;position:sticky;top:0;z-index:100;backdrop-filter:blur(24px)}
 .header-inner{max-width:1440px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:66px;gap:16px}
 .logo{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:4px;background:linear-gradient(120deg,#fff,#a0acff 50%,#7c6fff);background-clip:text;-webkit-background-clip:text;color:transparent;flex-shrink:0;filter:drop-shadow(0 0 20px rgba(124,111,255,.4))}
@@ -793,20 +804,50 @@ body.mobile-view .match-sel-btn{font-size:10px;padding:4px 10px}
 <!-- ADMIN LOGIN OVERLAY -->
 <div id="adminLoginOverlay" class="admin-login-overlay" style="display:none" onclick="handleLoginOverlay(event)">
   <div class="admin-login-box">
-    <div class="admin-logo">🔐 ADMIN</div>
-    <div class="admin-sub">Delivery Portal — Restricted Access</div>
-    <div class="admin-badge">🛡️ Admin Authentication Required</div>
-    <div class="admin-form-group">
-      <label class="admin-label">Username</label>
-      <input class="admin-input" type="text" id="adminUsername" placeholder="Enter username" autocomplete="username">
+    <div class="admin-logo">🔐 DELIVERY PORTAL</div>
+    <div class="admin-sub">Restricted Access — Login or Sign Up</div>
+
+    <!-- Tab Switcher -->
+    <div style="display:flex;gap:0;margin:16px 0 20px;border-radius:10px;overflow:hidden;border:1px solid rgba(124,111,255,.3)">
+      <button id="loginTabBtn" onclick="switchAuthTab('login')" style="flex:1;padding:9px;background:rgba(124,111,255,.25);color:#a09bff;border:none;cursor:pointer;font-family:'Constantia',serif;font-size:13px;font-weight:700;letter-spacing:.5px;transition:all .2s">🔑 Login</button>
+      <button id="signupTabBtn" onclick="switchAuthTab('signup')" style="flex:1;padding:9px;background:transparent;color:var(--muted);border:none;cursor:pointer;font-family:'Constantia',serif;font-size:13px;font-weight:700;letter-spacing:.5px;transition:all .2s">✍️ Sign Up</button>
     </div>
-    <div class="admin-form-group">
-      <label class="admin-label">Password</label>
-      <input class="admin-input" type="password" id="adminPassword" placeholder="Enter password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doAdminLogin()">
+
+    <!-- LOGIN FORM -->
+    <div id="loginForm">
+      <div class="admin-badge">🛡️ User Authentication</div>
+      <div class="admin-form-group">
+        <label class="admin-label">Username</label>
+        <input class="admin-input" type="text" id="adminUsername" placeholder="Enter username" autocomplete="username">
+      </div>
+      <div class="admin-form-group">
+        <label class="admin-label">Password</label>
+        <input class="admin-input" type="password" id="adminPassword" placeholder="Enter password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doAdminLogin()">
+      </div>
+      <div class="admin-error" id="adminError">❌ Invalid username or password</div>
+      <button class="admin-btn" onclick="doAdminLogin()">🚀 Login to Delivery Portal</button>
+      <div style="margin-top:18px;font-size:10px;color:var(--muted)">Admin & registered users can access delivery orders</div>
     </div>
-    <div class="admin-error" id="adminError">❌ Invalid username or password</div>
-    <button class="admin-btn" onclick="doAdminLogin()">🚀 Login to Delivery Portal</button>
-    <div style="margin-top:18px;font-size:10px;color:var(--muted)">Only authorized admin can access delivery orders</div>
+
+    <!-- SIGN UP FORM -->
+    <div id="signupForm" style="display:none">
+      <div class="admin-badge" style="background:rgba(167,139,250,.1);border-color:rgba(167,139,250,.3);color:var(--delivery-acc)">🔑 Admin Password Required to Register</div>
+      <div class="admin-form-group">
+        <label class="admin-label">New Username</label>
+        <input class="admin-input" type="text" id="signupUsername" placeholder="Choose a username" maxlength="30">
+      </div>
+      <div class="admin-form-group">
+        <label class="admin-label">New Password</label>
+        <input class="admin-input" type="password" id="signupPassword" placeholder="Choose a password" maxlength="40">
+      </div>
+      <div class="admin-form-group">
+        <label class="admin-label">Admin Password <span style="font-size:10px;color:var(--muted)">(required to register)</span></label>
+        <input class="admin-input" type="password" id="signupAdminPass" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')doSignUp()">
+      </div>
+      <div class="admin-error" id="signupError">❌ Error</div>
+      <button class="admin-btn" style="background:linear-gradient(135deg,rgba(167,139,250,.3),rgba(167,139,250,.1));border-color:rgba(167,139,250,.5)" onclick="doSignUp()">✅ Create Account</button>
+      <div style="margin-top:14px;font-size:10px;color:var(--muted)">After sign up, you can login anytime with your username & password</div>
+    </div>
   </div>
 </div>
 
@@ -826,17 +867,101 @@ function toggleTheme(){
   if(t==='light'){document.body.classList.add('light-mode');const el=document.getElementById('themeLabel');if(el)el.textContent='Light';const ic=document.querySelector('.t-icon');if(ic)ic.textContent='☀️';}
 })();
 
+// ===== NOTIFICATION SOUND =====
+function playNotifSound(){
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    // Ding-dong two-tone sound
+    function tone(freq,start,dur,vol){
+      const o=ctx.createOscillator();
+      const g=ctx.createGain();
+      o.connect(g);g.connect(ctx.destination);
+      o.type='sine';o.frequency.value=freq;
+      g.gain.setValueAtTime(0,ctx.currentTime+start);
+      g.gain.linearRampToValueAtTime(vol,ctx.currentTime+start+0.01);
+      g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+start+dur);
+      o.start(ctx.currentTime+start);
+      o.stop(ctx.currentTime+start+dur+0.05);
+    }
+    tone(880,0,0.18,0.35);
+    tone(660,0.2,0.28,0.25);
+  }catch(e){}
+}
+
 // ===== ADMIN LOGIN =====
 const ADMIN_CREDS={username:'Sumit',password:'Sumit1234'};
 const ADMIN_KEY='matchday_admin_v1';
+const USERS_KEY='matchday_users_v1';
 let isAdminLoggedIn=false;
+let loggedInUser=null;
+
+// Load registered users from localStorage
+function loadUsers(){try{const r=localStorage.getItem(USERS_KEY);if(r)return JSON.parse(r);}catch(e){}return [];}
+function saveUsers(users){try{localStorage.setItem(USERS_KEY,JSON.stringify(users));}catch(e){}}
+
+// Auth tab switcher
+function switchAuthTab(tab){
+  const lf=document.getElementById('loginForm');
+  const sf=document.getElementById('signupForm');
+  const lb=document.getElementById('loginTabBtn');
+  const sb=document.getElementById('signupTabBtn');
+  if(tab==='login'){
+    lf.style.display='';sf.style.display='none';
+    lb.style.background='rgba(124,111,255,.25)';lb.style.color='#a09bff';
+    sb.style.background='transparent';sb.style.color='var(--muted)';
+    document.getElementById('adminError').style.display='none';
+  } else {
+    lf.style.display='none';sf.style.display='';
+    sb.style.background='rgba(167,139,250,.25)';sb.style.color='var(--delivery-acc)';
+    lb.style.background='transparent';lb.style.color='var(--muted)';
+    document.getElementById('signupError').style.display='none';
+  }
+}
+
+function doSignUp(){
+  const newUser=document.getElementById('signupUsername').value.trim();
+  const newPass=document.getElementById('signupPassword').value;
+  const adminPass=document.getElementById('signupAdminPass').value;
+  const errEl=document.getElementById('signupError');
+  errEl.style.display='none';
+
+  if(!newUser||!newPass||!adminPass){
+    errEl.style.display='block';errEl.textContent='❌ All fields are required.';return;
+  }
+  // Validate admin password
+  if(adminPass!==ADMIN_CREDS.password){
+    errEl.style.display='block';errEl.textContent='❌ Invalid admin password. Contact admin to register.';
+    document.getElementById('signupAdminPass').value='';return;
+  }
+  // Check username not already taken
+  const users=loadUsers();
+  const exists=users.find(u=>u.username.toLowerCase()===newUser.toLowerCase())||
+               (newUser.toLowerCase()===ADMIN_CREDS.username.toLowerCase());
+  if(exists){
+    errEl.style.display='block';errEl.textContent='❌ Username already taken. Choose another.';return;
+  }
+  // Save new user
+  users.push({username:newUser,password:newPass,createdAt:new Date().toISOString()});
+  saveUsers(users);
+  showToast('Account created! Login with your credentials 🎉','success');
+  // Switch to login tab
+  switchAuthTab('login');
+  document.getElementById('adminUsername').value=newUser;
+  document.getElementById('adminPassword').value='';
+  document.getElementById('signupUsername').value='';
+  document.getElementById('signupPassword').value='';
+  document.getElementById('signupAdminPass').value='';
+}
 
 function checkAdminSession(){
-  try{const s=sessionStorage.getItem(ADMIN_KEY);if(s==='1'){isAdminLoggedIn=true;return true;}}catch(e){}
+  try{
+    const s=sessionStorage.getItem(ADMIN_KEY);
+    if(s){const d=JSON.parse(s);isAdminLoggedIn=true;loggedInUser=d.username||'Admin';return true;}
+  }catch(e){}
   return false;
 }
 function adminLogout(){
-  isAdminLoggedIn=false;
+  isAdminLoggedIn=false;loggedInUser=null;
   try{sessionStorage.removeItem(ADMIN_KEY);}catch(e){}
   document.getElementById('adminLogoutBtn').style.display='none';
   showToast('Logged out from Delivery Portal','success');
@@ -848,13 +973,31 @@ function closeLoginOverlay(){
   document.getElementById('adminUsername').value='';
   document.getElementById('adminPassword').value='';
   document.getElementById('adminError').style.display='none';
+  document.getElementById('signupUsername').value='';
+  document.getElementById('signupPassword').value='';
+  document.getElementById('signupAdminPass').value='';
+  document.getElementById('signupError').style.display='none';
+  switchAuthTab('login');
 }
 function doAdminLogin(){
   const u=document.getElementById('adminUsername').value.trim();
   const p=document.getElementById('adminPassword').value;
-  if(u===ADMIN_CREDS.username&&p===ADMIN_CREDS.password){
-    isAdminLoggedIn=true;
-    try{sessionStorage.setItem(ADMIN_KEY,'1');}catch(e){}
+  const errEl=document.getElementById('adminError');
+  errEl.style.display='none';
+
+  // Check admin creds first
+  let loginOk=false;
+  if(u===ADMIN_CREDS.username&&p===ADMIN_CREDS.password){loginOk=true;}
+  else {
+    // Check registered users
+    const users=loadUsers();
+    const found=users.find(usr=>usr.username===u&&usr.password===p);
+    if(found)loginOk=true;
+  }
+
+  if(loginOk){
+    isAdminLoggedIn=true;loggedInUser=u;
+    try{sessionStorage.setItem(ADMIN_KEY,JSON.stringify({username:u}));}catch(e){}
     closeLoginOverlay();
     document.getElementById('adminLogoutBtn').style.display='flex';
     showToast('Welcome, '+u+'! 👋 Delivery Portal unlocked','success');
@@ -865,7 +1008,6 @@ function doAdminLogin(){
     document.getElementById('addBtnLabel').textContent='Add Order';
     render();
   } else {
-    const errEl=document.getElementById('adminError');
     errEl.style.display='block';
     errEl.textContent='❌ Invalid username or password. Try again.';
     document.getElementById('adminPassword').value='';
@@ -987,6 +1129,7 @@ function addNotification(msg,type='new-order'){
   saveNotifications();
   renderNotifPanel();
   updateNotifBell();
+  playNotifSound();
   showToast('🔔 '+msg,'neworder');
 }
 function renderNotifPanel(){
