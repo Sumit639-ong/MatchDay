@@ -4,17 +4,277 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MatchDay</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
-  /* Override all font-family to Constantia */
-  body, input, select, button, textarea, .form-input, .form-select, .form-label,
-  .tab-name, .tab-sub, .delivery-header-text p, .notif-text, .admin-label,
-  .admin-input, .widget-title, .stat-label, .filter-btn, .delivery-filter-btn,
-  .btn-add-order, .btn-add-header, .btn-history-header, .btn-cancel, .btn-save,
-  .club-btn, .match-sel-btn, .notif-clear, .delivery-search,
-  .admin-btn, .admin-sub, .confirm-title, .confirm-sub {
-    font-family: 'Constantia', Georgia, 'Times New Roman', serif !important;
-  }
+/* ===== PROFESSIONAL UPGRADE — GLOBAL FONT & BASE ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Inter', 'Constantia', Georgia, sans-serif !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Smooth scroll */
+html { scroll-behavior: smooth; }
+
+/* Better input & button font */
+input, select, button, textarea {
+  font-family: 'Inter', 'Constantia', Georgia, sans-serif !important;
+}
+
+/* ===== GLASSMORPHISM CARDS ===== */
+.match-card {
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+}
+
+/* ===== PREMIUM GLOW EFFECTS ===== */
+.league-tab.active {
+  box-shadow: 0 0 0 1px rgba(255,255,255,.15), 0 8px 32px rgba(0,0,0,.5) !important;
+}
+.league-tab.epl.active  { box-shadow: 0 0 24px rgba(0,255,135,.12), 0 8px 32px rgba(0,0,0,.4) !important; }
+.league-tab.ucl.active  { box-shadow: 0 0 24px rgba(96,179,255,.12), 0 8px 32px rgba(0,0,0,.4) !important; }
+.league-tab.fifa.active { box-shadow: 0 0 24px rgba(255,215,0,.12),  0 8px 32px rgba(0,0,0,.4) !important; }
+.league-tab.delivery.active { box-shadow: 0 0 24px rgba(167,139,250,.15), 0 8px 32px rgba(0,0,0,.4) !important; }
+
+/* ===== HEADER REDESIGN ===== */
+.logo {
+  font-size: 28px !important;
+  letter-spacing: 6px !important;
+  background: linear-gradient(120deg, #fff 0%, #c4b5fd 40%, #818cf8 70%, #00ff87 100%) !important;
+  background-clip: text !important;
+  -webkit-background-clip: text !important;
+  color: transparent !important;
+  filter: drop-shadow(0 0 28px rgba(124,111,255,.6)) !important;
+}
+
+/* ===== PREMIUM MATCH CARDS ===== */
+.match-card {
+  border-radius: 16px !important;
+  transition: all 0.28s cubic-bezier(0.4,0,0.2,1) !important;
+}
+.match-card:hover {
+  transform: translateX(4px) translateY(-1px) !important;
+  box-shadow: 0 12px 40px rgba(0,0,0,.5) !important;
+}
+.match-card.epl:hover  { box-shadow: 0 12px 40px rgba(0,255,135,.1), 0 4px 16px rgba(0,0,0,.4) !important; }
+.match-card.ucl:hover  { box-shadow: 0 12px 40px rgba(96,179,255,.1), 0 4px 16px rgba(0,0,0,.4) !important; }
+.match-card.fifa:hover { box-shadow: 0 12px 40px rgba(255,215,0,.08), 0 4px 16px rgba(0,0,0,.4) !important; }
+
+/* ===== TEAM NAME TYPOGRAPHY ===== */
+.team-name { font-size: 15px !important; font-weight: 700 !important; letter-spacing: -0.2px !important; }
+.score-num { letter-spacing: 2px !important; }
+
+/* ===== PREMIUM STATUS BADGES ===== */
+.status-badge {
+  border-radius: 6px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.8px !important;
+  padding: 4px 10px !important;
+}
+.badge-live {
+  background: linear-gradient(135deg, rgba(255,61,90,.2), rgba(255,61,90,.08)) !important;
+  box-shadow: 0 0 12px rgba(255,61,90,.3) !important;
+}
+.badge-upcoming {
+  background: linear-gradient(135deg, rgba(0,230,118,.12), rgba(0,230,118,.04)) !important;
+}
+
+/* ===== DELIVERY TABLE UPGRADE ===== */
+.order-table { border-radius: 0 !important; }
+.order-table th {
+  font-size: 10px !important;
+  letter-spacing: 1.5px !important;
+  padding: 12px 14px !important;
+  background: linear-gradient(180deg, rgba(22,24,41,.98), rgba(14,16,32,.95)) !important;
+}
+.order-table tr { transition: background 0.15s !important; }
+.order-table tr:hover td { background: rgba(124,111,255,.04) !important; }
+.order-table-wrap { border-radius: 16px !important; box-shadow: 0 4px 24px rgba(0,0,0,.3) !important; }
+
+/* ===== QC PILLS UPGRADED ===== */
+.qc-pill { border-radius: 6px !important; font-size: 11px !important; padding: 4px 10px !important; font-weight: 800 !important; }
+.qc-ok   { box-shadow: 0 0 8px rgba(0,230,118,.2) !important; }
+.qc-fail { box-shadow: 0 0 8px rgba(255,61,90,.2) !important; }
+
+/* ===== STATUS PILLS UPGRADED ===== */
+.status-pill { border-radius: 8px !important; font-size: 11px !important; padding: 5px 12px !important; font-weight: 700 !important; letter-spacing: 0.3px !important; }
+.status-completed  { box-shadow: 0 0 10px rgba(0,230,118,.15) !important; }
+.status-pending    { box-shadow: 0 0 10px rgba(255,61,90,.12) !important; }
+
+/* ===== WIDGET UPGRADE ===== */
+.widget {
+  border-radius: 16px !important;
+  backdrop-filter: blur(8px) !important;
+  transition: all 0.22s ease !important;
+}
+.widget:hover { border-color: rgba(124,111,255,.25) !important; transform: translateY(-1px) !important; box-shadow: 0 8px 32px rgba(0,0,0,.3) !important; }
+
+/* ===== TOAST UPGRADE ===== */
+.toast {
+  border-radius: 12px !important;
+  padding: 14px 20px !important;
+  backdrop-filter: blur(20px) !important;
+  font-weight: 500 !important;
+  box-shadow: 0 12px 40px rgba(0,0,0,.6) !important;
+  font-size: 13.5px !important;
+}
+.toast.success { border-color: rgba(0,230,118,.4) !important; background: rgba(0,230,118,.08) !important; }
+.toast.neworder { background: linear-gradient(135deg, rgba(255,61,90,.12), rgba(255,61,90,.04)) !important; }
+
+/* ===== MODAL UPGRADE ===== */
+.modal { border-radius: 20px !important; border-color: rgba(124,111,255,.3) !important; backdrop-filter: blur(20px) !important; }
+.modal-header { padding: 22px 26px 18px !important; }
+.modal-body { padding: 22px 26px !important; }
+.modal-footer { padding: 18px 26px 22px !important; }
+.form-input, .form-select {
+  border-radius: 10px !important;
+  padding: 11px 14px !important;
+  font-size: 14px !important;
+  transition: all 0.2s !important;
+}
+.form-input:focus, .form-select:focus {
+  border-color: rgba(124,111,255,.6) !important;
+  box-shadow: 0 0 0 4px rgba(124,111,255,.1), 0 2px 8px rgba(0,0,0,.2) !important;
+  transform: translateY(-1px) !important;
+}
+.btn-save {
+  border-radius: 10px !important;
+  padding: 11px 24px !important;
+  font-size: 14px !important;
+  letter-spacing: 0.3px !important;
+  transition: all 0.2s !important;
+}
+.btn-save:hover { transform: translateY(-2px) !important; box-shadow: 0 6px 20px rgba(124,111,255,.35) !important; }
+.btn-save-delivery:hover { box-shadow: 0 6px 20px rgba(167,139,250,.35) !important; }
+
+/* ===== ADMIN LOGIN BOX UPGRADE ===== */
+.admin-login-box { border-radius: 28px !important; padding: 44px 40px !important; }
+.admin-input { border-radius: 12px !important; padding: 13px 16px !important; font-size: 15px !important; }
+.admin-btn { border-radius: 14px !important; padding: 15px !important; font-size: 15px !important; letter-spacing: 0.5px !important; }
+
+/* ===== LEAGUE TABS UPGRADE ===== */
+.league-tab { border-radius: 14px !important; transition: all 0.25s cubic-bezier(0.4,0,0.2,1) !important; }
+.league-tab:hover { transform: translateY(-3px) !important; }
+
+/* ===== DELIVERY HEADER BANNER ===== */
+.delivery-header-banner { border-radius: 18px !important; }
+.delivery-stat-card { border-radius: 14px !important; transition: all 0.2s !important; }
+.delivery-stat-card:hover { transform: translateY(-3px) !important; box-shadow: 0 8px 28px rgba(167,139,250,.15) !important; }
+
+/* ===== CONFIRM BOX UPGRADE ===== */
+.confirm-box { border-radius: 20px !important; padding: 32px !important; }
+.btn-confirm-del { border-radius: 10px !important; font-weight: 700 !important; transition: all 0.18s !important; }
+.btn-confirm-del:hover { transform: translateY(-1px) !important; box-shadow: 0 4px 16px rgba(255,61,90,.3) !important; }
+
+/* ===== SEARCH INPUT ===== */
+.delivery-search { border-radius: 12px !important; padding: 11px 16px !important; font-size: 14px !important; transition: all 0.2s !important; }
+.delivery-search:focus { transform: translateY(-1px) !important; box-shadow: 0 4px 20px rgba(167,139,250,.15) !important; }
+
+/* ===== FILTER BUTTONS ===== */
+.filter-btn { border-radius: 22px !important; font-weight: 600 !important; transition: all 0.18s !important; }
+.filter-btn.on { background: linear-gradient(135deg, rgba(124,111,255,.2), rgba(124,111,255,.08)) !important; color: #c4b5fd !important; border-color: rgba(124,111,255,.5) !important; }
+.filter-btn:hover { transform: translateY(-1px) !important; }
+
+/* ===== SCROLLBAR UPGRADE ===== */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #7c6fff, #a78bfa); border-radius: 10px; }
+
+/* ===== SOON BANNER ===== */
+.soon-banner { border-radius: 10px !important; }
+
+/* ===== NOTIFICATION PANEL ===== */
+.notif-panel { border-radius: 16px !important; }
+.notif-bell { border-radius: 10px !important; transition: all 0.2s !important; }
+.notif-bell:hover { transform: scale(1.05) !important; }
+
+/* ===== SYNC BAR ===== */
+.sync-bar { border-radius: 12px !important; }
+
+/* ===== CARD ACTION BUTTONS ===== */
+.card-btn { border-radius: 9px !important; transition: all 0.18s cubic-bezier(0.4,0,0.2,1) !important; }
+.card-btn:hover { transform: scale(1.15) translateY(-1px) !important; }
+
+/* ===== CLUB BUTTONS ===== */
+.club-btn { border-radius: 12px !important; transition: all 0.2s !important; }
+.club-btn:hover { transform: translateY(-2px) !important; }
+.club-btn.active { transform: translateY(-2px) !important; }
+
+/* ===== HEADER BUTTONS ===== */
+.btn-add-header, .btn-history-header, .view-toggle-btn, .theme-toggle { border-radius: 10px !important; transition: all 0.2s !important; }
+.btn-add-header:hover { transform: translateY(-2px) !important; box-shadow: 0 4px 16px rgba(124,111,255,.3) !important; }
+
+/* ===== PROBABILITY BAR ===== */
+.prob-track { height: 4px !important; border-radius: 4px !important; }
+.prob-home, .prob-draw, .prob-away { height: 4px !important; }
+
+/* ===== ANIMATED GRADIENT BG ===== */
+body::after {
+  content: '';
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(ellipse at 20% 20%, rgba(124,111,255,.04) 0%, transparent 50%),
+              radial-gradient(ellipse at 80% 80%, rgba(0,255,135,.03) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+  animation: bgShift 20s ease-in-out infinite alternate;
+}
+@keyframes bgShift {
+  0%   { transform: translate(0,0) rotate(0deg); }
+  100% { transform: translate(2%,2%) rotate(3deg); }
+}
+
+/* ===== LOADING SHIMMER for table rows ===== */
+@keyframes shimmer {
+  0%   { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
+}
+
+/* ===== PREMIUM NUMBER TYPOGRAPHY ===== */
+.delivery-stat-num { font-size: 36px !important; letter-spacing: 3px !important; line-height: 1.1 !important; }
+.delivery-stat-label { font-size: 9px !important; letter-spacing: 1.2px !important; margin-top: 4px !important; }
+
+/* ===== HISTORY PAGE ===== */
+.history-header { border-radius: 18px !important; }
+
+/* ===== FIFA PAGE ===== */
+.fifa-header-banner { border-radius: 18px !important; }
+.fifa-group-card { border-radius: 14px !important; transition: all 0.18s !important; }
+.fifa-group-card:hover { border-color: rgba(255,215,0,.2) !important; transform: translateY(-2px) !important; }
+
+/* ===== DAY HEADERS ===== */
+.day-header { letter-spacing: 2px !important; padding: 12px 18px !important; }
+
+/* ===== LIGHT MODE POLISH ===== */
+body.light-mode .match-card { box-shadow: 0 2px 12px rgba(0,0,0,.08) !important; }
+body.light-mode .widget { box-shadow: 0 2px 12px rgba(91,77,245,.06) !important; }
+body.light-mode .order-table-wrap { box-shadow: 0 4px 20px rgba(0,0,0,.08) !important; }
+
+/* ===== EMPTY STATES ===== */
+.empty-state .big { animation: float 3s ease-in-out infinite !important; }
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+
+/* ===== NEXT MATCH CARDS ===== */
+.next-match-card { border-radius: 12px !important; transition: all 0.2s !important; }
+.next-match-card:hover { transform: translateX(3px) !important; border-color: rgba(124,111,255,.3) !important; }
+
+/* ===== ANALYTICS CHART ===== */
+.analytics-panel { border-radius: 18px !important; }
+.chart-box { border-radius: 14px !important; transition: all 0.2s !important; }
+.chart-box:hover { border-color: rgba(124,111,255,.2) !important; }
+
+/* ===== SOON COUNTDOWN ===== */
+.soon-countdown { border-radius: 6px !important; font-weight: 800 !important; }
+
+/* ===== HEADER INNER SPACING ===== */
+@media (min-width: 1100px) {
+  .header-inner { gap: 20px !important; }
+}
 </style>
 <style>
 :root{--bg:#060710;--surface:#0e1020;--surface2:#161829;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.14);--text:#eef0ff;--muted:#6b7490;--dim:#2e3354;--epl:#38003c;--epl-acc:#00ff87;--ucl:#1a1464;--ucl-acc:#60b3ff;--fifa:#006633;--fifa-acc:#ffd700;--live:#ff3d5a;--upcoming:#00e676;--final:#747d8c;--accent:#7c6fff;--delivery-acc:#a78bfa;--shadow:rgba(0,0,0,0.5)}
@@ -29,7 +289,7 @@ body.light-mode .modal{background:#f0f2ff}
 body.light-mode .col-ordnum{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.1);color:#4a5568}
 body.light-mode .logo{background:linear-gradient(120deg,#3730a3,#5b4df5 50%,#7c6fff);background-clip:text;-webkit-background-clip:text;color:transparent}
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:'Constantia',Georgia,'Times New Roman',serif;min-height:100vh;overflow-x:hidden}
+body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,-apple-system,sans-serif;min-height:100vh;overflow-x:hidden}
 .site-header{background:linear-gradient(180deg,rgba(6,7,16,.98),rgba(14,16,32,.95));border-bottom:1px solid rgba(124,111,255,.2);padding:0 24px;position:sticky;top:0;z-index:100;backdrop-filter:blur(24px)}
 .header-inner{max-width:1440px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:66px;gap:16px}
 .logo{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:4px;background:linear-gradient(120deg,#fff,#a0acff 50%,#7c6fff);background-clip:text;-webkit-background-clip:text;color:transparent;flex-shrink:0;filter:drop-shadow(0 0 20px rgba(124,111,255,.4))}
@@ -572,6 +832,10 @@ body.mobile-view .match-sel-btn{font-size:10px;padding:4px 10px}
     <div class="live-ticker"><div class="ticker-inner" id="ticker"></div></div>
     <div class="header-right">
       <div class="date-badge" id="liveClock"></div>
+      <!-- User Welcome (shown when logged in) -->
+      <div id="userWelcome" style="display:none;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.25);font-size:11px;font-weight:600;color:var(--delivery-acc)">
+        <span>👤</span><span id="userWelcomeName">User</span>
+      </div>
       <!-- Theme Toggle -->
       <div class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark/Light">
         <span class="t-icon">🌙</span>
@@ -585,7 +849,7 @@ body.mobile-view .match-sel-btn{font-size:10px;padding:4px 10px}
         <div class="notif-badge" id="notifCount" style="display:none">0</div>
         <div class="notif-panel" id="notifPanel">
           <div class="notif-header">
-            <span>New Order Alerts</span>
+            <span>🔔 Order Alerts</span>
             <button class="notif-clear" onclick="clearNotifications()">Clear All</button>
           </div>
           <div class="notif-list" id="notifList">
@@ -653,22 +917,22 @@ body.mobile-view .match-sel-btn{font-size:10px;padding:4px 10px}
   </div>
   <aside class="sidebar">
     <div class="widget">
-      <div class="widget-title">Next Matches</div>
+      <div class="widget-title">⚡ Next Matches</div>
       <div id="nextMatches"></div>
     </div>
     <div class="widget">
-      <div class="widget-title">Stats</div>
+      <div class="widget-title">📊 Overview</div>
       <div class="stat-row"><span class="stat-label">Total Matches</span><span class="stat-val" id="s-total">0</span></div>
-      <div class="stat-row"><span class="stat-label">Upcoming</span><span class="stat-val" id="s-upcoming">0</span></div>
-      <div class="stat-row"><span class="stat-label">Completed</span><span class="stat-val" id="s-final">0</span></div>
-      <div class="stat-row"><span class="stat-label">Live Now</span><span class="stat-val" id="s-live">0</span></div>
-      <div class="stat-row"><span class="stat-label" style="color:#ffc107">⚡ In Next 24 Hrs</span><span class="stat-val" style="color:#ffc107" id="s-soon">0</span></div>
+      <div class="stat-row"><span class="stat-label">Upcoming</span><span class="stat-val" style="color:var(--upcoming)" id="s-upcoming">0</span></div>
+      <div class="stat-row"><span class="stat-label">Completed</span><span class="stat-val" style="color:var(--final)" id="s-final">0</span></div>
+      <div class="stat-row"><span class="stat-label">🔴 Live Now</span><span class="stat-val" style="color:var(--live)" id="s-live">0</span></div>
+      <div class="stat-row"><span class="stat-label" style="color:#ffc107">⚡ Next 24 Hrs</span><span class="stat-val" style="color:#ffc107" id="s-soon">0</span></div>
       <div class="stat-row"><span class="stat-label" style="color:var(--delivery-acc)">📦 Orders</span><span class="stat-val" style="color:var(--delivery-acc)" id="s-orders">0</span></div>
     </div>
-    <div class="widget">
-      <div class="widget-title">Quick Add</div>
-      <div style="font-size:11px;color:var(--muted);line-height:1.6;margin-bottom:12px">Add matches or delivery orders.</div>
-      <button onclick="handleAddBtn()" style="width:100%;padding:10px;border-radius:8px;border:1px dashed rgba(124,111,255,.3);background:rgba(124,111,255,.07);color:#a09bff;font-size:13px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif">+ Add New Entry</button>
+    <div class="widget" style="background:linear-gradient(135deg,rgba(124,111,255,.08),var(--surface));border-color:rgba(124,111,255,.2)">
+      <div class="widget-title">➕ Quick Add</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:14px">Add a new match or delivery order instantly.</div>
+      <button onclick="handleAddBtn()" style="width:100%;padding:12px;border-radius:12px;border:1px solid rgba(124,111,255,.35);background:linear-gradient(135deg,rgba(124,111,255,.15),rgba(124,111,255,.05));color:#c4b5fd;font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;letter-spacing:.3px" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(124,111,255,.25)'" onmouseout="this.style.transform='';this.style.boxShadow=''">+ Add New Entry</button>
     </div>
   </aside>
 </div>
@@ -804,8 +1068,9 @@ body.mobile-view .match-sel-btn{font-size:10px;padding:4px 10px}
 <!-- ADMIN LOGIN OVERLAY -->
 <div id="adminLoginOverlay" class="admin-login-overlay" style="display:none" onclick="handleLoginOverlay(event)">
   <div class="admin-login-box">
-    <div class="admin-logo">🔐 DELIVERY PORTAL</div>
-    <div class="admin-sub">Restricted Access — Login or Sign Up</div>
+    <div class="admin-logo">⚡ MATCHDAY</div>
+    <div class="admin-sub" style="font-size:13px;margin-bottom:8px;color:var(--muted)">Delivery Portal — Secure Access</div>
+    <div style="width:48px;height:3px;background:linear-gradient(90deg,#7c6fff,#a78bfa,#00ff87);border-radius:2px;margin:0 auto 24px"></div>
 
     <!-- Tab Switcher -->
     <div style="display:flex;gap:0;margin:16px 0 20px;border-radius:10px;overflow:hidden;border:1px solid rgba(124,111,255,.3)">
@@ -964,7 +1229,8 @@ function adminLogout(){
   isAdminLoggedIn=false;loggedInUser=null;
   try{sessionStorage.removeItem(ADMIN_KEY);}catch(e){}
   document.getElementById('adminLogoutBtn').style.display='none';
-  showToast('Logged out from Delivery Portal','success');
+  const wb=document.getElementById('userWelcome');if(wb)wb.style.display='none';
+  showToast('Logged out successfully','success');
   switchLeague('epl');
 }
 function handleLoginOverlay(e){if(e.target===document.getElementById('adminLoginOverlay'))closeLoginOverlay();}
@@ -1000,7 +1266,11 @@ function doAdminLogin(){
     try{sessionStorage.setItem(ADMIN_KEY,JSON.stringify({username:u}));}catch(e){}
     closeLoginOverlay();
     document.getElementById('adminLogoutBtn').style.display='flex';
-    showToast('Welcome, '+u+'! 👋 Delivery Portal unlocked','success');
+    // Show welcome badge
+    const wb=document.getElementById('userWelcome');
+    const wn=document.getElementById('userWelcomeName');
+    if(wb&&wn){wn.textContent=u;wb.style.display='flex';}
+    showToast('Welcome back, '+u+'! 👋','success');
     currentLeague='delivery';
     document.querySelectorAll('.league-tab').forEach(t=>t.classList.remove('active'));
     const tabEl=document.getElementById('tab-delivery');if(tabEl)tabEl.classList.add('active');
@@ -1979,12 +2249,13 @@ function doDelete(){
 
 function showToast(msg,type='success'){
   const container=document.getElementById('toastContainer');
-  const icon=type==='success'?'✅':type==='danger'?'🗑️':type==='neworder'?'🔔':'ℹ️';
+  const icon=type==='success'?'✅':type==='danger'?'🗑️':type==='neworder'?'🔔':type==='info'?'ℹ️':'✨';
   const toast=document.createElement('div');
   toast.className=`toast ${type}`;
-  toast.innerHTML=`<span class="toast-icon">${icon}</span><span>${msg}</span>`;
+  toast.style.cssText='font-family:Inter,sans-serif;font-weight:500';
+  toast.innerHTML=`<span class="toast-icon">${icon}</span><span style="line-height:1.4">${msg}</span>`;
   container.appendChild(toast);
-  setTimeout(()=>toast.remove(),2800);
+  setTimeout(()=>{toast.style.opacity='0';toast.style.transform='translateX(40px)';setTimeout(()=>toast.remove(),300);},2600);
 }
 
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeDeliveryModal();closeConfirm();}});
@@ -2027,7 +2298,12 @@ function toggleViewMode() {
 
 // ===== INIT =====
 checkAdminSession();
-if(isAdminLoggedIn)document.getElementById('adminLogoutBtn').style.display='flex';
+if(isAdminLoggedIn){
+  document.getElementById('adminLogoutBtn').style.display='flex';
+  const wb=document.getElementById('userWelcome');
+  const wn=document.getElementById('userWelcomeName');
+  if(wb&&wn&&loggedInUser){wn.textContent=loggedInUser;wb.style.display='flex';}
+}
 renderNotifPanel();
 updateNotifBell();
 updateCounts();
