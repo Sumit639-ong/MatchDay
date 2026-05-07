@@ -16,35 +16,77 @@ const io = new Server(server, {
 
 const SHEET_ID = "1h-V1q5MpZ51AXJEFI4VEInnbuqO2pxNQuhDg_vGTSRw";
 
+// ✅ Keys LOWERCASE honi chahiye (frontend se lowercase aata hai)
+// Values = Google Sheet mein jo tab name EXACTLY likha hai
+const CLUB_SHEET_MAP = {
+  manutd:        'Manutd',        // Tab: Manutd
+  mancity:       'Mancity',       // Tab: Mancity
+  everton:       'Everton',       // Tab: Everton
+  astonvilla:    'AstonVilla',    // Tab: AstonVilla
+  wolves:        'Wolves',        // Tab: Wolves (agar hai)
+  tottenham:     'Tottenham',     // Tab: Tottenham
+  crystalpalace: 'CrystalPalace', // Tab: CrystalPalace
+  fifa:          'FIFA',          // Tab: FIFA (agar hai)
+  newcastle:     'Newcastle',     // Tab: Newcastle
+  music:         'Music',         // Tab: Music (agar hai)
+  arsenal:       'Arsenal',       // Tab: Arsenal
+  brentford:     'Brentford',     // Tab: Brentford (agar hai)
+};
+
+// Screenshot mein dikhe tabs: Sheet11, Manutd, Mancity, CrystalPalace, Everton, Arsenal, Newcastle, AstonVilla, Tottenham
+
+const DEFAULT_SHEET_TAB = 'Sheet11'; // Tumhara main tab Sheet11 hai
+
 const auth = new google.auth.GoogleAuth({
   credentials: JSON.parse(process.env.GOOGLE_CREDENTIALS || '{}'),
   scopes: ["https://www.googleapis.com/auth/spreadsheets.readonly"]
 });
 
-let lastData = [];
+const clubCache = {};
 
-async function getSheetData() {
+async function getSheetDataForClub(clubKey) {
   const client = await auth.getClient();
   const sheets = google.sheets({ version: "v4", auth: client });
-
+  const tabName = CLUB_SHEET_MAP[clubKey] || DEFAULT_SHEET_TAB;
+  console.log(`📋 Fetching [${clubKey}] from tab: "${tabName}"`);
   const res = await sheets.spreadsheets.values.get({
     spreadsheetId: SHEET_ID,
-    range: "Sheet1!A:Y"
+    range: `${tabName}!A:Y`
   });
-
   return res.data.values || [];
 }
 
-// ✅ FIX 1: /orders route — frontend calls fetch('/orders') every 5s
+// ✅ Per-club route
+app.get('/orders/:club', async (req, res) => {
+  // lowercase + spaces hata do (manutd, mancity, crystalpalace etc.)
+  const clubKey = req.params.club.toLowerCase().replace(/\s+/g, '').replace(/-/g, '');
+  try {
+    if (clubCache[clubKey] && clubCache[clubKey].length > 0) {
+      return res.json(clubCache[clubKey]);
+    }
+    const data = await getSheetDataForClub(clubKey);
+    clubCache[clubKey] = data;
+    res.json(data);
+  } catch (err) {
+    console.log(`❌ /orders/${clubKey} error:`, err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ✅ Legacy /orders route — Sheet11 se (jo pehle kaam kar raha tha)
 app.get('/orders', async (req, res) => {
   try {
-    // If we already have cached data, return it immediately
-    if (lastData.length > 0) {
-      return res.json(lastData);
+    if (clubCache['_default'] && clubCache['_default'].length > 0) {
+      return res.json(clubCache['_default']);
     }
-    // Otherwise fetch fresh from sheet
-    const data = await getSheetData();
-    lastData = data;
+    const client = await auth.getClient();
+    const sheets = google.sheets({ version: "v4", auth: client });
+    const result = await sheets.spreadsheets.values.get({
+      spreadsheetId: SHEET_ID,
+      range: `${DEFAULT_SHEET_TAB}!A:Y`
+    });
+    const data = result.data.values || [];
+    clubCache['_default'] = data;
     res.json(data);
   } catch (err) {
     console.log("❌ /orders error:", err.message);
@@ -52,24 +94,31 @@ app.get('/orders', async (req, res) => {
   }
 });
 
-// Background poller: keeps lastData fresh & pushes via Socket.IO
-setInterval(async () => {
-  try {
-    const data = await getSheetData();
-
-    console.log("📊 RAW SHEET DATA:", data);
-
-    if (JSON.stringify(data) !== JSON.stringify(lastData)) {
-      io.emit("ordersUpdate", data);
-      lastData = data;
-      console.log("✅ Sheet updated — pushed to all clients!");
+// ✅ Background poller
+async function pollAllClubs() {
+  const clubKeys = Object.keys(CLUB_SHEET_MAP);
+  for (const clubKey of clubKeys) {
+    try {
+      const data = await getSheetDataForClub(clubKey);
+      const changed = JSON.stringify(clubCache[clubKey] || []) !== JSON.stringify(data);
+      if (changed) {
+        clubCache[clubKey] = data;
+        io.emit('ordersUpdate', { club: clubKey, data });
+        console.log(`✅ [${clubKey}] updated!`);
+      }
+    } catch (err) {
+      console.log(`❌ Poll [${clubKey}]:`, err.message);
     }
-  } catch (err) {
-    console.log("❌ Google Sheet Error:", err.message);
+    await new Promise(r => setTimeout(r, 600));
   }
-}, 5000);
+}
 
-// Serve frontend
+setInterval(pollAllClubs, 10000);
+pollAllClubs();
+
+// ✅ Health check (UptimeRobot ke liye)
+app.get('/health', (req, res) => res.status(200).send('OK'));
+
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
