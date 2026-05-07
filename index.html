@@ -1481,18 +1481,28 @@ function normalizeQC(s){
   return 'Correct';
 }
 
-function fetchSheetData(){
+function fetchSheetData(clubKey){
+  // Agar clubKey nahi diya toh currentClub use karo
+  const club = clubKey || currentClub || 'manutd';
   sheetSyncStatus='loading';
   if(currentLeague==='delivery')render();
-  fetch('/orders')
+  // ✅ Ab /orders/:club call hota hai — har club ki apni sheet
+  fetch('/orders/'+club)
     .then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
     .then(data=>{
       if(!Array.isArray(data)||data.length===0){sheetSyncStatus='ok';sheetSyncTime=new Date();sheetHeaders=[];sheetRows=[];if(currentLeague==='delivery')render();return;}
       sheetHeaders=data[0].map(h=>(h||'').toString().trim());
       sheetRows=data.slice(1).filter(r=>r&&r.some(c=>c));
-      const sheetOrders=sheetRows.map((r,i)=>sheetRowToOrder(sheetHeaders,r,i));
+      // sheetRowToOrder ko club forcibly set karo (sheet mein club column na ho toh bhi sahi club aaye)
+      const sheetOrders=sheetRows.map((r,i)=>{
+        const o=sheetRowToOrder(sheetHeaders,r,i);
+        o.club=club; // Force correct club
+        return o;
+      });
       const localOnly=ORDERS.filter(o=>!o.fromSheet);
-      // Detect new orders — use composite key (block+row+seats) as primary match identifier
+      // Sirf is club ke purane sheet orders hatao, baaki clubs ke orders raho
+      const otherClubOrders=ORDERS.filter(o=>o.fromSheet&&o.club!==club);
+      // Detect new orders
       const newOrders=sheetOrders.filter(o=>{
         const cKey=makeCompositeKey(o);
         const prevByKey=[...prevOrderIds].some(k=>k===cKey);
@@ -1500,27 +1510,37 @@ function fetchSheetData(){
         return !prevByKey&&!prevByOrd;
       });
       newOrders.forEach(o=>{
-        addNotification(`New Order: ${o.ordNum||makeCompositeKey(o)} — ${o.event||o.matchName||'Unknown Event'}`);
+        addNotification(`New Order [${club}]: ${o.ordNum||makeCompositeKey(o)} — ${o.event||o.matchName||'Unknown Event'}`);
       });
-      // Store both composite keys and ordNums in prevOrderIds
       prevOrderIds=new Set([
         ...sheetOrders.map(o=>makeCompositeKey(o)),
         ...sheetOrders.filter(o=>o.ordNum&&!o.ordNum.startsWith('ROW-')).map(o=>'ord:'+o.ordNum)
       ]);
-      ORDERS=[...sheetOrders,...localOnly];
+      // Merge: is club ke fresh sheet orders + doosre clubs ke orders + local orders
+      ORDERS=[...otherClubOrders,...sheetOrders,...localOnly];
       saveDelivery();
       sheetSyncStatus='ok';sheetSyncTime=new Date();
       updateCounts();
       if(currentLeague==='delivery')render();else updateStats();
     })
     .catch(err=>{
-      console.warn('Sheet sync failed:',err.message);
+      console.warn('Sheet sync failed ['+club+']:',err.message);
       sheetSyncStatus='error';
       if(currentLeague==='delivery')render();
     });
 }
-fetchSheetData();
-setInterval(fetchSheetData,5000);
+
+// ✅ Socket.IO se real-time updates — server jo club update kare, wahi refresh ho
+if(typeof io !== 'undefined'){
+  // socket already connected from top of file
+}
+
+// ✅ Poller: current club ka data fetch karo
+function startPolling(){
+  fetchSheetData(currentClub);
+}
+startPolling();
+setInterval(()=>fetchSheetData(currentClub),5000);
 
 // ===== AUTO HISTORY (match complete pe auto move) =====
 function checkAutoHistory(){
@@ -1873,7 +1893,7 @@ function renderDelivery(el){
           `<td><div class="col-mkid">${o.mkId||'—'}</div></td>`,
           `<td><div class="col-submitted">${submittedStr}</div></td>`,
           `<td><span class="qc-pill ${qc}"${qcTooltip}>${qcText}${qcRawVal&&o.qc==='Pending'?` <span style="font-size:9px;opacity:.6">(${qcRawVal.slice(0,8)})</span>`:''}</span></td>`,
-          `<td><div class="row-actions"><div class="card-btn edit-btn" onclick="openEditOrderModal('${safeKey}')" title="Edit"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div><div class="card-btn del-btn" onclick="confirmDeleteOrder('${safeKey}')" title="Delete"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></div></div></td>`,
+          `<td><div class="row-actions"><div class="card-btn del-btn" onclick="confirmDeleteOrder('${safeKey}')" title="Delete"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></div></div></td>`,
         ].join('')}</tr>`;
       }).join('')
     }</tbody></table></div>`;
@@ -1900,7 +1920,7 @@ function renderDelivery(el){
   updateStats();
 }
 
-function setClub(c){currentClub=c;currentMatchFilter='all';render();}
+function setClub(c){currentClub=c;currentMatchFilter='all';fetchSheetData(c);render();}
 function setMatchFilter(m){currentMatchFilter=m;render();}
 function setDeliverySearch(v){
   deliverySearch=v;render();
