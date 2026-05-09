@@ -3,8 +3,450 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MatchDay</title>
+<title>MatchDay ⚡ Live</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* ╔══════════════════════════════════════════════════════╗
+   ║         MATCHDAY — PREMIUM VISUAL UPGRADE v2         ║
+   ╚══════════════════════════════════════════════════════╝ */
+
+/* ── AURORA ANIMATED BACKGROUND ── */
+body {
+  background: #060710 !important;
+  position: relative;
+  overflow-x: hidden;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 10% 10%, rgba(124,111,255,.10) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 90% 90%, rgba(0,255,135,.07) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 50% at 50% 0%,  rgba(96,179,255,.06) 0%, transparent 50%);
+  animation: aurora 14s ease-in-out infinite alternate;
+  pointer-events: none;
+  z-index: 0;
+}
+@keyframes aurora {
+  0%   { transform: scale(1)   rotate(0deg); opacity: 1; }
+  33%  { transform: scale(1.05) rotate(1deg); opacity: .85; }
+  66%  { transform: scale(.97) rotate(-1deg); opacity: .95; }
+  100% { transform: scale(1.03) rotate(.5deg); opacity: .9; }
+}
+
+/* ── FLOATING PARTICLES ── */
+.particles-layer {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;
+}
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  animation: floatUp linear infinite;
+  opacity: 0;
+}
+@keyframes floatUp {
+  0%   { transform: translateY(110vh) scale(0); opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: .6; }
+  100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+}
+
+/* ── HEADER GLOW BEAM ── */
+.site-header {
+  position: relative;
+  background: linear-gradient(180deg, rgba(6,7,20,.98) 0%, rgba(10,12,32,.97) 100%) !important;
+  border-bottom: 1px solid rgba(124,111,255,.3) !important;
+  box-shadow: 0 1px 0 rgba(124,111,255,.12), 0 4px 32px rgba(0,0,0,.6) !important;
+  overflow: visible !important;
+}
+.site-header::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; left: 50%;
+  transform: translateX(-50%);
+  width: 60%; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(124,111,255,.7), rgba(0,255,135,.5), rgba(124,111,255,.7), transparent);
+  animation: scanline 4s ease-in-out infinite;
+}
+@keyframes scanline {
+  0%,100% { width: 40%; opacity: .6; }
+  50%      { width: 80%; opacity: 1; }
+}
+
+/* ── LOGO CINEMATIC ── */
+.logo {
+  font-family: 'Bebas Neue', sans-serif !important;
+  font-size: 30px !important;
+  letter-spacing: 8px !important;
+  background: linear-gradient(120deg, #fff 0%, #c4b5fd 30%, #7c6fff 55%, #00ff87 80%, #60b3ff 100%) !important;
+  background-size: 200% 100% !important;
+  background-clip: text !important;
+  -webkit-background-clip: text !important;
+  color: transparent !important;
+  filter: drop-shadow(0 0 20px rgba(124,111,255,.5)) !important;
+  animation: logoShimmer 5s linear infinite !important;
+  text-shadow: none !important;
+}
+@keyframes logoShimmer {
+  0%   { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
+/* ── HERO / TABS BACKGROUND ── */
+.hero {
+  background: linear-gradient(180deg, rgba(8,9,26,.96) 0%, rgba(12,14,34,.98) 100%) !important;
+  border-bottom: 1px solid rgba(255,255,255,.06) !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -50%; width: 200%; height: 100%;
+  background: linear-gradient(90deg, transparent 0%, rgba(124,111,255,.04) 50%, transparent 100%);
+  animation: heroSweep 8s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes heroSweep {
+  0%   { transform: translateX(-20%); }
+  100% { transform: translateX(20%); }
+}
+
+/* ── LEAGUE TABS — GLOWING ACTIVE STATE ── */
+.league-tab {
+  border-radius: 16px !important;
+  transition: all .3s cubic-bezier(.34,1.56,.64,1) !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+.league-tab::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,.06) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity .25s;
+  border-radius: inherit;
+}
+.league-tab:hover::before { opacity: 1; }
+.league-tab:hover {
+  transform: translateY(-4px) scale(1.03) !important;
+}
+.league-tab.epl.active {
+  background: linear-gradient(135deg, rgba(0,255,135,.12), rgba(56,0,60,.4)) !important;
+  box-shadow: 0 0 0 1px rgba(0,255,135,.25), 0 8px 32px rgba(0,255,135,.15), 0 0 60px rgba(0,255,135,.06) !important;
+}
+.league-tab.ucl.active {
+  background: linear-gradient(135deg, rgba(96,179,255,.12), rgba(26,20,100,.4)) !important;
+  box-shadow: 0 0 0 1px rgba(96,179,255,.3), 0 8px 32px rgba(96,179,255,.15), 0 0 60px rgba(96,179,255,.06) !important;
+}
+.league-tab.fifa.active {
+  background: linear-gradient(135deg, rgba(255,215,0,.1), rgba(0,102,51,.3)) !important;
+  box-shadow: 0 0 0 1px rgba(255,215,0,.25), 0 8px 32px rgba(255,215,0,.1), 0 0 60px rgba(255,215,0,.04) !important;
+}
+.league-tab.delivery.active {
+  background: linear-gradient(135deg, rgba(167,139,250,.12), rgba(30,20,60,.4)) !important;
+  box-shadow: 0 0 0 1px rgba(167,139,250,.3), 0 8px 32px rgba(167,139,250,.15), 0 0 60px rgba(167,139,250,.06) !important;
+}
+
+/* Tab count pill animate on active */
+.league-tab.active .tab-count {
+  animation: countPop .4s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes countPop {
+  0%   { transform: scale(.7); }
+  70%  { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+/* ── MATCH CARD — PREMIUM SHINE + ENTRANCE ── */
+.match-card {
+  border-radius: 18px !important;
+  position: relative !important;
+  overflow: hidden !important;
+  transition: all .32s cubic-bezier(.34,1.56,.64,1) !important;
+  animation: cardEntrance .4s cubic-bezier(.34,1.56,.64,1) both;
+}
+@keyframes cardEntrance {
+  from { opacity: 0; transform: translateY(16px) scale(.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+/* stagger cards */
+.match-card:nth-child(1)  { animation-delay: .04s; }
+.match-card:nth-child(2)  { animation-delay: .08s; }
+.match-card:nth-child(3)  { animation-delay: .12s; }
+.match-card:nth-child(4)  { animation-delay: .16s; }
+.match-card:nth-child(5)  { animation-delay: .20s; }
+.match-card:nth-child(6)  { animation-delay: .24s; }
+.match-card:nth-child(7)  { animation-delay: .28s; }
+.match-card:nth-child(8)  { animation-delay: .32s; }
+
+/* Shine sweep on hover */
+.match-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 60%; height: 100%;
+  background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,.06) 50%, transparent 60%);
+  transition: left .5s ease;
+  pointer-events: none;
+}
+.match-card:hover::after { left: 150%; }
+.match-card:hover {
+  transform: translateY(-3px) translateX(2px) !important;
+}
+.match-card.epl:hover  { box-shadow: 0 16px 48px rgba(0,255,135,.12), 0 4px 20px rgba(0,0,0,.5) !important; border-color: rgba(0,255,135,.2) !important; }
+.match-card.ucl:hover  { box-shadow: 0 16px 48px rgba(96,179,255,.12), 0 4px 20px rgba(0,0,0,.5) !important; border-color: rgba(96,179,255,.2) !important; }
+.match-card.fifa:hover { box-shadow: 0 16px 48px rgba(255,215,0,.08),  0 4px 20px rgba(0,0,0,.5) !important; border-color: rgba(255,215,0,.18) !important; }
+
+/* ── LIVE BADGE — HEARTBEAT GLOW ── */
+.badge-live, .status-badge.live {
+  animation: heartbeatGlow 1.5s ease-in-out infinite !important;
+  background: linear-gradient(135deg, rgba(255,61,90,.25), rgba(255,61,90,.1)) !important;
+  border: 1px solid rgba(255,61,90,.4) !important;
+}
+@keyframes heartbeatGlow {
+  0%,100% { box-shadow: 0 0 6px rgba(255,61,90,.4); }
+  50%      { box-shadow: 0 0 20px rgba(255,61,90,.7), 0 0 40px rgba(255,61,90,.3); }
+}
+
+/* ── SCORE NUMBERS — NEON ── */
+.score-num {
+  font-family: 'Bebas Neue', sans-serif !important;
+  font-size: 36px !important;
+  letter-spacing: 3px !important;
+  filter: drop-shadow(0 0 8px currentColor) !important;
+}
+
+/* ── UPCOMING KICKOFF TIME — GLOW ── */
+.kickoff-time {
+  font-family: 'Bebas Neue', sans-serif !important;
+  font-size: 30px !important;
+  letter-spacing: 3px !important;
+  color: #c4b5fd !important;
+  filter: drop-shadow(0 0 10px rgba(167,139,250,.5)) !important;
+}
+
+/* ── WIN PROBABILITY BAR — ANIMATED FILL ── */
+.prob-home, .prob-draw, .prob-away {
+  transition: width 1.2s cubic-bezier(.22,1,.36,1) !important;
+  animation: probFill 1.4s cubic-bezier(.22,1,.36,1) both !important;
+}
+@keyframes probFill {
+  from { transform: scaleX(0); transform-origin: left; }
+  to   { transform: scaleX(1); transform-origin: left; }
+}
+
+/* ── WIDGET — GLASS CARD ── */
+.widget {
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border-radius: 18px !important;
+  transition: all .25s ease !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+.widget::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.12), transparent);
+}
+
+/* ── SIDEBAR NEXT MATCH CARD ── */
+.next-match-card {
+  background: linear-gradient(135deg, rgba(22,24,50,.95), rgba(124,111,255,.08)) !important;
+  border: 1px solid rgba(124,111,255,.2) !important;
+  border-radius: 14px !important;
+  transition: all .25s ease !important;
+  position: relative;
+  overflow: hidden;
+}
+.next-match-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%; width: 60%; height: 100%;
+  background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,.04) 50%, transparent 60%);
+  transition: left .5s ease;
+}
+.next-match-card:hover::after { left: 150%; }
+.next-match-card:hover {
+  border-color: rgba(124,111,255,.4) !important;
+  box-shadow: 0 6px 24px rgba(124,111,255,.15) !important;
+  transform: translateX(4px) !important;
+}
+
+/* ── DELIVERY STAT CARDS — GLOW ON HOVER ── */
+.delivery-stat-card {
+  transition: all .25s cubic-bezier(.34,1.56,.64,1) !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+.delivery-stat-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at 50% 0%, rgba(167,139,250,.12), transparent 70%);
+  opacity: 0; transition: opacity .3s;
+}
+.delivery-stat-card:hover::before { opacity: 1; }
+.delivery-stat-card:hover {
+  transform: translateY(-5px) scale(1.02) !important;
+  box-shadow: 0 12px 36px rgba(167,139,250,.2), 0 4px 16px rgba(0,0,0,.4) !important;
+  border-color: rgba(167,139,250,.35) !important;
+}
+
+/* ── ORDER TABLE ROWS — HOVER REVEAL ── */
+.order-table tr {
+  transition: background .18s !important;
+}
+.order-table tr:hover td {
+  background: rgba(124,111,255,.06) !important;
+}
+.order-table tr:hover .row-actions {
+  opacity: 1 !important;
+}
+
+/* ── FILTER BUTTONS — SPRING ── */
+.filter-btn {
+  transition: all .22s cubic-bezier(.34,1.56,.64,1) !important;
+}
+.filter-btn:hover { transform: translateY(-3px) scale(1.05) !important; }
+.filter-btn.on {
+  box-shadow: 0 0 16px rgba(124,111,255,.2), 0 4px 12px rgba(0,0,0,.3) !important;
+}
+
+/* ── TOAST — CINEMATIC SLIDE ── */
+.toast {
+  animation: toastSlide .38s cubic-bezier(.34,1.56,.64,1) !important;
+  border-radius: 14px !important;
+  backdrop-filter: blur(24px) !important;
+  box-shadow: 0 16px 48px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.06) !important;
+}
+@keyframes toastSlide {
+  from { transform: translateX(60px) scale(.9); opacity: 0; }
+  to   { transform: translateX(0) scale(1); opacity: 1; }
+}
+
+/* ── MODAL — CINEMATIC ENTRANCE ── */
+.modal {
+  animation: modalDrop .35s cubic-bezier(.34,1.56,.64,1) !important;
+  border-radius: 24px !important;
+  border: 1px solid rgba(124,111,255,.3) !important;
+  box-shadow: 0 32px 80px rgba(0,0,0,.8), 0 0 0 1px rgba(255,255,255,.04) !important;
+  backdrop-filter: blur(20px) !important;
+}
+@keyframes modalDrop {
+  from { transform: translateY(-24px) scale(.96); opacity: 0; }
+  to   { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+/* ── BUTTON HOVER SPRING ── */
+.btn-save:hover { transform: translateY(-3px) scale(1.03) !important; }
+.btn-add-header:hover {
+  transform: translateY(-3px) scale(1.05) !important;
+  box-shadow: 0 8px 24px rgba(124,111,255,.4) !important;
+}
+.card-btn:hover { transform: scale(1.2) translateY(-2px) !important; }
+.admin-btn:hover { transform: translateY(-3px) scale(1.02) !important; }
+
+/* ── LIVE TICKER — GLOW ── */
+.live-ticker {
+  background: rgba(255,255,255,.03) !important;
+  border: 1px solid rgba(255,255,255,.06) !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+}
+
+/* ── DAY HEADER GLOW ── */
+.day-header {
+  position: relative;
+  overflow: hidden;
+}
+.day-header::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(124,111,255,.3), transparent);
+}
+.day-header.is-today { animation: todayPulse 3s ease-in-out infinite !important; }
+@keyframes todayPulse {
+  0%,100% { background: linear-gradient(90deg, rgba(124,111,255,.14), transparent); }
+  50%      { background: linear-gradient(90deg, rgba(124,111,255,.22), transparent); }
+}
+
+/* ── SYNC BAR ANIMATED DOT ── */
+.sync-dot { animation: syncPulse 2s ease-in-out infinite !important; }
+@keyframes syncPulse {
+  0%,100% { transform: scale(1); opacity: 1; }
+  50%      { transform: scale(1.5); opacity: .6; }
+}
+
+/* ── SCROLLBAR — NEON ── */
+::-webkit-scrollbar { width: 5px !important; height: 5px !important; }
+::-webkit-scrollbar-track { background: transparent !important; }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #7c6fff, #a78bfa, #00ff87) !important;
+  border-radius: 10px !important;
+}
+
+/* ── CONFIRM BOX ENTRANCE ── */
+.confirm-box { animation: confirmBounce .35s cubic-bezier(.34,1.56,.64,1) !important; }
+@keyframes confirmBounce {
+  from { transform: scale(.8) translateY(20px); opacity: 0; }
+  to   { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+/* ── CLUB BTN ACTIVE SPRING ── */
+.club-btn.active {
+  transform: translateY(-3px) scale(1.05) !important;
+  box-shadow: 0 6px 20px rgba(0,0,0,.35) !important;
+}
+.club-btn:hover { transform: translateY(-3px) scale(1.05) !important; }
+
+/* ── NOTIFICATION BELL SHAKE ON UNREAD ── */
+.notif-bell.has-notif {
+  animation: bellShake 2s ease-in-out infinite !important;
+}
+@keyframes bellShake {
+  0%,90%,100% { transform: rotate(0); }
+  92% { transform: rotate(-8deg); }
+  96% { transform: rotate(8deg); }
+  98% { transform: rotate(-4deg); }
+}
+
+/* ── ADMIN LOGIN — PREMIUM ── */
+.admin-login-box {
+  box-shadow: 0 40px 100px rgba(0,0,0,.8), 0 0 0 1px rgba(167,139,250,.2), 0 0 80px rgba(124,111,255,.08) !important;
+}
+.admin-logo {
+  filter: drop-shadow(0 0 32px rgba(167,139,250,.7)) !important;
+  animation: adminLogoPulse 3s ease-in-out infinite !important;
+}
+@keyframes adminLogoPulse {
+  0%,100% { filter: drop-shadow(0 0 20px rgba(167,139,250,.5)); }
+  50%      { filter: drop-shadow(0 0 40px rgba(167,139,250,.9)); }
+}
+
+/* ── LIGHT MODE ADJUSTMENTS ── */
+body.light-mode { background: #f0f2ff !important; }
+body.light-mode::before { opacity: .4 !important; }
+body.light-mode .match-card::after { background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,.25) 50%, transparent 60%); }
+body.light-mode .score-num { filter: none !important; }
+
+/* ── EMPTY STATE FLOAT ── */
+.empty-state .big { animation: float 3s ease-in-out infinite !important; }
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+
+/* ── ANALYTICS BARS STAGGER ── */
+.bar-fill { animation: barGrow .8s cubic-bezier(.22,1,.36,1) both; }
+.bar-row:nth-child(1) .bar-fill { animation-delay: .1s; }
+.bar-row:nth-child(2) .bar-fill { animation-delay: .2s; }
+.bar-row:nth-child(3) .bar-fill { animation-delay: .3s; }
+.bar-row:nth-child(4) .bar-fill { animation-delay: .4s; }
+@keyframes barGrow {
+  from { width: 0 !important; }
+}
+</style>
 <style>
 /* ===== PROFESSIONAL UPGRADE — GLOBAL FONT & BASE ===== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -826,6 +1268,34 @@ body.mobile-view .match-sel-btn{font-size:10px;padding:4px 10px}
 </script>
 <body>
 
+<!-- FLOATING PARTICLES -->
+<div class="particles-layer" id="particlesLayer"></div>
+
+<script>
+// ── Spawn floating particles ──
+(function(){
+  const layer = document.getElementById('particlesLayer');
+  const colors = ['#7c6fff','#a78bfa','#00ff87','#60b3ff','#c4b5fd','#ffd700'];
+  function spawn(){
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = Math.random()*4+2;
+    p.style.cssText = `
+      width:${size}px;height:${size}px;
+      left:${Math.random()*100}%;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      animation-duration:${Math.random()*14+10}s;
+      animation-delay:${Math.random()*8}s;
+      box-shadow:0 0 ${size*2}px currentColor;
+    `;
+    layer.appendChild(p);
+    setTimeout(()=>p.remove(), 25000);
+  }
+  for(let i=0;i<18;i++) setTimeout(spawn, i*600);
+  setInterval(spawn, 2200);
+})();
+</script>
+
 <header class="site-header">
   <div class="header-inner">
     <div class="logo">Match<span>Day</span></div>
@@ -880,12 +1350,12 @@ body.mobile-view .match-sel-btn{font-size:10px;padding:4px 10px}
     <div class="league-tabs" id="leagueTabs">
       <div class="league-tab epl active" onclick="switchLeague('epl')" id="tab-epl">
         <span class="tab-icon">🏴󠁧󠁢󠁥󠁮󠁧󠁿</span>
-        <div class="tab-info"><div class="tab-name">Premier League</div><div class="tab-sub">England • Top Flight</div></div>
+        <div class="tab-info"><div class="tab-name">Premier League</div><div class="tab-sub">MD 37 • Arsenal Lead</div></div>
         <span class="tab-count" id="cnt-epl">20</span>
       </div>
       <div class="league-tab ucl" onclick="switchLeague('ucl')" id="tab-ucl">
         <span class="tab-icon">⭐</span>
-        <div class="tab-info"><div class="tab-name">Champions League</div><div class="tab-sub">Europe • Semi-finals</div></div>
+        <div class="tab-info"><div class="tab-name">Champions League</div><div class="tab-sub">PSG vs Arsenal • Final</div></div>
         <span class="tab-count" id="cnt-ucl">5</span>
       </div>
       <div class="league-tab fifa" onclick="switchLeague('fifa')" id="tab-fifa">
@@ -933,6 +1403,33 @@ body.mobile-view .match-sel-btn{font-size:10px;padding:4px 10px}
       <div class="widget-title">➕ Quick Add</div>
       <div style="font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:14px">Add a new match or delivery order instantly.</div>
       <button onclick="handleAddBtn()" style="width:100%;padding:12px;border-radius:12px;border:1px solid rgba(124,111,255,.35);background:linear-gradient(135deg,rgba(124,111,255,.15),rgba(124,111,255,.05));color:#c4b5fd;font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;letter-spacing:.3px" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(124,111,255,.25)'" onmouseout="this.style.transform='';this.style.boxShadow=''">+ Add New Entry</button>
+      <button onclick="resetToLatestData()" style="width:100%;margin-top:8px;padding:9px;border-radius:10px;border:1px solid rgba(0,255,135,.3);background:rgba(0,255,135,.06);color:#00e676;font-size:11px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;letter-spacing:.3px" title="Reload latest match data">🔄 Refresh Match Data</button>
+    </div>
+    <!-- UCL FINAL PROMO -->
+    <div class="widget" style="background:linear-gradient(135deg,rgba(96,179,255,.08),rgba(167,139,250,.06));border-color:rgba(96,179,255,.25);position:relative;overflow:hidden">
+      <div style="position:absolute;right:-8px;top:-8px;font-size:60px;opacity:.06;line-height:1;pointer-events:none">🏆</div>
+      <div style="font-size:9px;font-weight:800;letter-spacing:2px;color:#60b3ff;margin-bottom:8px;text-transform:uppercase">UEFA Champions League</div>
+      <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px">⭐ Grand Final</div>
+      <div style="font-size:15px;font-weight:800;color:#fff;margin-bottom:8px">PSG vs Arsenal</div>
+      <div style="font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace;margin-bottom:10px">Sat 30 May • 9:30 PM IST</div>
+      <div style="display:flex;gap:6px">
+        <div style="flex:1;text-align:center;padding:6px;border-radius:8px;background:rgba(0,65,112,.3);border:1px solid rgba(0,65,112,.5)">
+          <div style="font-size:18px">🇫🇷</div>
+          <div style="font-size:10px;font-weight:700;color:#60b3ff;margin-top:2px">PSG</div>
+          <div style="font-size:9px;color:var(--muted)">43%</div>
+        </div>
+        <div style="display:flex;align-items:center;padding:0 6px;font-size:11px;color:var(--muted);font-weight:700">VS</div>
+        <div style="flex:1;text-align:center;padding:6px;border-radius:8px;background:rgba(239,1,7,.1);border:1px solid rgba(239,1,7,.3)">
+          <div style="font-size:18px">🔴</div>
+          <div style="font-size:10px;font-weight:700;color:#EF0107;margin-top:2px">ARS</div>
+          <div style="font-size:9px;color:var(--muted)">30%</div>
+        </div>
+      </div>
+    </div>
+    <!-- EPL LIVE STANDINGS WIDGET -->
+    <div class="widget" id="eplStandingsWidget" style="background:linear-gradient(135deg,rgba(0,255,135,.04),var(--surface));border-color:rgba(0,255,135,.15)">
+      <div class="widget-title" style="color:var(--epl-acc)">🏴󠁧󠁢󠁥󠁮󠁧󠁿 EPL Top 6</div>
+      <div id="eplStandingsBody"></div>
     </div>
   </aside>
 </div>
@@ -1309,28 +1806,52 @@ const CLUBS = {
   brentford:   { name:'Brentford',         abbr:'BRE',     color:'#E30613', logo:'https://crests.football-data.org/402.png' },
 };
 
-const ALL_TEAMS={'Arsenal FC':{color:'#EF0107',logo:'https://crests.football-data.org/57.png'},'Arsenal':{color:'#EF0107',logo:'https://crests.football-data.org/57.png'},'Manchester City':{color:'#6CABDD',logo:'https://crests.football-data.org/65.png'},'Liverpool FC':{color:'#C8102E',logo:'https://crests.football-data.org/64.png'},'Chelsea FC':{color:'#034694',logo:'https://crests.football-data.org/61.png'},'Manchester United':{color:'#DA291C',logo:'https://crests.football-data.org/66.png'},'Tottenham Hotspur':{color:'#132257',logo:'https://crests.football-data.org/73.png'},'Newcastle United':{color:'#241F20',logo:'https://crests.football-data.org/67.png'},'Aston Villa':{color:'#670E36',logo:'https://crests.football-data.org/58.png'},'West Ham United':{color:'#7A263A',logo:'https://crests.football-data.org/563.png'},'Nottingham Forest':{color:'#DD0000',logo:'https://crests.football-data.org/351.png'},'Wolverhampton':{color:'#FDB913',logo:'https://crests.football-data.org/76.png'},'Fulham FC':{color:'#CC0000',logo:'https://crests.football-data.org/63.png'},'Brentford FC':{color:'#E30613',logo:'https://crests.football-data.org/402.png'},'Crystal Palace':{color:'#1B458F',logo:'https://crests.football-data.org/354.png'},'Everton FC':{color:'#003399',logo:'https://crests.football-data.org/62.png'},'AFC Bournemouth':{color:'#DA291C',logo:'https://crests.football-data.org/1044.png'},'Leeds United':{color:'#FFCD00',logo:'https://crests.football-data.org/341.png'},'Burnley FC':{color:'#6C1D45',logo:'https://crests.football-data.org/328.png'},'Sunderland AFC':{color:'#EB172B',logo:'https://crests.football-data.org/387.png'},'Brighton & Hove Albion':{color:'#0057B8',logo:'https://crests.football-data.org/397.png'},'Brighton':{color:'#0057B8',logo:'https://crests.football-data.org/397.png'},'PSG':{color:'#004170',logo:'https://crests.football-data.org/559.png'},'Bayern Munich':{color:'#DC052D',logo:'https://crests.football-data.org/5.png'},'Real Madrid':{color:'#FEBE10',logo:'https://crests.football-data.org/86.png'},'FC Barcelona':{color:'#A50044',logo:'https://crests.football-data.org/81.png'},'Atletico Madrid':{color:'#CE3524',logo:'https://crests.football-data.org/78.png'},'Sporting CP':{color:'#4E9A2E',logo:'https://crests.football-data.org/498.png'},'Atalanta BC':{color:'#1E3E77',logo:'https://crests.football-data.org/102.png'},'Inter Milan':{color:'#010E80',logo:'https://crests.football-data.org/108.png'},'TBD':{color:'#333355',logo:''}};
+const ALL_TEAMS={'Arsenal FC':{color:'#EF0107',logo:'https://crests.football-data.org/57.png'},'Arsenal':{color:'#EF0107',logo:'https://crests.football-data.org/57.png'},'Manchester City':{color:'#6CABDD',logo:'https://crests.football-data.org/65.png'},'Liverpool FC':{color:'#C8102E',logo:'https://crests.football-data.org/64.png'},'Chelsea FC':{color:'#034694',logo:'https://crests.football-data.org/61.png'},'Manchester United':{color:'#DA291C',logo:'https://crests.football-data.org/66.png'},'Tottenham Hotspur':{color:'#132257',logo:'https://crests.football-data.org/73.png'},'Newcastle United':{color:'#241F20',logo:'https://crests.football-data.org/67.png'},'Aston Villa':{color:'#670E36',logo:'https://crests.football-data.org/58.png'},'West Ham United':{color:'#7A263A',logo:'https://crests.football-data.org/563.png'},'Nottingham Forest':{color:'#DD0000',logo:'https://crests.football-data.org/351.png'},'Wolverhampton':{color:'#FDB913',logo:'https://crests.football-data.org/76.png'},'Fulham FC':{color:'#CC0000',logo:'https://crests.football-data.org/63.png'},'Brentford FC':{color:'#E30613',logo:'https://crests.football-data.org/402.png'},'Crystal Palace':{color:'#1B458F',logo:'https://crests.football-data.org/354.png'},'Everton FC':{color:'#003399',logo:'https://crests.football-data.org/62.png'},'AFC Bournemouth':{color:'#DA291C',logo:'https://crests.football-data.org/1044.png'},'Leeds United':{color:'#FFCD00',logo:'https://crests.football-data.org/341.png'},'Burnley FC':{color:'#6C1D45',logo:'https://crests.football-data.org/328.png'},'Sunderland AFC':{color:'#EB172B',logo:'https://crests.football-data.org/387.png'},'Brighton & Hove Albion':{color:'#0057B8',logo:'https://crests.football-data.org/397.png'},'Brighton':{color:'#0057B8',logo:'https://crests.football-data.org/397.png'},'PSG':{color:'#004170',logo:'https://crests.football-data.org/559.png'},'Bayern Munich':{color:'#DC052D',logo:'https://crests.football-data.org/5.png'},'Real Madrid':{color:'#FEBE10',logo:'https://crests.football-data.org/86.png'},'FC Barcelona':{color:'#A50044',logo:'https://crests.football-data.org/81.png'},'Atletico Madrid':{color:'#CE3524',logo:'https://crests.football-data.org/78.png'},'Sporting CP':{color:'#4E9A2E',logo:'https://crests.football-data.org/498.png'},'Atalanta BC':{color:'#1E3E77',logo:'https://crests.football-data.org/102.png'},'Inter Milan':{color:'#010E80',logo:'https://crests.football-data.org/108.png'},'TBD':{color:'#333355',logo:''},'Paris Saint-Germain':{color:'#004170',logo:'https://crests.football-data.org/559.png'},'Wolverhampton Wanderers':{color:'#FDB913',logo:'https://crests.football-data.org/76.png'},'Sunderland AFC':{color:'#EB172B',logo:'https://crests.football-data.org/387.png'},'Leeds United':{color:'#FFCD00',logo:'https://crests.football-data.org/341.png'},'Burnley FC':{color:'#6C1D45',logo:'https://crests.football-data.org/328.png'},'West Ham United':{color:'#7A263A',logo:'https://crests.football-data.org/563.png'},'Fulham FC':{color:'#CC0000',logo:'https://crests.football-data.org/63.png'},'Sporting CP':{color:'#4E9A2E',logo:'https://crests.football-data.org/498.png'},'Real Madrid':{color:'#FEBE10',logo:'https://crests.football-data.org/86.png'},'FC Barcelona':{color:'#A50044',logo:'https://crests.football-data.org/81.png'}};
 
 const DEFAULT_DATA={
   epl:{name:'Premier League',class:'epl',pill:'pill-epl',matches:[
-    {id:1,status:'final',home:'Tottenham Hotspur',away:'Brighton',scoreH:2,scoreA:2,time:'Sat Apr 18, 10:00 PM IST',stage:'Matchday 34'},
-    {id:2,status:'final',home:'Chelsea FC',away:'Manchester United',scoreH:0,scoreA:1,time:'Sun Apr 19, 12:30 AM IST',stage:'Matchday 34'},
-    {id:3,status:'final',home:'Aston Villa',away:'Sunderland AFC',scoreH:4,scoreA:3,time:'Sun Apr 19, 6:30 PM IST',stage:'Matchday 34'},
-    {id:4,status:'final',home:'Everton FC',away:'Liverpool FC',scoreH:1,scoreA:2,time:'Sun Apr 19, 6:30 PM IST',stage:'Matchday 34'},
-    {id:5,status:'final',home:'Manchester City',away:'Arsenal FC',scoreH:2,scoreA:1,time:'Sun Apr 19, 9:00 PM IST',stage:'Matchday 34'},
-    {id:6,status:'scheduled',home:'Sunderland AFC',away:'Nottingham Forest',time:'Sat Apr 26, 12:30 AM IST',stage:'Matchday 36',probH:34.8,probA:35.7,probD:29.5},
-    {id:7,status:'scheduled',home:'Liverpool FC',away:'Crystal Palace',time:'Sat Apr 26, 7:30 PM IST',stage:'Matchday 36',probH:66,probA:14.8,probD:19.2},
-    {id:8,status:'scheduled',home:'Arsenal FC',away:'Newcastle United',time:'Sat Apr 26, 10:00 PM IST',stage:'Matchday 36',probH:64.9,probA:15.4,probD:19.7},
-    {id:9,status:'scheduled',home:'Manchester United',away:'Brentford FC',time:'Tue Apr 29, 12:30 AM IST',stage:'Matchday 37',probH:51.9,probA:24.1,probD:24},
-    {id:10,status:'scheduled',home:'Newcastle United',away:'Brighton',time:'Sat May 2, 7:30 PM IST',stage:'Matchday 37',probH:39.7,probA:34.8,probD:25.5}
+    // ── Matchday 36 Results ──
+    {id:1,status:'final',home:'Brentford FC',away:'West Ham United',scoreH:3,scoreA:0,time:'Sat May 2, 7:30 PM IST',stage:'Matchday 36'},
+    {id:2,status:'final',home:'Newcastle United',away:'Brighton & Hove Albion',scoreH:3,scoreA:1,time:'Sat May 2, 7:30 PM IST',stage:'Matchday 36'},
+    {id:3,status:'final',home:'Wolverhampton',away:'Sunderland AFC',scoreH:1,scoreA:1,time:'Sat May 2, 7:30 PM IST',stage:'Matchday 36'},
+    {id:4,status:'final',home:'Arsenal FC',away:'Fulham FC',scoreH:3,scoreA:0,time:'Sat May 2, 10:00 PM IST',stage:'Matchday 36'},
+    {id:5,status:'final',home:'AFC Bournemouth',away:'Crystal Palace',scoreH:3,scoreA:0,time:'Sun May 3, 6:30 PM IST',stage:'Matchday 36'},
+    {id:6,status:'final',home:'Manchester United',away:'Liverpool FC',scoreH:3,scoreA:2,time:'Sun May 3, 8:00 PM IST',stage:'Matchday 36'},
+    {id:7,status:'final',home:'Aston Villa',away:'Tottenham Hotspur',scoreH:1,scoreA:2,time:'Sun May 3, 11:30 PM IST',stage:'Matchday 36'},
+    {id:8,status:'final',home:'Chelsea FC',away:'Nottingham Forest',scoreH:1,scoreA:3,time:'Mon May 4, 7:30 PM IST',stage:'Matchday 36'},
+    {id:9,status:'final',home:'Everton FC',away:'Manchester City',scoreH:3,scoreA:3,time:'Tue May 5, 12:30 AM IST',stage:'Matchday 36'},
+    // ── Matchday 37 ──
+    {id:10,status:'final',home:'Liverpool FC',away:'Chelsea FC',scoreH:1,scoreA:1,time:'Sat May 9, 5:00 PM IST',stage:'Matchday 37'},
+    {id:11,status:'live',home:'Brighton & Hove Albion',away:'Wolverhampton',scoreH:2,scoreA:0,time:'Sat May 9, 7:30 PM IST',stage:'Matchday 37'},
+    {id:12,status:'live',home:'Fulham FC',away:'AFC Bournemouth',scoreH:0,scoreA:1,time:'Sat May 9, 7:30 PM IST',stage:'Matchday 37'},
+    {id:13,status:'live',home:'Sunderland AFC',away:'Manchester United',scoreH:0,scoreA:0,time:'Sat May 9, 7:30 PM IST',stage:'Matchday 37'},
+    {id:14,status:'scheduled',home:'Manchester City',away:'Brentford FC',time:'Sat May 9, 10:00 PM IST',stage:'Matchday 37',probH:70.4,probA:13.2,probD:16.4},
+    {id:15,status:'scheduled',home:'Burnley FC',away:'Aston Villa',time:'Sun May 10, 6:30 PM IST',stage:'Matchday 37',probH:18,probA:59.5,probD:22.5},
+    {id:16,status:'scheduled',home:'Crystal Palace',away:'Everton FC',time:'Sun May 10, 6:30 PM IST',stage:'Matchday 37',probH:34,probA:37.3,probD:28.7},
+    {id:17,status:'scheduled',home:'Nottingham Forest',away:'Newcastle United',time:'Sun May 10, 6:30 PM IST',stage:'Matchday 37',probH:35.6,probA:37.9,probD:26.5},
+    {id:18,status:'scheduled',home:'West Ham United',away:'Arsenal FC',time:'Sun May 10, 9:00 PM IST',stage:'Matchday 37',probH:17.3,probA:60.6,probD:22.1},
+    // ── Matchday 38 (Final Day) ──
+    {id:19,status:'scheduled',home:'Tottenham Hotspur',away:'Leeds United',time:'Tue May 12, 12:30 AM IST',stage:'Matchday 38',probH:50.6,probA:24.7,probD:24.7},
+    {id:20,status:'scheduled',home:'Manchester City',away:'Crystal Palace',time:'Thu May 14, 12:30 AM IST',stage:'Matchday 38',probH:76.4,probA:9,probD:14.6},
+    {id:21,status:'scheduled',home:'Aston Villa',away:'Liverpool FC',time:'Sat May 16, 12:30 AM IST',stage:'Matchday 38',probH:26.3,probA:50.3,probD:23.4},
+    {id:22,status:'scheduled',home:'Manchester United',away:'Nottingham Forest',time:'Sun May 17, 5:00 PM IST',stage:'Matchday 38',probH:60.6,probA:18.2,probD:21.2},
+    {id:23,status:'scheduled',home:'Brentford FC',away:'Crystal Palace',time:'Sun May 17, 7:30 PM IST',stage:'Matchday 38',probH:57.3,probA:20.3,probD:22.4}
   ]},
   ucl:{name:'Champions League',class:'ucl',pill:'pill-ucl',matches:[
-    {id:1,status:'final',home:'Tottenham Hotspur',away:'Atletico Madrid',scoreH:3,scoreA:2,time:'Thu Mar 19, 1:30 AM IST',stage:'QF 1st Leg'},
-    {id:2,status:'final',home:'Bayern Munich',away:'Atalanta BC',scoreH:4,scoreA:1,time:'Thu Mar 19, 1:30 AM IST',stage:'QF 1st Leg'},
-    {id:3,status:'final',home:'PSG',away:'Liverpool FC',scoreH:2,scoreA:0,time:'Thu Apr 9, 12:30 AM IST',stage:'SF 1st Leg'},
-    {id:4,status:'scheduled',home:'PSG',away:'Bayern Munich',time:'Wed Apr 29, 12:30 AM IST',stage:'Semi-Final',probH:41.8,probA:34,probD:24.2},
-    {id:5,status:'scheduled',home:'Atletico Madrid',away:'Arsenal FC',time:'Thu Apr 30, 12:30 AM IST',stage:'Semi-Final',probH:33.6,probA:37.4,probD:29},
-    {id:6,status:'scheduled',home:'TBD',away:'TBD',time:'Sat May 30, 9:30 PM IST',stage:'Grand Final 🏆'}
+    // ── Quarter-Finals ──
+    {id:1,status:'final',home:'Paris Saint-Germain',away:'Liverpool FC',scoreH:2,scoreA:0,time:'Thu Apr 9, 12:30 AM IST',stage:'QF 1st Leg'},
+    {id:2,status:'final',home:'FC Barcelona',away:'Atletico Madrid',scoreH:0,scoreA:2,time:'Thu Apr 9, 12:30 AM IST',stage:'QF 1st Leg'},
+    {id:3,status:'final',home:'Liverpool FC',away:'Paris Saint-Germain',scoreH:0,scoreA:2,time:'Wed Apr 15, 12:30 AM IST',stage:'QF 2nd Leg'},
+    {id:4,status:'final',home:'Atletico Madrid',away:'FC Barcelona',scoreH:1,scoreA:2,time:'Wed Apr 15, 12:30 AM IST',stage:'QF 2nd Leg'},
+    {id:5,status:'final',home:'Bayern Munich',away:'Real Madrid',scoreH:4,scoreA:3,time:'Thu Apr 16, 12:30 AM IST',stage:'QF 2nd Leg'},
+    {id:6,status:'final',home:'Arsenal FC',away:'Sporting CP',scoreH:0,scoreA:0,time:'Thu Apr 16, 12:30 AM IST',stage:'QF 2nd Leg'},
+    // ── Semi-Finals ──
+    {id:7,status:'final',home:'Paris Saint-Germain',away:'Bayern Munich',scoreH:5,scoreA:4,time:'Wed Apr 29, 12:30 AM IST',stage:'SF 1st Leg 🔥'},
+    {id:8,status:'final',home:'Atletico Madrid',away:'Arsenal FC',scoreH:1,scoreA:1,time:'Thu Apr 30, 12:30 AM IST',stage:'SF 1st Leg'},
+    {id:9,status:'final',home:'Arsenal FC',away:'Atletico Madrid',scoreH:1,scoreA:0,time:'Wed May 6, 12:30 AM IST',stage:'SF 2nd Leg ✅'},
+    {id:10,status:'final',home:'Bayern Munich',away:'Paris Saint-Germain',scoreH:1,scoreA:1,time:'Thu May 7, 12:30 AM IST',stage:'SF 2nd Leg'},
+    // ── Grand Final ──
+    {id:11,status:'scheduled',home:'Paris Saint-Germain',away:'Arsenal FC',time:'Sat May 30, 9:30 PM IST',stage:'GRAND FINAL 🏆',probH:43,probA:29.7,probD:27.3}
   ]},
   fifa:{name:'FIFA World Cup',class:'fifa',pill:'pill-fifa',matches:[]}
 };
@@ -1656,8 +2177,45 @@ function render(){
   if(currentFilter==='soon')matches=matches.filter(m=>m.status==='scheduled'&&isWithin24Hours(m.time));
   document.getElementById('resCount').textContent=matches.length+' match'+(matches.length!==1?'es':'');
   if(!matches.length){el.innerHTML=`<div class="empty-state"><div class="big">🔍</div><p>No matches for this filter.</p></div>`;updateSidebar([]);return;}
+  // ── UCL FINAL countdown banner ──
+  let uclBanner = '';
+  if(currentLeague==='ucl'){
+    const finalDate = new Date('2026-05-30T16:00:00Z');
+    const now = new Date();
+    const diff = finalDate - now;
+    let countdownStr = '';
+    if(diff > 0){
+      const days = Math.floor(diff/86400000);
+      const hrs  = Math.floor((diff%86400000)/3600000);
+      countdownStr = `<span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#ffd700;font-weight:800">${days}d ${hrs}h</span> <span style="font-size:11px;color:rgba(255,215,0,.6)">to kickoff</span>`;
+    } else {
+      countdownStr = `<span style="color:#00ff87;font-weight:800;font-size:12px">🔴 LIVE NOW</span>`;
+    }
+    uclBanner = `<div style="display:flex;align-items:center;gap:12px;padding:12px 18px;border-radius:16px;background:linear-gradient(135deg,rgba(96,179,255,.10),rgba(167,139,250,.07));border:1px solid rgba(96,179,255,.28);margin-bottom:16px;position:relative;overflow:hidden">
+      <div style="position:absolute;right:-10px;top:-10px;font-size:70px;opacity:.05;pointer-events:none;line-height:1">🏆</div>
+      <div>
+        <div style="font-size:9px;font-weight:800;letter-spacing:2px;color:#60b3ff;margin-bottom:3px;text-transform:uppercase">Champions League Grand Final</div>
+        <div style="font-size:16px;font-weight:800;color:#fff">🇫🇷 PSG &nbsp;vs&nbsp; Arsenal 🔴</div>
+        <div style="font-size:10px;color:rgba(255,255,255,.45);margin-top:3px;font-family:'JetBrains Mono',monospace">Sat 30 May • 9:30 PM IST • Munich</div>
+      </div>
+      <div style="margin-left:auto;text-align:right">${countdownStr}</div>
+    </div>`;
+  }
+
   const groups=groupByDay(matches);
-  el.innerHTML=Object.entries(groups).map(([day,ms])=>{const{label,cls,extra}=dayLabel(day);return`<div class="day-section"><div class="day-header ${cls}">${label}${extra} <span class="match-count">${ms.length} match${ms.length!==1?'es':''}</span></div>${ms.map(m=>matchCard(m,league)).join('')}</div>`;}).join('');
+  // ── LIVE NOW banner ──
+  const liveMatcher = DATA[currentLeague].matches.filter(m=>m.status==='live');
+  let liveBanner = '';
+  if(liveMatcher.length){
+    liveBanner = `<div style="display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:14px;background:linear-gradient(135deg,rgba(255,61,90,.12),rgba(255,61,90,.04));border:1px solid rgba(255,61,90,.35);margin-bottom:14px;animation:heartbeatGlow 1.5s ease-in-out infinite">
+      <div style="width:10px;height:10px;border-radius:50%;background:#ff3d5a;flex-shrink:0;animation:heartbeatGlow 1.5s ease-in-out infinite;box-shadow:0 0 8px #ff3d5a"></div>
+      <span style="font-size:11px;font-weight:800;letter-spacing:1.5px;color:#ff3d5a;text-transform:uppercase">Live Now</span>
+      <span style="font-size:11px;color:rgba(255,100,120,.8)">${liveMatcher.length} match${liveMatcher.length>1?'es':''} in progress</span>
+      <div style="flex:1"></div>
+      ${liveMatcher.map(m=>`<span style="font-size:10px;font-weight:700;color:#ff8a80;background:rgba(255,61,90,.1);padding:3px 8px;border-radius:6px;white-space:nowrap">${m.home.split(' ').pop()} ${m.scoreH??''}–${m.scoreA??''} ${m.away.split(' ').pop()}</span>`).join('')}
+    </div>`;
+  }
+  el.innerHTML = uclBanner + liveBanner + Object.entries(groups).map(([day,ms])=>{const{label,cls,extra}=dayLabel(day);return`<div class="day-section"><div class="day-header ${cls}">${label}${extra} <span class="match-count">${ms.length} match${ms.length!==1?'es':''}</span></div>${ms.map(m=>matchCard(m,league)).join('')}</div>`;}).join('');
   updateSidebar(DATA[currentLeague].matches.filter(m=>m.status==='scheduled'));
   updateStats();
 }
@@ -2316,6 +2874,44 @@ function toggleViewMode() {
   }
 })();
 
+// ===== RESET TO LATEST DATA =====
+function resetToLatestData(){
+  if(!confirm('This will reload the latest match data (your custom matches will be cleared). Continue?'))return;
+  localStorage.removeItem(DB_KEY);
+  DATA=JSON.parse(JSON.stringify(DEFAULT_DATA));
+  saveDB();
+  updateCounts();
+  buildTicker();
+  render();
+  showToast('✅ Match data refreshed to latest!','success');
+}
+
+// ===== EPL STANDINGS WIDGET =====
+const EPL_STANDINGS_2526=[
+  {rank:1,team:'Arsenal FC',abbr:'ARS',pts:76,w:23,d:7,l:5,logo:'https://crests.football-data.org/57.png',color:'#EF0107'},
+  {rank:2,team:'Manchester City',abbr:'MCI',pts:71,w:21,d:8,l:5,logo:'https://crests.football-data.org/65.png',color:'#6CABDD'},
+  {rank:3,team:'Manchester United',abbr:'MUN',pts:65,w:18,d:11,l:7,logo:'https://crests.football-data.org/66.png',color:'#DA291C'},
+  {rank:4,team:'Liverpool FC',abbr:'LFC',pts:59,w:17,d:8,l:11,logo:'https://crests.football-data.org/64.png',color:'#C8102E'},
+  {rank:5,team:'Aston Villa',abbr:'AVL',pts:58,w:17,d:7,l:11,logo:'https://crests.football-data.org/58.png',color:'#95BFE5'},
+  {rank:6,team:'AFC Bournemouth',abbr:'BOU',pts:55,w:13,d:16,l:7,logo:'https://crests.football-data.org/1044.png',color:'#DA291C'},
+  {rank:7,team:'Brighton & Hove Albion',abbr:'BRI',pts:53,w:14,d:11,l:11,logo:'https://crests.football-data.org/397.png',color:'#0057B8'},
+  {rank:8,team:'Brentford FC',abbr:'BRE',pts:51,w:14,d:9,l:12,logo:'https://crests.football-data.org/402.png',color:'#E30613'},
+  {rank:9,team:'Chelsea FC',abbr:'CFC',pts:49,w:13,d:10,l:13,logo:'https://crests.football-data.org/61.png',color:'#034694'},
+  {rank:10,team:'Everton FC',abbr:'EVE',pts:48,w:13,d:9,l:13,logo:'https://crests.football-data.org/62.png',color:'#003399'},
+];
+function renderEPLStandings(){
+  const el=document.getElementById('eplStandingsBody');
+  if(!el)return;
+  const rows=EPL_STANDINGS_2526.slice(0,6);
+  const medals=['🥇','🥈','🥉','4','5','6'];
+  el.innerHTML=rows.map((t,i)=>`<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);cursor:default" title="${t.team} — W${t.w} D${t.d} L${t.l}">
+    <span style="font-size:13px;min-width:18px;text-align:center">${i<3?medals[i]:`<span style='font-size:10px;color:var(--muted)'>${i+1}</span>`}</span>
+    <img src="${t.logo}" style="width:18px;height:18px;object-fit:contain;flex-shrink:0" onerror="this.style.display='none'">
+    <span style="font-size:11px;font-weight:600;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text)">${t.abbr}</span>
+    <span style="font-size:12px;font-weight:800;font-family:'JetBrains Mono',monospace;color:${i===0?'var(--epl-acc)':i===1?'#60b3ff':'var(--text)'}">${t.pts}</span>
+  </div>`).join('')+`<div style="font-size:9px;color:var(--muted);text-align:right;margin-top:6px;letter-spacing:.5px">Updated May 9, 2026</div>`;
+}
+
 // ===== INIT =====
 checkAdminSession();
 if(isAdminLoggedIn){
@@ -2330,6 +2926,7 @@ updateCounts();
 render();
 updateStats();
 buildTicker();
+renderEPLStandings();
 </script>
 </body>
 </html>
