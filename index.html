@@ -957,16 +957,582 @@ body.light-mode .order-table-wrap { box-shadow: 0 4px 20px rgba(0,0,0,.08) !impo
 </style>
 <style>
 :root{--bg:#060710;--surface:#0e1020;--surface2:#161829;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.14);--text:#eef0ff;--muted:#6b7490;--dim:#2e3354;--epl:#38003c;--epl-acc:#00ff87;--ucl:#1a1464;--ucl-acc:#60b3ff;--fifa:#006633;--fifa-acc:#ffd700;--live:#ff3d5a;--upcoming:#00e676;--final:#747d8c;--accent:#7c6fff;--delivery-acc:#a78bfa;--shadow:rgba(0,0,0,0.5)}
-body.light-mode{--bg:#f0f2ff;--surface:#ffffff;--surface2:#e8eaf6;--border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.14);--text:#1a1d35;--muted:#6b7490;--dim:#c5c8e0;--epl-acc:#006633;--ucl-acc:#1a1464;--fifa-acc:#b8860b;--live:#e0001a;--upcoming:#007a3d;--final:#4a5568;--accent:#5b4df5;--delivery-acc:#7c5cbf;--shadow:rgba(100,100,150,0.15)}
-body.light-mode .match-card{background:#fff;border-color:rgba(0,0,0,0.1)}
-body.light-mode .league-tab{background:#e8eaf6}
-body.light-mode .site-header{background:linear-gradient(180deg,rgba(240,242,255,.98),rgba(232,234,246,.95))}
-body.light-mode .order-table th{background:#e8eaf6;color:#4a5568}
-body.light-mode .order-table td{color:#1a1d35}
-body.light-mode .form-input,body.light-mode .form-select{background:#f0f2ff;color:#1a1d35;border-color:rgba(0,0,0,0.15)}
-body.light-mode .modal{background:#f0f2ff}
-body.light-mode .col-ordnum{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.1);color:#4a5568}
-body.light-mode .logo{background:linear-gradient(120deg,#3730a3,#5b4df5 50%,#7c6fff);background-clip:text;-webkit-background-clip:text;color:transparent}
+/* ══════════════════════════════════════════════════════════════
+   LIGHT MODE — VIBRANT PREMIUM THEME v3
+   Inspired by the screenshot: delivery page needs color contrast
+   Design tokens: indigo bg · white glass cards · vivid accents
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── CSS Variables ── */
+body.light-mode {
+  --bg: #f0f1fc;
+  --surface: #ffffff;
+  --surface2: #e8eaff;
+  --border: rgba(99,82,255,0.13);
+  --border2: rgba(99,82,255,0.22);
+  --text: #12143a;
+  --muted: #525878;
+  --dim: #9da3c8;
+  --epl-acc: #006633;
+  --ucl-acc: #0c3787;
+  --fifa-acc: #8b6000;
+  --live: #d0011b;
+  --upcoming: #006030;
+  --final: #3d4566;
+  --accent: #5445f5;
+  --delivery-acc: #6738e8;
+  --shadow: rgba(70,60,200,0.13);
+}
+
+/* ── Body & Aurora ── */
+body.light-mode { background: #f0f1fc !important; }
+body.light-mode::before {
+  background:
+    radial-gradient(ellipse 70% 50% at 15% 5%,  rgba(99,82,255,.09) 0%, transparent 60%),
+    radial-gradient(ellipse 55% 70% at 88% 92%, rgba(0,140,80,.06)  0%, transparent 55%),
+    radial-gradient(ellipse 45% 45% at 50% -5%, rgba(20,60,180,.06) 0%, transparent 50%) !important;
+  opacity: 1 !important;
+}
+
+/* ═══════════════════════════
+   HEADER
+   ═══════════════════════════ */
+body.light-mode .site-header {
+  background: linear-gradient(180deg, #fff 0%, rgba(240,241,252,.97) 100%) !important;
+  border-bottom: 1px solid rgba(99,82,255,.16) !important;
+  box-shadow: 0 2px 24px rgba(99,82,255,.08) !important;
+}
+body.light-mode .site-header::after {
+  background: linear-gradient(90deg,transparent,rgba(84,69,245,.5),rgba(0,180,90,.4),transparent) !important;
+}
+body.light-mode .logo {
+  background: linear-gradient(120deg,#3123b5,#5445f5 40%,#7c6fff 70%,#00a85a) !important;
+  background-clip: text !important; -webkit-background-clip: text !important;
+  color: transparent !important;
+  filter: drop-shadow(0 0 10px rgba(84,69,245,.2)) !important;
+  animation: none !important;
+}
+
+/* header buttons */
+body.light-mode .globe-btn,
+body.light-mode .theme-toggle,
+body.light-mode .notif-bell,
+body.light-mode .btn-add-header {
+  background: rgba(99,82,255,.08) !important;
+  border-color: rgba(99,82,255,.2) !important;
+  color: #5445f5 !important;
+}
+body.light-mode .btn-add-header { background:#5445f5!important; color:#fff!important; border-color:#5445f5!important; }
+body.light-mode .header-user-name { color: #12143a !important; }
+
+/* ═══════════════════════════
+   HERO / LEAGUE TABS
+   ═══════════════════════════ */
+body.light-mode .hero {
+  background: linear-gradient(180deg,#fff 0%,#f4f5ff 100%) !important;
+  border-bottom: 1px solid rgba(99,82,255,.1) !important;
+}
+body.light-mode .league-tab {
+  background: #fff !important;
+  border: 1px solid rgba(99,82,255,.15) !important;
+  box-shadow: 0 2px 10px rgba(99,82,255,.06) !important;
+}
+body.light-mode .tab-name  { color: #12143a !important; font-weight: 700 !important; }
+body.light-mode .tab-sub   { color: #525878 !important; }
+body.light-mode .tab-count {
+  background: rgba(99,82,255,.1) !important;
+  color: #5445f5 !important;
+  font-weight: 800 !important;
+}
+body.light-mode .league-tab:hover {
+  border-color: rgba(99,82,255,.3) !important;
+  box-shadow: 0 6px 20px rgba(99,82,255,.1) !important;
+}
+/* Active tabs — each league gets its own color */
+body.light-mode .league-tab.epl.active {
+  background: linear-gradient(135deg,#e8fff2,#fff) !important;
+  border-color: rgba(0,120,60,.35) !important;
+  box-shadow: 0 4px 20px rgba(0,120,60,.12) !important;
+}
+body.light-mode .league-tab.epl.active .tab-name  { color: #00622e !important; }
+body.light-mode .league-tab.epl.active .tab-count { background:rgba(0,120,60,.12)!important; color:#006633!important; }
+
+body.light-mode .league-tab.ucl.active {
+  background: linear-gradient(135deg,#e8f0ff,#fff) !important;
+  border-color: rgba(12,55,135,.3) !important;
+  box-shadow: 0 4px 20px rgba(12,55,135,.1) !important;
+}
+body.light-mode .league-tab.ucl.active .tab-name  { color: #0c3787 !important; }
+body.light-mode .league-tab.ucl.active .tab-count { background:rgba(12,55,135,.12)!important; color:#0c3787!important; }
+
+body.light-mode .league-tab.delivery.active {
+  background: linear-gradient(135deg,#ede8ff,#fff) !important;
+  border-color: rgba(103,56,232,.3) !important;
+  box-shadow: 0 4px 20px rgba(103,56,232,.12) !important;
+}
+body.light-mode .league-tab.delivery.active .tab-name  { color: #5030cc !important; }
+body.light-mode .league-tab.delivery.active .tab-count { background:rgba(103,56,232,.1)!important; color:#5030cc!important; }
+
+body.light-mode .league-tab.fifa.active {
+  background: linear-gradient(135deg,#fffbe8,#fff) !important;
+  border-color: rgba(180,130,0,.3) !important;
+}
+body.light-mode .league-tab.fifa.active .tab-name { color: #7a5a00 !important; }
+
+/* ═══════════════════════════
+   MATCH CARDS
+   ═══════════════════════════ */
+body.light-mode .match-card {
+  background: #fff !important;
+  border: 1px solid rgba(99,82,255,.12) !important;
+  box-shadow: 0 2px 14px rgba(70,60,200,.07) !important;
+}
+body.light-mode .match-card:hover {
+  border-color: rgba(99,82,255,.28) !important;
+  box-shadow: 0 8px 30px rgba(70,60,200,.13) !important;
+  transform: translateY(-2px) translateX(1px) !important;
+}
+body.light-mode .card-team-name,
+body.light-mode .home-name,
+body.light-mode .away-name { color: #12143a !important; font-weight: 700 !important; }
+body.light-mode .score-num  { color: #5445f5 !important; filter: none !important; font-weight: 900 !important; }
+body.light-mode .score-sep  { color: #c5c8e0 !important; }
+body.light-mode .card-stage, .stage-label { color: #525878 !important; }
+body.light-mode .league-pill { opacity: .9 !important; }
+
+/* Prob bars */
+body.light-mode .prob-home { background: linear-gradient(90deg,#5445f5,#7c6fff) !important; }
+body.light-mode .prob-draw { background: #9da3c8 !important; }
+body.light-mode .prob-away { background: linear-gradient(90deg,#d0011b,#ff6b81) !important; }
+
+/* Day headers */
+body.light-mode .day-header {
+  background: linear-gradient(90deg,rgba(99,82,255,.07),transparent) !important;
+  color: #3123b5 !important;
+  border-bottom: 1px solid rgba(99,82,255,.1) !important;
+  letter-spacing: 2px !important;
+}
+body.light-mode .day-header.is-today {
+  background: linear-gradient(90deg,rgba(0,140,80,.1),rgba(99,82,255,.05),transparent) !important;
+  color: #005c28 !important;
+}
+body.light-mode .match-count {
+  color: #525878 !important;
+  background: rgba(99,82,255,.09) !important;
+  border-radius: 20px !important;
+}
+
+/* Filter bar */
+body.light-mode .filter-btn {
+  background: #fff !important;
+  border: 1px solid rgba(99,82,255,.18) !important;
+  color: #3123b5 !important;
+  font-weight: 600 !important;
+  box-shadow: 0 1px 6px rgba(99,82,255,.06) !important;
+}
+body.light-mode .filter-btn.on {
+  background: linear-gradient(135deg,#5445f5,#7c6fff) !important;
+  border-color: #5445f5 !important;
+  color: #fff !important;
+  box-shadow: 0 3px 14px rgba(84,69,245,.3) !important;
+}
+body.light-mode .btn-add-inline {
+  background: #5445f5 !important;
+  color: #fff !important;
+  border-color: #5445f5 !important;
+}
+
+/* Live / upcoming badges */
+body.light-mode .badge-live,
+body.light-mode .status-badge.live {
+  background: rgba(208,1,27,.1) !important;
+  border-color: rgba(208,1,27,.3) !important;
+  color: #d0011b !important;
+}
+body.light-mode .badge-upcoming,
+body.light-mode .status-badge.upcoming {
+  background: rgba(0,96,48,.1) !important;
+  border-color: rgba(0,96,48,.25) !important;
+  color: #006030 !important;
+}
+body.light-mode .badge-final,
+body.light-mode .status-badge.final {
+  background: rgba(61,69,102,.08) !important;
+  border-color: rgba(61,69,102,.18) !important;
+  color: #3d4566 !important;
+}
+
+/* ═══════════════════════════
+   SIDEBAR
+   ═══════════════════════════ */
+body.light-mode .sidebar { background: transparent !important; }
+body.light-mode .widget {
+  background: #fff !important;
+  border: 1px solid rgba(99,82,255,.13) !important;
+  box-shadow: 0 2px 16px rgba(70,60,200,.07) !important;
+}
+body.light-mode .widget::before { background: linear-gradient(90deg,transparent,rgba(99,82,255,.08),transparent) !important; }
+body.light-mode .widget-title { color: #3123b5 !important; font-weight: 800 !important; }
+body.light-mode .stat-label { color: #525878 !important; }
+body.light-mode .stat-val   { color: #12143a !important; font-weight: 700 !important; }
+body.light-mode .stat-row   { border-color: rgba(99,82,255,.08) !important; }
+
+/* Next match cards */
+body.light-mode .next-match-card {
+  background: #f7f8ff !important;
+  border-color: rgba(99,82,255,.15) !important;
+}
+body.light-mode .next-match-card:hover {
+  background: #fff !important;
+  border-color: rgba(99,82,255,.3) !important;
+}
+
+/* ═══════════════════════════
+   TICKER
+   ═══════════════════════════ */
+body.light-mode .live-ticker {
+  background: rgba(255,255,255,.7) !important;
+  border: 1px solid rgba(99,82,255,.1) !important;
+}
+body.light-mode .ticker-item  { color: #525878 !important; }
+body.light-mode .ticker-live  { color: #12143a !important; font-weight: 700 !important; }
+
+/* ═══════════════════════════════════════
+   DELIVERY PAGE — THE KEY FIX
+   ═══════════════════════════════════════ */
+
+/* Header banner */
+body.light-mode .delivery-header-banner {
+  background: linear-gradient(135deg,#5445f5,#7347e8) !important;
+  border: none !important;
+  box-shadow: 0 6px 28px rgba(84,69,245,.25) !important;
+}
+body.light-mode .delivery-header-banner h2 { color: #fff !important; }
+body.light-mode .delivery-header-banner p  { color: rgba(255,255,255,.8) !important; }
+
+/* Stat cards — each one gets unique accent */
+body.light-mode .delivery-stats-grid { gap: 12px !important; }
+body.light-mode .delivery-stat-card {
+  background: #fff !important;
+  border: 1px solid rgba(99,82,255,.14) !important;
+  box-shadow: 0 2px 12px rgba(70,60,200,.07) !important;
+}
+body.light-mode .delivery-stat-card:hover {
+  border-color: rgba(99,82,255,.3) !important;
+  box-shadow: 0 6px 22px rgba(70,60,200,.13) !important;
+}
+/* Total Orders — purple */
+body.light-mode .delivery-stat-card:nth-child(1) { border-top: 3px solid #5445f5 !important; }
+body.light-mode .delivery-stat-card:nth-child(1) .delivery-stat-num { color: #5445f5 !important; }
+/* Total Tickets — blue */
+body.light-mode .delivery-stat-card:nth-child(2) { border-top: 3px solid #0c6fd4 !important; }
+body.light-mode .delivery-stat-card:nth-child(2) .delivery-stat-num { color: #0c6fd4 !important; }
+/* Completed — green */
+body.light-mode .delivery-stat-card:nth-child(3) { border-top: 3px solid #00863e !important; }
+body.light-mode .delivery-stat-card:nth-child(3) .delivery-stat-num { color: #00863e !important; }
+/* QC Pending — amber */
+body.light-mode .delivery-stat-card:nth-child(4) { border-top: 3px solid #c07800 !important; }
+body.light-mode .delivery-stat-card:nth-child(4) .delivery-stat-num { color: #c07800 !important; }
+/* Pending — red */
+body.light-mode .delivery-stat-card:nth-child(5) { border-top: 3px solid #d0011b !important; }
+body.light-mode .delivery-stat-card:nth-child(5) .delivery-stat-num { color: #d0011b !important; }
+body.light-mode .delivery-stat-label { color: #525878 !important; font-weight: 600 !important; }
+
+/* Club selector buttons */
+body.light-mode .club-selector { gap: 8px !important; }
+body.light-mode .club-btn {
+  background: #fff !important;
+  border: 1px solid rgba(99,82,255,.16) !important;
+  color: #3123b5 !important;
+  box-shadow: 0 1px 6px rgba(99,82,255,.06) !important;
+  font-weight: 600 !important;
+}
+body.light-mode .club-btn:hover {
+  border-color: rgba(99,82,255,.35) !important;
+  box-shadow: 0 3px 14px rgba(99,82,255,.1) !important;
+  transform: translateY(-2px) !important;
+}
+body.light-mode .club-btn.active {
+  background: linear-gradient(135deg,#5445f5,#7c6fff) !important;
+  border-color: #5445f5 !important;
+  color: #fff !important;
+  box-shadow: 0 4px 16px rgba(84,69,245,.28) !important;
+}
+body.light-mode .club-btn-abbr { color: #fff !important; }
+
+/* Match selector */
+body.light-mode .match-selector-bar { background: #f4f5ff !important; border-color: rgba(99,82,255,.12) !important; }
+body.light-mode .match-sel-btn      { color: #525878 !important; border-color: rgba(99,82,255,.14) !important; background: #fff !important; }
+body.light-mode .match-sel-btn.active { background: #5445f5 !important; color: #fff !important; border-color: #5445f5 !important; }
+
+/* Delivery controls */
+body.light-mode .delivery-search {
+  background: #fff !important;
+  border: 1px solid rgba(99,82,255,.2) !important;
+  color: #12143a !important;
+  box-shadow: 0 1px 8px rgba(99,82,255,.07) !important;
+}
+body.light-mode .delivery-search::placeholder { color: #9da3c8 !important; }
+body.light-mode .delivery-search:focus { border-color: #5445f5 !important; box-shadow: 0 0 0 3px rgba(84,69,245,.12) !important; }
+
+body.light-mode .btn-add-order {
+  background: linear-gradient(135deg,#5445f5,#7c6fff) !important;
+  color: #fff !important;
+  border-color: #5445f5 !important;
+  box-shadow: 0 3px 14px rgba(84,69,245,.28) !important;
+}
+
+/* Advanced filter panel */
+body.light-mode .adv-filter-panel {
+  background: #f7f8ff !important;
+  border: 1px solid rgba(99,82,255,.18) !important;
+}
+body.light-mode .adv-filter-input,
+body.light-mode .revenue-input {
+  background: #fff !important;
+  border: 1px solid rgba(99,82,255,.2) !important;
+  color: #12143a !important;
+}
+body.light-mode .adv-filter-input:focus,
+body.light-mode .revenue-input:focus { border-color: #5445f5 !important; }
+body.light-mode .adv-filter-label { color: #525878 !important; }
+body.light-mode .adv-filter-apply {
+  background: rgba(84,69,245,.1) !important;
+  border-color: rgba(84,69,245,.35) !important;
+  color: #5445f5 !important;
+}
+body.light-mode .adv-filter-apply:hover { background: rgba(84,69,245,.2) !important; }
+body.light-mode .adv-filter-clear { color: #525878 !important; border-color: rgba(99,82,255,.15) !important; }
+
+/* Adv filter / export buttons in controls row */
+body.light-mode .adv-filter-btn {
+  background: rgba(84,69,245,.07) !important;
+  border-color: rgba(84,69,245,.22) !important;
+  color: #5445f5 !important;
+}
+body.light-mode .adv-filter-btn.active {
+  background: rgba(84,69,245,.15) !important;
+  border-color: rgba(84,69,245,.45) !important;
+}
+body.light-mode .export-btn {
+  background: rgba(0,134,62,.08) !important;
+  border-color: rgba(0,134,62,.25) !important;
+  color: #00863e !important;
+}
+body.light-mode .export-btn:hover { background: rgba(0,134,62,.15) !important; }
+
+/* View tabs (Table / Timeline) */
+body.light-mode .delivery-view-tab {
+  background: #fff !important;
+  border: 1px solid rgba(99,82,255,.16) !important;
+  color: #525878 !important;
+  font-weight: 600 !important;
+}
+body.light-mode .delivery-view-tab.active {
+  background: linear-gradient(135deg,#5445f5,#7c6fff) !important;
+  color: #fff !important;
+  border-color: #5445f5 !important;
+  box-shadow: 0 3px 12px rgba(84,69,245,.25) !important;
+}
+
+/* Order table */
+body.light-mode .order-table-wrap {
+  background: #fff !important;
+  border: 1px solid rgba(99,82,255,.1) !important;
+  box-shadow: 0 4px 20px rgba(70,60,200,.07) !important;
+}
+body.light-mode .order-table th {
+  background: #f0f1fc !important;
+  color: #3123b5 !important;
+  font-weight: 800 !important;
+  border-bottom: 2px solid rgba(99,82,255,.15) !important;
+  letter-spacing: .5px !important;
+}
+body.light-mode .order-table td { color: #12143a !important; border-color: rgba(99,82,255,.07) !important; }
+body.light-mode .order-table tr:hover td { background: rgba(84,69,245,.04) !important; }
+
+/* QC pills */
+body.light-mode .qc-pill.qc-ok   { background: rgba(0,134,62,.1)!important; border-color:rgba(0,134,62,.3)!important; color:#00863e!important; }
+body.light-mode .qc-pill.qc-fail { background: rgba(208,1,27,.08)!important; border-color:rgba(208,1,27,.25)!important; color:#d0011b!important; }
+body.light-mode .qc-pill.qc-pending { background: rgba(61,69,102,.07)!important; border-color:rgba(61,69,102,.2)!important; color:#3d4566!important; }
+
+/* Row status colors */
+body.light-mode .row-green,
+body.light-mode tr.row-green td { background: rgba(0,134,62,.05) !important; }
+body.light-mode .row-red,
+body.light-mode tr.row-red td   { background: rgba(208,1,27,.04) !important; }
+
+/* col-ordnum */
+body.light-mode .col-ordnum {
+  background: rgba(84,69,245,.07) !important;
+  border-color: rgba(84,69,245,.18) !important;
+  color: #3123b5 !important;
+  font-weight: 700 !important;
+}
+
+/* Analytics panel */
+body.light-mode .analytics-panel {
+  background: #f7f8ff !important;
+  border: 1px solid rgba(99,82,255,.12) !important;
+}
+body.light-mode .analytics-title { color: #3123b5 !important; font-weight: 800 !important; }
+body.light-mode .chart-box {
+  background: #fff !important;
+  border: 1px solid rgba(99,82,255,.1) !important;
+  box-shadow: 0 2px 10px rgba(70,60,200,.06) !important;
+}
+body.light-mode .chart-box-title { color: #3123b5 !important; font-weight: 700 !important; }
+body.light-mode .bar-label { color: #525878 !important; }
+body.light-mode .bar-track { background: rgba(99,82,255,.08) !important; }
+body.light-mode .bar-val   { color: #12143a !important; font-weight: 700 !important; }
+body.light-mode .donut-leg-label { color: #525878 !important; }
+body.light-mode .donut-leg-val   { color: #12143a !important; font-weight: 700 !important; }
+
+/* Revenue panel */
+body.light-mode .revenue-panel {
+  background: #f4fff9 !important;
+  border: 1px solid rgba(0,134,62,.2) !important;
+}
+body.light-mode .revenue-title { color: #005c28 !important; }
+body.light-mode .revenue-card  {
+  background: #fff !important;
+  border: 1px solid rgba(0,134,62,.12) !important;
+}
+body.light-mode .revenue-card:hover { border-color: rgba(0,134,62,.28) !important; }
+body.light-mode .revenue-lbl   { color: #525878 !important; }
+
+/* Timeline */
+body.light-mode .timeline-dot        { background: #fff !important; border-width: 2px !important; }
+body.light-mode .timeline-dot.completed { border-color: #00863e !important; }
+body.light-mode .timeline-dot.pending   { border-color: #d0011b !important; }
+body.light-mode .timeline-header { color: #12143a !important; font-weight: 700 !important; }
+body.light-mode .timeline-meta   { color: #525878 !important; }
+body.light-mode .timeline-item::before { background: linear-gradient(180deg,rgba(99,82,255,.25),transparent) !important; }
+
+/* Empty state */
+body.light-mode .empty-delivery p   { color: #525878 !important; }
+
+/* ═══════════════════════════
+   FORMS & MODALS
+   ═══════════════════════════ */
+body.light-mode .modal {
+  background: #fff !important;
+  border: 1px solid rgba(99,82,255,.18) !important;
+  box-shadow: 0 32px 80px rgba(70,60,200,.18), 0 0 0 1px rgba(99,82,255,.08) !important;
+}
+body.light-mode .modal-title    { color: #12143a !important; }
+body.light-mode .modal-subtitle { color: #525878 !important; }
+body.light-mode .form-label     { color: #3123b5 !important; font-weight: 600 !important; }
+body.light-mode .form-input,
+body.light-mode .form-select {
+  background: #f7f8ff !important;
+  color: #12143a !important;
+  border: 1px solid rgba(99,82,255,.2) !important;
+}
+body.light-mode .form-input:focus,
+body.light-mode .form-select:focus {
+  border-color: #5445f5 !important;
+  box-shadow: 0 0 0 3px rgba(84,69,245,.1) !important;
+}
+body.light-mode .btn-save {
+  background: linear-gradient(135deg,#5445f5,#7c6fff) !important;
+  color: #fff !important;
+  box-shadow: 0 4px 16px rgba(84,69,245,.3) !important;
+}
+
+/* ═══════════════════════════
+   NOTIF PANEL
+   ═══════════════════════════ */
+body.light-mode .notif-panel {
+  background: #fff !important;
+  border: 1px solid rgba(99,82,255,.16) !important;
+  box-shadow: 0 20px 60px rgba(70,60,200,.14) !important;
+}
+body.light-mode .notif-title  { color: #12143a !important; }
+body.light-mode .notif-item   { border-color: rgba(99,82,255,.08) !important; }
+body.light-mode .notif-item:hover { background: rgba(84,69,245,.04) !important; }
+body.light-mode .notif-msg    { color: #12143a !important; }
+body.light-mode .notif-time   { color: #9da3c8 !important; }
+
+/* ═══════════════════════════
+   GLOBE INSIGHTS IN LIGHT
+   ═══════════════════════════ */
+body.light-mode #globeInsightsOverlay { background: rgba(240,241,252,.85) !important; backdrop-filter: blur(16px) !important; }
+body.light-mode #globeInsightsPanel {
+  background: #fff !important;
+  border: 1px solid rgba(99,82,255,.18) !important;
+  box-shadow: 0 32px 96px rgba(70,60,200,.18), 0 0 0 1px rgba(99,82,255,.06) !important;
+}
+body.light-mode .gi-header {
+  background: linear-gradient(180deg,rgba(255,255,255,.99),rgba(247,248,255,.97)) !important;
+  border-color: rgba(99,82,255,.1) !important;
+}
+body.light-mode .gi-title {
+  background: linear-gradient(120deg,#3123b5,#5445f5,#0c3787) !important;
+  background-clip: text !important; -webkit-background-clip: text !important; color: transparent !important;
+}
+body.light-mode .gi-subtitle   { color: rgba(84,69,245,.6) !important; }
+body.light-mode .gi-close-btn  { background: rgba(99,82,255,.07) !important; border-color: rgba(99,82,255,.18) !important; color: #525878 !important; }
+body.light-mode .gi-close-btn:hover { background: rgba(208,1,27,.08) !important; color: #d0011b !important; }
+body.light-mode .gi-nav-btn    {
+  background: #f4f5ff !important;
+  border-color: rgba(99,82,255,.16) !important;
+  color: #525878 !important;
+}
+body.light-mode .gi-nav-btn.active {
+  background: linear-gradient(135deg,#5445f5,#7c6fff) !important;
+  border-color: #5445f5 !important;
+  color: #fff !important;
+  box-shadow: 0 2px 12px rgba(84,69,245,.28) !important;
+}
+body.light-mode .gi-card {
+  background: #f7f8ff !important;
+  border: 1px solid rgba(99,82,255,.1) !important;
+}
+body.light-mode .gi-card:hover {
+  background: #fff !important;
+  border-color: rgba(99,82,255,.25) !important;
+  box-shadow: 0 8px 28px rgba(70,60,200,.1) !important;
+}
+body.light-mode .gi-card-title { color: #12143a !important; font-weight: 700 !important; }
+body.light-mode .gi-card-sub   { color: #525878 !important; }
+body.light-mode .gi-section-title { color: rgba(84,69,245,.65) !important; }
+body.light-mode .gi-section-title::after { background: linear-gradient(90deg,rgba(84,69,245,.2),transparent) !important; }
+body.light-mode .gi-stat-chip  {
+  background: rgba(84,69,245,.06) !important;
+  border-color: rgba(84,69,245,.12) !important;
+  color: #525878 !important;
+}
+body.light-mode .gi-stat-chip strong  { color: #12143a !important; }
+body.light-mode .gi-stat-chip.up strong   { color: #00863e !important; }
+body.light-mode .gi-stat-chip.down strong { color: #d0011b !important; }
+body.light-mode .gi-demand-bar-track { background: rgba(84,69,245,.08) !important; }
+body.light-mode .gi-timer-bar { opacity: .7 !important; }
+body.light-mode .gi-skel {
+  background: linear-gradient(90deg,rgba(84,69,245,.04),rgba(84,69,245,.09),rgba(84,69,245,.04)) !important;
+  background-size: 400px 100% !important;
+}
+
+/* ── Refresh bar ── */
+body.light-mode .refresh-bar {
+  background: rgba(0,134,62,.05) !important;
+  border-color: rgba(0,134,62,.2) !important;
+  color: #005c28 !important;
+}
+body.light-mode .refresh-countdown strong { color: #12143a !important; }
+body.light-mode .refresh-toggle {
+  border-color: rgba(0,134,62,.3) !important;
+  background: rgba(0,134,62,.08) !important;
+  color: #00863e !important;
+}
+
+/* ── Scrollbar ── */
+body.light-mode ::-webkit-scrollbar-track { background: #f0f1fc !important; }
+body.light-mode ::-webkit-scrollbar-thumb { background: linear-gradient(180deg,#5445f5,#a78bfa) !important; }
+
+/* ── Confirm box ── */
+body.light-mode .confirm-box { background: #fff !important; border-color: rgba(99,82,255,.18) !important; }
+body.light-mode .confirm-msg { color: #12143a !important; }
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,-apple-system,sans-serif;min-height:100vh;overflow-x:hidden}
 .site-header{background:linear-gradient(180deg,rgba(6,7,16,.98),rgba(14,16,32,.95));border-bottom:1px solid rgba(124,111,255,.2);padding:0 24px;position:sticky;top:0;z-index:100;backdrop-filter:blur(24px)}
@@ -3562,6 +4128,46 @@ let giTimerRaf = null;
 let giLastData = null;
 let giIsLoading = false;
 
+// 🌍 INSTANT CACHED DATA — shows immediately on first open
+const GI_INSTANT_CACHE = {
+  summary: "Global ticket demand is surging in May 2026, led by Champions League Final fever and a packed summer stadium concert season. Secondary market prices are 18% above face value across top-tier events.",
+  lastUpdated: "10 May 2026",
+  topEvents: [
+    {icon:"⚽",title:"UEFA Champions League Final — PSG vs Arsenal",venue:"Allianz Arena, Munich",date:"30 May 2026",category:"Football",badge:"MEGA",demandScore:98,demandLabel:"Extreme",stats:[{label:"Avg Price",value:"£1,840",trend:"up"},{label:"Sales +7d",value:"+61%",trend:"up"},{label:"Days Left",value:"20",trend:"neutral"}],insight:"Highest demand event of 2026 — prices rising daily as Final approaches."},
+    {icon:"🎵",title:"Coldplay — Music of the Spheres World Tour",venue:"Wembley Stadium, London",date:"Jun 12–13 2026",category:"Music",badge:"SOLD OUT",demandScore:94,demandLabel:"Extreme",stats:[{label:"Avg Price",value:"£320",trend:"up"},{label:"Sales +7d",value:"+34%",trend:"up"},{label:"Days Left",value:"33",trend:"neutral"}],insight:"Both nights sold out at face value — resale market surging."},
+    {icon:"🎾",title:"Roland Garros — French Open Finals",venue:"Stade Roland Garros, Paris",date:"8 Jun 2026",category:"Tennis",badge:"HOT",demandScore:87,demandLabel:"Very High",stats:[{label:"Avg Price",value:"€580",trend:"up"},{label:"Sales +7d",value:"+22%",trend:"up"},{label:"Days Left",value:"29",trend:"neutral"}],insight:"Men's final tickets at 3x face value — Djokovic & Sinner interest driving prices."},
+    {icon:"🏏",title:"England vs India — Test Series Decider",venue:"The Oval, London",date:"14 Jun 2026",category:"Cricket",badge:"RISING",demandScore:82,demandLabel:"High",stats:[{label:"Avg Price",value:"£210",trend:"up"},{label:"Sales +7d",value:"+19%",trend:"up"},{label:"Days Left",value:"35",trend:"neutral"}],insight:"Series decider generating massive interest from diaspora buyers."},
+    {icon:"🏎️",title:"Formula 1 — British Grand Prix",venue:"Silverstone Circuit",date:"5–7 Jul 2026",category:"Motorsport",badge:"HOT",demandScore:89,demandLabel:"Very High",stats:[{label:"Avg Price",value:"£445",trend:"up"},{label:"Sales +7d",value:"+27%",trend:"up"},{label:"Days Left",value:"56",trend:"neutral"}],insight:"Hamilton's Ferrari debut at Silverstone creating unprecedented hospitality demand."},
+    {icon:"🎭",title:"Hamilton — The Musical (10th Anniversary)",venue:"Victoria Palace Theatre, London",date:"Ongoing",category:"Theatre & Arts",badge:"SELLING FAST",demandScore:78,demandLabel:"High",stats:[{label:"Avg Price",value:"£185",trend:"up"},{label:"Sales +7d",value:"+12%",trend:"up"},{label:"Days Left",value:"—",trend:"neutral"}],insight:"Anniversary run with original cast generating 3-month forward demand."},
+    {icon:"⚽",title:"Premier League Final Day — Arsenal Title Parade",venue:"Emirates Stadium, London",date:"17 May 2026",category:"Football",badge:"MEGA",demandScore:91,demandLabel:"Extreme",stats:[{label:"Avg Price",value:"£380",trend:"up"},{label:"Sales +7d",value:"+48%",trend:"up"},{label:"Days Left",value:"7",trend:"neutral"}],insight:"Arsenal on verge of title — parade route hospitality fully sold out."},
+    {icon:"🎵",title:"Taylor Swift — The Eras Tour (UK Extension)",venue:"Murrayfield Stadium, Edinburgh",date:"7–9 Jun 2026",category:"Music",badge:"HOT",demandScore:96,demandLabel:"Extreme",stats:[{label:"Avg Price",value:"£480",trend:"up"},{label:"Sales +7d",value:"+55%",trend:"up"},{label:"Days Left",value:"28",trend:"neutral"}],insight:"Additional UK dates announced — floor tickets hitting £600+ within hours."}
+  ],
+  marketTrends: [
+    {label:"Football demand vs last year",value:"+34%",icon:"⚽"},
+    {label:"Music concert resale markup",value:"+28%",icon:"🎵"},
+    {label:"UCL Final avg ticket price",value:"£1,840",icon:"🏆"},
+    {label:"Summer events sellout rate",value:"91%",icon:"📈"}
+  ],
+  hotCategories: [
+    {name:"Football",demand:98,events:42},
+    {name:"Music / Concerts",demand:94,events:67},
+    {name:"Tennis",demand:85,events:18},
+    {name:"Motorsport",demand:82,events:14},
+    {name:"Cricket",demand:78,events:22},
+    {name:"Theatre & Arts",demand:71,events:38}
+  ]
+};
+
+// Tab-specific instant caches
+const GI_TAB_CACHE = {
+  football: {...GI_INSTANT_CACHE, summary:"Football secondary market is at peak demand — UCL Final and Premier League title race driving record prices in May 2026. Expect prices to spike further as Champions League Final approaches.",topEvents:GI_INSTANT_CACHE.topEvents.filter(e=>e.category==='Football')},
+  music: {...GI_INSTANT_CACHE, summary:"Summer 2026 concert season is the hottest in a decade — Taylor Swift Eras Tour UK extension and Coldplay Wembley both showing extreme demand with resale prices 3x face value."},
+  cricket: {...GI_INSTANT_CACHE, summary:"England vs India series decider is the standout cricket event — IPL fever has also elevated secondary market appetite for international cricket tickets globally."},
+  theatre: {...GI_INSTANT_CACHE, summary:"West End and Broadway are experiencing a post-pandemic boom — Hamilton anniversary run and new blockbuster shows driving strong forward demand throughout summer 2026."},
+  motorsport: {...GI_INSTANT_CACHE, summary:"Formula 1 hospitality at Silverstone is fully committed — Hamilton's Ferrari debut is generating the highest British GP ticket demand in 15 years."},
+  tennis: {...GI_INSTANT_CACHE, summary:"Wimbledon and Roland Garros driving tennis demand peaks — Djokovic vs Sinner rivalry generating unprecedented interest in premium court-side packages."}
+};
+
 // Tab config: label, emoji, search query
 const GI_TABS = {
   all:       { label:'All Events',       q:'biggest global events demand tickets selling fast world 2026' },
@@ -3577,10 +4183,24 @@ function openGlobeInsights(){
   document.getElementById('globeInsightsOverlay').classList.add('open');
   giOpen = true;
   giCurrentTab = 'all';
-  // Reset nav
   document.querySelectorAll('.gi-nav-btn').forEach((b,i)=>b.classList.toggle('active',i===0));
+  // ── Show instant cached data immediately — no loading spinner ──
+  const body = document.getElementById('giBody');
+  if(body){
+    const cached = giLastData || GI_INSTANT_CACHE;
+    renderGiInsights(body, cached, 'All Events');
+    giLastData = cached;
+    // Show subtle "refreshing" badge
+    body.insertAdjacentHTML('afterbegin', `
+      <div id="giRefreshBadge" style="display:flex;align-items:center;gap:7px;padding:8px 14px;background:rgba(0,255,135,.05);border:1px solid rgba(0,255,135,.15);border-radius:10px;margin-bottom:14px;font-size:11px;color:rgba(0,255,135,.7);font-family:'JetBrains Mono',monospace;">
+        <div style="width:6px;height:6px;border-radius:50%;background:#00ff87;animation:syncPulse 1.5s infinite;"></div>
+        Showing cached data • Fetching live insights...
+        <span id="giLiveTag" style="margin-left:auto;font-size:9px;color:rgba(0,255,135,.5)">AUTO-REFRESH 30s</span>
+      </div>`);
+  }
   startGiRefreshCycle();
-  loadGiInsights();
+  // Load live data in background after 400ms (non-blocking)
+  setTimeout(()=>loadGiInsights(), 400);
 }
 
 function closeGlobeInsights(){
@@ -3599,7 +4219,20 @@ function setGiTab(tab, btn){
   giCurrentTab = tab;
   document.querySelectorAll('.gi-nav-btn').forEach(b=>b.classList.remove('active'));
   if(btn) btn.classList.add('active');
-  loadGiInsights();
+  // Show tab-specific cached data instantly
+  const body = document.getElementById('giBody');
+  const tabCache = GI_TAB_CACHE[tab] || GI_INSTANT_CACHE;
+  const tabCfg = GI_TABS[tab] || GI_TABS['all'];
+  if(body && tabCache) {
+    renderGiInsights(body, tabCache, tabCfg.label);
+    body.insertAdjacentHTML('afterbegin', `
+      <div style="display:flex;align-items:center;gap:7px;padding:7px 12px;background:rgba(0,255,135,.04);border:1px solid rgba(0,255,135,.12);border-radius:8px;margin-bottom:12px;font-size:10px;color:rgba(0,255,135,.6);font-family:'JetBrains Mono',monospace;">
+        <div style="width:5px;height:5px;border-radius:50%;background:#00ff87;animation:syncPulse 1.5s infinite;flex-shrink:0;"></div>
+        Fetching live ${tabCfg.label} insights...
+      </div>`);
+  }
+  // Fetch live in background
+  setTimeout(()=>loadGiInsights(), 300);
 }
 
 function startGiRefreshCycle(){
@@ -3736,6 +4369,15 @@ Return 6-8 topEvents. Make sure data is realistic and current.`;
 
     giLastData = parsed;
     renderGiInsights(body, parsed, tabCfg.label);
+    // Remove "refreshing" badge if present
+    const badge = body.querySelector('#giRefreshBadge');
+    if(badge) badge.remove();
+    // Add subtle "live" indicator
+    body.insertAdjacentHTML('afterbegin', `
+      <div style="display:flex;align-items:center;gap:7px;padding:7px 12px;background:rgba(0,230,118,.04);border:1px solid rgba(0,230,118,.15);border-radius:8px;margin-bottom:12px;font-size:10px;color:rgba(0,230,118,.8);font-family:'JetBrains Mono',monospace;animation:fadeInOverlay .3s ease;">
+        <div style="width:5px;height:5px;border-radius:50%;background:#00e676;box-shadow:0 0 6px #00e676;flex-shrink:0;"></div>
+        Live data loaded • Auto-refresh in <span id="giCountdown" style="font-weight:700;color:#00e676;margin:0 2px">30</span>s
+      </div>`);
 
     // Reset countdown
     giCountdownSec = 30;
