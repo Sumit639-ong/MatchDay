@@ -456,16 +456,9 @@ body.light-mode .score-num { filter: none !important; }
 /* ══════════════════════════════════════
    NEW FEATURES CSS v3
    ══════════════════════════════════════ */
-/* AUTO-REFRESH BAR */
-.refresh-bar{display:flex;align-items:center;gap:10px;padding:7px 14px;background:rgba(0,255,135,.04);border:1px solid rgba(0,255,135,.15);border-radius:10px;margin-bottom:12px;font-size:11px;font-family:'JetBrains Mono',monospace;position:relative;overflow:hidden}
-.refresh-bar-progress{position:absolute;bottom:0;left:0;height:2px;background:linear-gradient(90deg,#00ff87,#60b3ff);border-radius:2px;transition:width 1s linear}
-.refresh-dot{width:7px;height:7px;border-radius:50%;background:#00e676;flex-shrink:0;animation:syncPulse 2s ease-in-out infinite}
-.refresh-dot.paused{background:#747d8c;animation:none}
-.refresh-countdown{color:var(--muted);flex:1}
-.refresh-countdown strong{color:var(--text)}
-.refresh-toggle{padding:3px 10px;border-radius:6px;border:1px solid rgba(0,255,135,.3);background:rgba(0,255,135,.07);color:#00e676;font-size:10px;font-weight:700;cursor:pointer;font-family:'JetBrains Mono',monospace;transition:all .15s}
-.refresh-toggle:hover{background:rgba(0,255,135,.15)}
-.refresh-toggle.paused{border-color:rgba(116,125,140,.3);background:rgba(116,125,140,.07);color:var(--final)}
+/* AUTO-REFRESH BAR — hidden from UI, logic runs in background */
+.refresh-bar{display:none !important;}
+.refresh-bar-progress,.refresh-dot,.refresh-countdown,.refresh-toggle{display:none !important;}
 /* WEATHER WIDGET */
 .weather-widget{display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:14px;background:linear-gradient(135deg,rgba(96,179,255,.08),rgba(124,111,255,.05));border:1px solid rgba(96,179,255,.2);margin-bottom:14px;font-size:12px;position:relative;overflow:hidden;transition:all .2s}
 .weather-widget:hover{border-color:rgba(96,179,255,.35)}
@@ -520,7 +513,177 @@ body.light-mode .score-num { filter: none !important; }
 .delivery-view-tabs{display:flex;gap:6px;margin-bottom:12px}
 .delivery-view-tab{padding:6px 14px;border-radius:8px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all .18s}
 .delivery-view-tab.active{border-color:rgba(167,139,250,.5);background:rgba(167,139,250,.12);color:var(--delivery-acc)}
+
+/* ══════════════════════════════════════════
+   🌍 GLOBE INSIGHTS BUTTON
+   ══════════════════════════════════════════ */
+.globe-btn{
+  position:relative;
+  display:flex;align-items:center;gap:7px;
+  padding:8px 15px;
+  border-radius:10px;
+  border:1px solid rgba(96,179,255,.4);
+  background:linear-gradient(135deg,rgba(96,179,255,.12),rgba(124,111,255,.08));
+  color:#60b3ff;
+  font-size:12px;font-weight:700;
+  cursor:pointer;
+  font-family:'Inter',sans-serif;
+  transition:all .25s cubic-bezier(.34,1.56,.64,1);
+  overflow:hidden;
+  white-space:nowrap;
+}
+.globe-btn::before{
+  content:'';
+  position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(96,179,255,.0),rgba(96,179,255,.18));
+  opacity:0;transition:opacity .2s;
+}
+.globe-btn:hover{transform:translateY(-2px) scale(1.04);box-shadow:0 0 24px rgba(96,179,255,.35),0 4px 16px rgba(0,0,0,.4);border-color:rgba(96,179,255,.7);}
+.globe-btn:hover::before{opacity:1;}
+.globe-btn .globe-icon{
+  font-size:18px;
+  animation:globeSpin 8s linear infinite;
+  display:inline-block;
+}
+@keyframes globeSpin{
+  0%{filter:hue-rotate(0deg);}
+  50%{filter:hue-rotate(40deg);}
+  100%{filter:hue-rotate(0deg);}
+}
+.globe-btn .globe-pulse{
+  width:7px;height:7px;border-radius:50%;
+  background:#00ff87;
+  box-shadow:0 0 8px #00ff87;
+  animation:syncPulse 2s ease-in-out infinite;
+  flex-shrink:0;
+}
+@keyframes syncPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+
+/* ══════════════════════════════════════════
+   🌍 GLOBAL INSIGHTS OVERLAY PANEL
+   ══════════════════════════════════════════ */
+#globeInsightsOverlay{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,.75);
+  backdrop-filter:blur(8px);
+  z-index:9000;
+  display:none;
+  align-items:flex-start;justify-content:center;
+  padding-top:72px;
+  animation:fadeInOverlay .25s ease;
+}
+@keyframes fadeInOverlay{from{opacity:0}to{opacity:1}}
+#globeInsightsOverlay.open{display:flex;}
+#globeInsightsPanel{
+  width:min(1100px,96vw);
+  max-height:82vh;
+  overflow-y:auto;
+  background:linear-gradient(160deg,rgba(8,10,26,.98),rgba(14,18,40,.97));
+  border:1px solid rgba(96,179,255,.3);
+  border-radius:22px;
+  box-shadow:0 32px 96px rgba(0,0,0,.9),0 0 0 1px rgba(96,179,255,.1),0 0 80px rgba(96,179,255,.08);
+  position:relative;
+  animation:panelSlideUp .35s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes panelSlideUp{from{opacity:0;transform:translateY(30px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+/* Scrollbar inside panel */
+#globeInsightsPanel::-webkit-scrollbar{width:4px;}
+#globeInsightsPanel::-webkit-scrollbar-track{background:transparent;}
+#globeInsightsPanel::-webkit-scrollbar-thumb{background:rgba(96,179,255,.3);border-radius:2px;}
+
+.gi-header{
+  display:flex;align-items:center;gap:14px;
+  padding:22px 26px 18px;
+  border-bottom:1px solid rgba(96,179,255,.15);
+  position:sticky;top:0;
+  background:linear-gradient(180deg,rgba(8,10,26,.99),rgba(8,10,26,.95));
+  backdrop-filter:blur(12px);
+  z-index:10;
+  border-radius:22px 22px 0 0;
+}
+.gi-globe-big{font-size:32px;animation:globeSpin 8s linear infinite;filter:drop-shadow(0 0 16px rgba(96,179,255,.6));}
+.gi-title-block{flex:1;}
+.gi-title{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:4px;background:linear-gradient(120deg,#fff,#60b3ff 50%,#00ff87);background-clip:text;-webkit-background-clip:text;color:transparent;}
+.gi-subtitle{font-size:11px;color:rgba(96,179,255,.7);margin-top:2px;font-family:'JetBrains Mono',monospace;letter-spacing:.5px;}
+.gi-refresh-info{display:flex;align-items:center;gap:8px;font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--muted);}
+.gi-refresh-dot{width:6px;height:6px;border-radius:50%;background:#00ff87;box-shadow:0 0 6px #00ff87;animation:syncPulse 1.5s ease-in-out infinite;}
+.gi-close-btn{width:34px;height:34px;border-radius:8px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:rgba(255,255,255,.6);font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .18s;flex-shrink:0;}
+.gi-close-btn:hover{background:rgba(255,61,90,.15);border-color:rgba(255,61,90,.4);color:#ff6b81;}
+
+/* Nav tabs inside panel */
+.gi-nav{display:flex;gap:6px;padding:14px 26px 0;overflow-x:auto;scrollbar-width:none;}
+.gi-nav::-webkit-scrollbar{display:none;}
+.gi-nav-btn{padding:7px 16px;border-radius:8px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;white-space:nowrap;flex-shrink:0;}
+.gi-nav-btn.active{border-color:rgba(96,179,255,.5);background:rgba(96,179,255,.12);color:#60b3ff;box-shadow:0 0 12px rgba(96,179,255,.15);}
+
+/* Content body */
+.gi-body{padding:20px 26px 26px;}
+
+/* Loading skeleton */
+.gi-loading{display:flex;flex-direction:column;gap:12px;padding:20px 0;}
+.gi-skel{height:16px;border-radius:8px;background:linear-gradient(90deg,rgba(255,255,255,.04) 0%,rgba(255,255,255,.09) 50%,rgba(255,255,255,.04) 100%);background-size:400px 100%;animation:skelShimmer 1.4s ease-in-out infinite;}
+@keyframes skelShimmer{0%{background-position:-400px 0}100%{background-position:400px 0}}
+.gi-skel.w60{width:60%;}
+.gi-skel.w80{width:80%;}
+.gi-skel.w40{width:40%;}
+.gi-skel.h100{height:100px;}
+
+/* Results grid */
+.gi-results-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-top:16px;}
+.gi-card{
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:14px;
+  padding:16px;
+  transition:all .22s;
+  position:relative;overflow:hidden;
+}
+.gi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gi-accent,linear-gradient(90deg,#60b3ff,#00ff87));opacity:.6;}
+.gi-card:hover{border-color:rgba(96,179,255,.25);transform:translateY(-3px);box-shadow:0 12px 36px rgba(0,0,0,.4);}
+
+.gi-card-header{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;}
+.gi-card-icon{font-size:24px;flex-shrink:0;line-height:1;}
+.gi-card-meta{flex:1;}
+.gi-card-title{font-size:13px;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:3px;}
+.gi-card-sub{font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace;}
+.gi-card-badge{padding:3px 9px;border-radius:20px;font-size:9px;font-weight:800;letter-spacing:.8px;background:rgba(255,165,0,.12);border:1px solid rgba(255,165,0,.3);color:#ffa500;white-space:nowrap;flex-shrink:0;}
+.gi-card-badge.hot{background:rgba(255,61,90,.12);border-color:rgba(255,61,90,.3);color:#ff6b81;}
+.gi-card-badge.rising{background:rgba(0,255,135,.1);border-color:rgba(0,255,135,.3);color:#00ff87;}
+.gi-card-badge.mega{background:rgba(255,215,0,.1);border-color:rgba(255,215,0,.3);color:#ffd700;}
+
+.gi-card-demand{margin:10px 0 6px;}
+.gi-demand-label{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:5px;display:flex;justify-content:space-between;}
+.gi-demand-bar-track{height:6px;border-radius:3px;background:rgba(255,255,255,.06);overflow:hidden;}
+.gi-demand-bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#60b3ff,#00ff87);transition:width 1s cubic-bezier(.22,1,.36,1);}
+
+.gi-card-stats{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+.gi-stat-chip{display:flex;align-items:center;gap:4px;padding:4px 9px;border-radius:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace;}
+.gi-stat-chip strong{color:var(--text);}
+.gi-stat-chip.up strong{color:#00ff87;}
+.gi-stat-chip.down strong{color:#ff6b81;}
+
+/* Sections */
+.gi-section{margin-bottom:24px;}
+.gi-section-title{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(96,179,255,.7);margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+.gi-section-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(96,179,255,.2),transparent);}
+
+/* Timer bar at bottom of panel */
+.gi-timer-bar{
+  position:sticky;bottom:0;
+  height:3px;
+  background:linear-gradient(90deg,#60b3ff,#00ff87,#7c6fff);
+  border-radius:0 0 22px 22px;
+  transform-origin:left;
+  transition:transform 1s linear;
+}
+
+/* Error state */
+.gi-error{text-align:center;padding:32px;color:var(--muted);}
+.gi-error .gi-err-icon{font-size:40px;margin-bottom:12px;}
+.gi-error p{font-size:13px;line-height:1.5;}
 </style>
+
 <style>
 /* ===== PROFESSIONAL UPGRADE — GLOBAL FONT & BASE ===== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -1380,6 +1543,12 @@ body.mobile-view .match-sel-btn{font-size:10px;padding:4px 10px}
       <div id="userWelcome" style="display:none;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.25);font-size:11px;font-weight:600;color:var(--delivery-acc)">
         <span>👤</span><span id="userWelcomeName">User</span>
       </div>
+      <!-- 🌍 GLOBE INSIGHTS BUTTON -->
+      <button class="globe-btn" onclick="openGlobeInsights()" title="Global Events Intelligence — Live Demand Analysis">
+        <span class="globe-icon">🌍</span>
+        <span>Insights</span>
+        <span class="globe-pulse"></span>
+      </button>
       <!-- Theme Toggle -->
       <div class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark/Light">
         <span class="t-icon">🌙</span>
@@ -1418,6 +1587,48 @@ body.mobile-view .match-sel-btn{font-size:10px;padding:4px 10px}
     </div>
   </div>
 </header>
+
+<!-- ══════════════════════════════════════════════
+     🌍 GLOBAL EVENTS INSIGHTS OVERLAY
+     ══════════════════════════════════════════════ -->
+<div id="globeInsightsOverlay" onclick="handleGlobeOverlayClick(event)">
+  <div id="globeInsightsPanel">
+    <!-- Header -->
+    <div class="gi-header">
+      <div class="gi-globe-big">🌍</div>
+      <div class="gi-title-block">
+        <div class="gi-title">GLOBAL EVENTS INTELLIGENCE</div>
+      </div>
+      <span id="giCountdown" style="display:none">30</span>
+      <div class="gi-close-btn" onclick="closeGlobeInsights()">✕</div>
+    </div>
+
+    <!-- Nav Tabs -->
+    <div class="gi-nav" id="giNav">
+      <button class="gi-nav-btn active" onclick="setGiTab('all',this)">🌐 All Events</button>
+      <button class="gi-nav-btn" onclick="setGiTab('football',this)">⚽ Football</button>
+      <button class="gi-nav-btn" onclick="setGiTab('music',this)">🎵 Music</button>
+      <button class="gi-nav-btn" onclick="setGiTab('cricket',this)">🏏 Cricket</button>
+      <button class="gi-nav-btn" onclick="setGiTab('theatre',this)">🎭 Theatre & Arts</button>
+      <button class="gi-nav-btn" onclick="setGiTab('motorsport',this)">🏎️ Motorsport</button>
+      <button class="gi-nav-btn" onclick="setGiTab('tennis',this)">🎾 Tennis</button>
+    </div>
+
+    <!-- Body -->
+    <div class="gi-body" id="giBody">
+      <div class="gi-loading" id="giLoadingState">
+        <div class="gi-skel w80"></div>
+        <div class="gi-skel w60"></div>
+        <div class="gi-skel h100"></div>
+        <div class="gi-skel w80"></div>
+        <div class="gi-skel w40"></div>
+        <div class="gi-skel h100"></div>
+      </div>
+    </div>
+    <!-- Timer progress bar -->
+    <div class="gi-timer-bar" id="giTimerBar"></div>
+  </div>
+</div>
 
 <div class="hero">
   <div class="hero-inner">
@@ -3335,6 +3546,318 @@ render();
 updateStats();
 buildTicker();
 renderEPLStandings();
+
+// ═══════════════════════════════════════════════════════════════
+// 🌍 GLOBE INSIGHTS — Global Events Intelligence System
+// Claude AI powered • 30-second auto-refresh • Web search
+// ═══════════════════════════════════════════════════════════════
+
+let giOpen = false;
+let giCurrentTab = 'all';
+let giRefreshTimer = null;
+let giCountdownTimer = null;
+let giCountdownSec = 30;
+let giTimerScaleX = 1;
+let giTimerRaf = null;
+let giLastData = null;
+let giIsLoading = false;
+
+// Tab config: label, emoji, search query
+const GI_TABS = {
+  all:       { label:'All Events',       q:'biggest global events demand tickets selling fast world 2026' },
+  football:  { label:'Football',         q:'football matches tickets demand hottest UEFA Premier League Champions League 2026' },
+  music:     { label:'Music',            q:'music concerts tours hottest demand sold out artists 2026' },
+  cricket:   { label:'Cricket',          q:'cricket matches IPL Test ticket demand 2026' },
+  theatre:   { label:'Theatre & Arts',   q:'theatre shows arts West End Broadway hottest demand tickets 2026' },
+  motorsport:{ label:'Motorsport',       q:'Formula 1 motorsport events tickets demand 2026 season' },
+  tennis:    { label:'Tennis',           q:'tennis Grand Slam Wimbledon US Open demand tickets 2026' },
+};
+
+function openGlobeInsights(){
+  document.getElementById('globeInsightsOverlay').classList.add('open');
+  giOpen = true;
+  giCurrentTab = 'all';
+  // Reset nav
+  document.querySelectorAll('.gi-nav-btn').forEach((b,i)=>b.classList.toggle('active',i===0));
+  startGiRefreshCycle();
+  loadGiInsights();
+}
+
+function closeGlobeInsights(){
+  document.getElementById('globeInsightsOverlay').classList.remove('open');
+  giOpen = false;
+  clearInterval(giRefreshTimer);
+  clearInterval(giCountdownTimer);
+  cancelAnimationFrame(giTimerRaf);
+}
+
+function handleGlobeOverlayClick(e){
+  if(e.target === document.getElementById('globeInsightsOverlay')) closeGlobeInsights();
+}
+
+function setGiTab(tab, btn){
+  giCurrentTab = tab;
+  document.querySelectorAll('.gi-nav-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  loadGiInsights();
+}
+
+function startGiRefreshCycle(){
+  clearInterval(giRefreshTimer);
+  clearInterval(giCountdownTimer);
+  giCountdownSec = 30;
+  updateGiCountdown();
+
+  // Countdown every second
+  giCountdownTimer = setInterval(()=>{
+    giCountdownSec--;
+    if(giCountdownSec < 0) giCountdownSec = 30;
+    updateGiCountdown();
+  }, 1000);
+
+  // Reload every 30s
+  giRefreshTimer = setInterval(()=>{
+    if(giOpen) loadGiInsights();
+  }, 30000);
+
+  // Timer bar animation
+  animateGiTimerBar();
+}
+
+function updateGiCountdown(){
+  const el = document.getElementById('giCountdown');
+  if(el) el.textContent = giCountdownSec + 's';
+}
+
+function animateGiTimerBar(){
+  const bar = document.getElementById('giTimerBar');
+  if(!bar) return;
+  const start = performance.now();
+  const duration = 30000;
+  function frame(now){
+    if(!giOpen) return;
+    const elapsed = (now - start) % duration;
+    const scale = 1 - (elapsed / duration);
+    bar.style.transform = `scaleX(${scale})`;
+    giTimerRaf = requestAnimationFrame(frame);
+  }
+  cancelAnimationFrame(giTimerRaf);
+  giTimerRaf = requestAnimationFrame(frame);
+}
+
+async function loadGiInsights(){
+  if(giIsLoading) return;
+  giIsLoading = true;
+
+  const body = document.getElementById('giBody');
+  if(!body) { giIsLoading = false; return; }
+
+  // Show skeleton
+  body.innerHTML = `<div class="gi-loading">
+    <div class="gi-skel w80"></div><div class="gi-skel w60"></div>
+    <div class="gi-skel h100"></div><div class="gi-skel w80"></div>
+    <div class="gi-skel w40"></div><div class="gi-skel h100"></div>
+    <div class="gi-skel w60"></div><div class="gi-skel h100"></div>
+  </div>`;
+
+  const tabCfg = GI_TABS[giCurrentTab] || GI_TABS['all'];
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('en-GB', {day:'2-digit', month:'short', year:'numeric'});
+
+  const systemPrompt = `You are a global events intelligence analyst, like the Insights feature on Ticketmaster. 
+Analyze real-time event demand data. Return ONLY valid JSON, no markdown, no explanation.
+Today is ${dateStr}. Be specific with real event names, venues, artists, and data.
+Make the data feel realistic, current, and actionable for a ticket broker.`;
+
+  const userPrompt = `Search for and analyze: "${tabCfg.q}"
+
+Return JSON in EXACTLY this structure:
+{
+  "summary": "2-sentence overall market summary",
+  "lastUpdated": "${dateStr}",
+  "topEvents": [
+    {
+      "icon": "emoji",
+      "title": "Event name",
+      "venue": "Venue, City",
+      "date": "Date",
+      "category": "Football/Music/etc",
+      "badge": "HOT|RISING|MEGA|SELLING FAST",
+      "demandScore": 85,
+      "demandLabel": "Very High",
+      "stats": [
+        {"label": "Avg Price", "value": "£245", "trend": "up"},
+        {"label": "Sales +7d", "value": "+23%", "trend": "up"},
+        {"label": "Days Left", "value": "6", "trend": "neutral"}
+      ],
+      "insight": "One sentence key insight for brokers"
+    }
+  ],
+  "marketTrends": [
+    {"label": "Trend description", "value": "+18%", "icon": "📈"}
+  ],
+  "hotCategories": [
+    {"name": "Category", "demand": 90, "events": 12}
+  ]
+}
+Return 6-8 topEvents. Make sure data is realistic and current.`;
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 3000,
+        tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+        system: systemPrompt,
+        messages: [{ role: 'user', content: userPrompt }]
+      })
+    });
+
+    if(!response.ok) throw new Error('API ' + response.status);
+    const data = await response.json();
+
+    // Extract text from response (may have tool_use blocks)
+    let rawText = '';
+    if(data.content) {
+      data.content.forEach(block => {
+        if(block.type === 'text') rawText += block.text;
+      });
+    }
+
+    // Parse JSON — strip any markdown fences
+    const clean = rawText.replace(/```json|```/g,'').trim();
+    // Find the JSON object
+    const jsonStart = clean.indexOf('{');
+    const jsonEnd = clean.lastIndexOf('}');
+    if(jsonStart < 0 || jsonEnd < 0) throw new Error('No JSON found');
+    const parsed = JSON.parse(clean.slice(jsonStart, jsonEnd+1));
+
+    giLastData = parsed;
+    renderGiInsights(body, parsed, tabCfg.label);
+
+    // Reset countdown
+    giCountdownSec = 30;
+    animateGiTimerBar();
+
+  } catch(err) {
+    console.warn('Globe Insights error:', err);
+    // Show graceful error with cached data if available
+    if(giLastData) {
+      renderGiInsights(body, giLastData, tabCfg.label);
+      body.insertAdjacentHTML('afterbegin', `
+        <div style="display:flex;align-items:center;gap:8px;padding:10px 14px;background:rgba(255,193,7,.06);border:1px solid rgba(255,193,7,.2);border-radius:10px;margin-bottom:16px;font-size:11px;color:rgba(255,193,7,.8)">
+          ⚠️ Showing cached data — refreshing shortly
+        </div>`);
+    } else {
+      body.innerHTML = `<div class="gi-error">
+        <div class="gi-err-icon">🌐</div>
+        <p>Connecting to global events intelligence network...</p>
+        <p style="margin-top:8px;font-size:11px;color:rgba(255,255,255,.3)">Auto-retry in ${giCountdownSec} seconds</p>
+        <button onclick="loadGiInsights()" style="margin-top:16px;padding:8px 20px;border-radius:8px;border:1px solid rgba(96,179,255,.3);background:rgba(96,179,255,.08);color:#60b3ff;font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;">
+          🔄 Retry Now
+        </button>
+      </div>`;
+    }
+  }
+
+  giIsLoading = false;
+}
+
+function renderGiInsights(container, data, tabLabel){
+  const badgeClass = b => {
+    if(!b) return '';
+    const v = b.toLowerCase();
+    if(v.includes('hot') || v.includes('sell')) return 'hot';
+    if(v.includes('ris') || v.includes('grow')) return 'rising';
+    if(v.includes('mega') || v.includes('record')) return 'mega';
+    return '';
+  };
+
+  // Summary strip
+  const summaryHtml = data.summary ? `
+    <div style="padding:12px 16px;background:rgba(96,179,255,.05);border:1px solid rgba(96,179,255,.15);border-radius:12px;font-size:12px;line-height:1.6;color:rgba(255,255,255,.75);margin-bottom:20px;">
+      <span style="font-weight:700;color:#60b3ff;margin-right:6px;">🔍 Market Overview</span>${data.summary}
+      <span style="font-size:10px;color:var(--muted);margin-left:10px;font-family:'JetBrains Mono',monospace;">Updated: ${data.lastUpdated||'Just now'}</span>
+    </div>` : '';
+
+  // Market trends strip
+  const trendsHtml = (data.marketTrends && data.marketTrends.length) ? `
+    <div class="gi-section">
+      <div class="gi-section-title">📈 Market Trends</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        ${data.marketTrends.map(t=>`
+          <div style="display:flex;align-items:center;gap:8px;padding:9px 14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:10px;font-size:11px;">
+            <span style="font-size:18px;">${t.icon||'📊'}</span>
+            <span style="color:var(--muted);">${t.label}</span>
+            <span style="font-weight:800;color:#00ff87;font-family:'JetBrains Mono',monospace;">${t.value||''}</span>
+          </div>`).join('')}
+      </div>
+    </div>` : '';
+
+  // Hot categories
+  const catsHtml = (data.hotCategories && data.hotCategories.length) ? `
+    <div class="gi-section">
+      <div class="gi-section-title">🔥 Hottest Categories</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        ${data.hotCategories.map(c=>`
+          <div style="display:flex;align-items:center;gap:12px;padding:8px 0;">
+            <span style="font-size:12px;font-weight:700;color:var(--text);min-width:110px;">${c.name}</span>
+            <div style="flex:1;height:6px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden;">
+              <div style="height:100%;width:${c.demand||50}%;background:linear-gradient(90deg,#60b3ff,#00ff87);border-radius:3px;transition:width 1s ease;"></div>
+            </div>
+            <span style="font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--muted);min-width:50px;text-align:right;">${c.events||0} events</span>
+            <span style="font-size:11px;font-weight:800;color:#60b3ff;min-width:30px;text-align:right;">${c.demand||0}%</span>
+          </div>`).join('')}
+      </div>
+    </div>` : '';
+
+  // Event cards
+  const eventsHtml = (data.topEvents && data.topEvents.length) ? `
+    <div class="gi-section">
+      <div class="gi-section-title">🎟️ Top Events — Demand Analysis</div>
+      <div class="gi-results-grid">
+        ${data.topEvents.map((ev,i)=>{
+          const bc = badgeClass(ev.badge);
+          const accentColor = i%3===0?'linear-gradient(90deg,#60b3ff,#7c6fff)':i%3===1?'linear-gradient(90deg,#00ff87,#60b3ff)':'linear-gradient(90deg,#ffd700,#ff6b81)';
+          const trendUp = stat => stat.trend==='up'?' up':stat.trend==='down'?' down':'';
+          return `<div class="gi-card" style="--gi-accent:${accentColor}">
+            <div class="gi-card-header">
+              <div class="gi-card-icon">${ev.icon||'🎟️'}</div>
+              <div class="gi-card-meta">
+                <div class="gi-card-title">${ev.title||'—'}</div>
+                <div class="gi-card-sub">${ev.date||''} ${ev.venue?'• '+ev.venue:''}</div>
+                ${ev.category?`<div style="font-size:9px;color:var(--muted);margin-top:2px;">${ev.category}</div>`:''}
+              </div>
+              ${ev.badge?`<div class="gi-card-badge ${bc}">${ev.badge}</div>`:''}
+            </div>
+            ${ev.demandScore !== undefined ? `
+              <div class="gi-card-demand">
+                <div class="gi-demand-label">
+                  <span>DEMAND</span>
+                  <span style="color:${ev.demandScore>80?'#ff6b81':ev.demandScore>60?'#ffd700':'#00ff87'};font-weight:800;">${ev.demandLabel||ev.demandScore+'%'}</span>
+                </div>
+                <div class="gi-demand-bar-track">
+                  <div class="gi-demand-bar-fill" style="width:${ev.demandScore}%"></div>
+                </div>
+              </div>` : ''}
+            ${ev.stats && ev.stats.length ? `
+              <div class="gi-card-stats">
+                ${ev.stats.map(s=>`<div class="gi-stat-chip${trendUp(s)}">
+                  ${s.trend==='up'?'↑':s.trend==='down'?'↓':''}
+                  ${s.label}: <strong>${s.value}</strong>
+                </div>`).join('')}
+              </div>` : ''}
+            ${ev.insight ? `<div style="font-size:10px;color:rgba(255,255,255,.45);margin-top:10px;line-height:1.5;border-top:1px solid rgba(255,255,255,.06);padding-top:8px;">${ev.insight}</div>` : ''}
+          </div>`;
+        }).join('')}
+      </div>
+    </div>` : '';
+
+  container.innerHTML = summaryHtml + trendsHtml + catsHtml + eventsHtml;
+}
+
 </script>
 </body>
 </html>
