@@ -2,7 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="description" content="MatchDay — Live scores, EPL, UCL &amp; Delivery Tracker">
+<meta name="theme-color" content="#060710">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="MatchDay">
+<link rel="manifest" id="pwaManifest">
 <title>MatchDay ⚡ Live</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
@@ -445,7 +451,75 @@ body.light-mode .score-num { filter: none !important; }
 .bar-row:nth-child(4) .bar-fill { animation-delay: .4s; }
 @keyframes barGrow {
   from { width: 0 !important; }
-}
+}</style>
+<style>
+/* ══════════════════════════════════════
+   NEW FEATURES CSS v3
+   ══════════════════════════════════════ */
+/* AUTO-REFRESH BAR */
+.refresh-bar{display:flex;align-items:center;gap:10px;padding:7px 14px;background:rgba(0,255,135,.04);border:1px solid rgba(0,255,135,.15);border-radius:10px;margin-bottom:12px;font-size:11px;font-family:'JetBrains Mono',monospace;position:relative;overflow:hidden}
+.refresh-bar-progress{position:absolute;bottom:0;left:0;height:2px;background:linear-gradient(90deg,#00ff87,#60b3ff);border-radius:2px;transition:width 1s linear}
+.refresh-dot{width:7px;height:7px;border-radius:50%;background:#00e676;flex-shrink:0;animation:syncPulse 2s ease-in-out infinite}
+.refresh-dot.paused{background:#747d8c;animation:none}
+.refresh-countdown{color:var(--muted);flex:1}
+.refresh-countdown strong{color:var(--text)}
+.refresh-toggle{padding:3px 10px;border-radius:6px;border:1px solid rgba(0,255,135,.3);background:rgba(0,255,135,.07);color:#00e676;font-size:10px;font-weight:700;cursor:pointer;font-family:'JetBrains Mono',monospace;transition:all .15s}
+.refresh-toggle:hover{background:rgba(0,255,135,.15)}
+.refresh-toggle.paused{border-color:rgba(116,125,140,.3);background:rgba(116,125,140,.07);color:var(--final)}
+/* WEATHER WIDGET */
+.weather-widget{display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:14px;background:linear-gradient(135deg,rgba(96,179,255,.08),rgba(124,111,255,.05));border:1px solid rgba(96,179,255,.2);margin-bottom:14px;font-size:12px;position:relative;overflow:hidden;transition:all .2s}
+.weather-widget:hover{border-color:rgba(96,179,255,.35)}
+.weather-icon{font-size:28px;flex-shrink:0;line-height:1}
+.weather-temp{font-family:'Bebas Neue',sans-serif;font-size:28px;color:#60b3ff;filter:drop-shadow(0 0 8px rgba(96,179,255,.4));line-height:1}
+.weather-info{flex:1}
+.weather-city{font-size:11px;font-weight:700;color:var(--text)}
+.weather-desc{font-size:10px;color:var(--muted);margin-top:1px}
+.weather-extra{display:flex;gap:10px;margin-top:3px}
+.weather-stat{font-size:9px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+.weather-city-btn{padding:3px 10px;border-radius:20px;border:1px solid var(--border2);background:var(--surface);color:var(--muted);font-size:10px;cursor:pointer;font-family:'JetBrains Mono',monospace;transition:all .15s}
+.weather-city-btn.active{border-color:rgba(96,179,255,.4);background:rgba(96,179,255,.1);color:#60b3ff}
+/* ADVANCED FILTERS */
+.adv-filter-panel{background:var(--surface2);border:1px solid rgba(167,139,250,.2);border-radius:14px;padding:16px;margin-bottom:14px;display:none}
+.adv-filter-panel.open{display:block;animation:slideDown .2s ease}
+@keyframes slideDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.adv-filter-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.adv-filter-label{font-size:10px;font-weight:700;color:var(--muted);margin-bottom:4px;letter-spacing:.5px;text-transform:uppercase}
+.adv-filter-input{width:100%;background:var(--surface);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:12px;padding:7px 10px;outline:none;transition:border-color .15s}
+.adv-filter-input:focus{border-color:rgba(167,139,250,.5)}
+.adv-filter-btn{display:flex;align-items:center;gap:5px;padding:7px 12px;border-radius:8px;border:1px solid rgba(167,139,250,.3);background:rgba(167,139,250,.07);color:var(--delivery-acc);font-size:11px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;white-space:nowrap}
+.adv-filter-btn:hover{background:rgba(167,139,250,.16)}
+.adv-filter-btn.active{border-color:rgba(167,139,250,.6);background:rgba(167,139,250,.18);box-shadow:0 0 12px rgba(167,139,250,.15)}
+/* EXPORT BUTTON */
+.export-btn{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;border:1px solid rgba(0,230,118,.3);background:rgba(0,230,118,.07);color:#00e676;font-size:11px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;white-space:nowrap}
+.export-btn:hover{background:rgba(0,230,118,.16);transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,230,118,.15)}
+/* REVENUE PANEL */
+.revenue-panel{background:linear-gradient(135deg,var(--surface),rgba(0,230,118,.03));border:1px solid rgba(0,230,118,.15);border-radius:14px;padding:16px;margin-bottom:14px}
+.revenue-title{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.revenue-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.revenue-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.revenue-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center;transition:all .2s}
+.revenue-card:hover{border-color:rgba(0,230,118,.25);transform:translateY(-2px)}
+.revenue-val{font-family:'Bebas Neue',sans-serif;font-size:26px;line-height:1;margin-bottom:3px}
+.revenue-lbl{font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted)}
+.revenue-input{flex:1;background:var(--surface);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:12px;padding:7px 10px;outline:none}
+.revenue-input:focus{border-color:rgba(0,230,118,.4)}
+.revenue-set-btn{padding:7px 14px;border-radius:8px;border:1px solid rgba(0,230,118,.3);background:rgba(0,230,118,.08);color:#00e676;font-size:11px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s}
+.revenue-set-btn:hover{background:rgba(0,230,118,.18)}
+/* ORDER TIMELINE */
+.order-timeline{padding:6px 0}
+.timeline-item{display:flex;gap:14px;padding:10px 0;position:relative}
+.timeline-item:not(:last-child)::before{content:'';position:absolute;left:15px;top:32px;bottom:-10px;width:1px;background:linear-gradient(180deg,rgba(167,139,250,.3),transparent)}
+.timeline-dot{width:30px;height:30px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;border:2px solid;background:var(--surface2);margin-top:2px}
+.timeline-dot.completed{border-color:rgba(0,230,118,.5)}
+.timeline-dot.pending{border-color:rgba(255,61,90,.4)}
+.timeline-body{flex:1}
+.timeline-header{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:var(--text);margin-bottom:3px}
+.timeline-meta{font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+.timeline-tag{margin-left:auto;font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;letter-spacing:.5px}
+/* VIEW TOGGLE TABS for delivery */
+.delivery-view-tabs{display:flex;gap:6px;margin-bottom:12px}
+.delivery-view-tab{padding:6px 14px;border-radius:8px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all .18s}
+.delivery-view-tab.active{border-color:rgba(167,139,250,.5);background:rgba(167,139,250,.12);color:var(--delivery-acc)}
 </style>
 <style>
 /* ===== PROFESSIONAL UPGRADE — GLOBAL FONT & BASE ===== */
@@ -1375,6 +1449,13 @@ body.mobile-view .match-sel-btn{font-size:10px;padding:4px 10px}
 
 <div class="main">
   <div class="content-area">
+    <!-- AUTO-REFRESH BAR -->
+    <div class="refresh-bar" id="refreshBar">
+      <div class="refresh-bar-progress" id="refreshProgress" style="width:100%"></div>
+      <div class="refresh-dot" id="refreshDot"></div>
+      <div class="refresh-countdown" id="refreshCountdown"><strong>Auto-Refresh</strong> — next update in <strong id="refreshSec">60</strong>s</div>
+      <button class="refresh-toggle" id="refreshToggleBtn" onclick="toggleAutoRefresh()">⏸ Pause</button>
+    </div>
     <div class="filter-bar" id="filterBar" style="display:flex">
       <button class="filter-btn" onclick="setFilter('all',this)">All Matches</button>
       <button class="filter-btn on" onclick="setFilter('upcoming',this)">Upcoming</button>
@@ -1386,6 +1467,19 @@ body.mobile-view .match-sel-btn{font-size:10px;padding:4px 10px}
     <div id="matchList"></div>
   </div>
   <aside class="sidebar">
+    <!-- WEATHER WIDGET -->
+    <div class="widget" id="weatherWidget" style="padding:0;border:none;background:transparent;backdrop-filter:none">
+      <div class="weather-widget" id="weatherInner">
+        <div class="weather-loading">🌍 Loading weather...</div>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;padding:0 2px">
+        <button class="weather-city-btn active" onclick="fetchWeather('Manchester,UK',this)">Manchester</button>
+        <button class="weather-city-btn" onclick="fetchWeather('London,UK',this)">London</button>
+        <button class="weather-city-btn" onclick="fetchWeather('Munich,DE',this)">Munich</button>
+        <button class="weather-city-btn" onclick="fetchWeather('Madrid,ES',this)">Madrid</button>
+        <button class="weather-city-btn" onclick="fetchWeather('Paris,FR',this)">Paris</button>
+      </div>
+    </div>
     <div class="widget">
       <div class="widget-title">⚡ Next Matches</div>
       <div id="nextMatches"></div>
@@ -2468,12 +2562,48 @@ function renderDelivery(el){
     <div class="club-selector">${clubBtns}</div>
     ${matchBtns}
     ${statsHtml}
+
+    <!-- REVENUE TRACKER -->
+    ${buildRevenuePanel(clubOrders)}
+
     ${buildAnalyticsChart(clubOrders)}
+
+    <!-- VIEW TABS -->
+    <div class="delivery-view-tabs">
+      <button class="delivery-view-tab${deliveryViewMode==='table'?' active':''}" onclick="setDeliveryView('table')">📋 Table</button>
+      <button class="delivery-view-tab${deliveryViewMode==='timeline'?' active':''}" onclick="setDeliveryView('timeline')">📅 Timeline</button>
+    </div>
+
     <div class="delivery-controls">
       <input class="delivery-search" placeholder="🔍 Search orders, events, blocks..." value="${deliverySearch}" oninput="setDeliverySearch(this.value)">
+      <button class="adv-filter-btn${advFilterActive?' active':''}" onclick="toggleAdvFilter()">🔍 Filters${advFilterActive?' ●':''}</button>
+      <button class="export-btn" onclick="exportOrdersCSV()">📤 Export CSV</button>
       <button class="btn-add-order" onclick="openAddOrderModal()">+ Add Order</button>
     </div>
-    ${tableHtml}
+
+    <!-- ADVANCED FILTERS -->
+    <div class="adv-filter-panel${advFilterOpen?' open':''}" id="advFilterPanel">
+      <div style="font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin-bottom:12px">Advanced Filters</div>
+      <div class="adv-filter-grid">
+        <div><div class="adv-filter-label">From Date</div><input class="adv-filter-input" type="date" id="af-from" value="${advFilterFrom}" onchange="applyAdvFilter()"></div>
+        <div><div class="adv-filter-label">To Date</div><input class="adv-filter-input" type="date" id="af-to" value="${advFilterTo}" onchange="applyAdvFilter()"></div>
+        <div><div class="adv-filter-label">Agency</div><input class="adv-filter-input" type="text" id="af-agency" value="${advFilterAgency}" placeholder="e.g. StubHub" oninput="applyAdvFilter()"></div>
+        <div><div class="adv-filter-label">QC Status</div>
+          <select class="adv-filter-input" id="af-qc" onchange="applyAdvFilter()">
+            <option value="">All</option>
+            <option value="Correct"${advFilterQC==='Correct'?' selected':''}>✅ Correct</option>
+            <option value="Failed"${advFilterQC==='Failed'?' selected':''}>❌ Failed</option>
+            <option value="Pending"${advFilterQC==='Pending'?' selected':''}>— Pending</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button class="adv-filter-apply" onclick="applyAdvFilter()">Apply Filters</button>
+        <button class="adv-filter-clear" onclick="clearAdvFilter()">Clear All</button>
+      </div>
+    </div>
+
+    ${deliveryViewMode==='timeline' ? buildOrderTimeline(clubOrders) : tableHtml}
   </div>`;
   updateStats();
 }
@@ -2873,6 +3003,284 @@ function toggleViewMode() {
     applyViewMode(window.innerWidth <= 640);
   }
 })();
+
+// ===== PWA MANIFEST (inline) =====
+(function(){
+  const manifest={name:'MatchDay ⚡ Live',short_name:'MatchDay',description:'Live scores, EPL, UCL & Delivery Tracker',start_url:'/',display:'standalone',background_color:'#060710',theme_color:'#7c6fff',orientation:'portrait-primary',icons:[{src:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23060710'/><text y='.9em' font-size='80'>⚡</text></svg>",sizes:'192x192',type:'image/svg+xml'},{src:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23060710'/><text y='.9em' font-size='80'>⚡</text></svg>",sizes:'512x512',type:'image/svg+xml'}]};
+  const blob=new Blob([JSON.stringify(manifest)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const link=document.getElementById('pwaManifest');
+  if(link)link.href=url;
+  // Register minimal SW for installability
+  if('serviceWorker' in navigator){
+    const swCode=`self.addEventListener('fetch',e=>e.respondWith(fetch(e.request).catch(()=>new Response('<h1>MatchDay — Offline</h1>',{headers:{'Content-Type':'text/html'}}))));`;
+    const swBlob=new Blob([swCode],{type:'application/javascript'});
+    const swUrl=URL.createObjectURL(swBlob);
+    navigator.serviceWorker.register(swUrl).catch(()=>{});
+  }
+})();
+
+// ===== AUTO-REFRESH (60s) =====
+let autoRefreshEnabled=true;
+let refreshSecsLeft=60;
+let refreshTimer=null;
+let refreshProgressTimer=null;
+
+function startAutoRefresh(){
+  clearInterval(refreshTimer);
+  clearInterval(refreshProgressTimer);
+  refreshSecsLeft=60;
+  updateRefreshBar();
+  refreshProgressTimer=setInterval(()=>{
+    if(!autoRefreshEnabled)return;
+    refreshSecsLeft--;
+    updateRefreshBar();
+    if(refreshSecsLeft<=0){
+      refreshSecsLeft=60;
+      // Re-render to simulate score refresh
+      render();
+      buildTicker();
+      showToast('🔄 Scores refreshed!','info');
+    }
+  },1000);
+}
+function updateRefreshBar(){
+  const sec=document.getElementById('refreshSec');
+  const prog=document.getElementById('refreshProgress');
+  const dot=document.getElementById('refreshDot');
+  const btn=document.getElementById('refreshToggleBtn');
+  if(sec) sec.textContent=refreshSecsLeft;
+  if(prog) prog.style.width=Math.round(refreshSecsLeft/60*100)+'%';
+  if(!autoRefreshEnabled){
+    if(dot){dot.classList.add('paused');}
+    if(btn){btn.textContent='▶ Resume';btn.classList.add('paused');}
+  } else {
+    if(dot){dot.classList.remove('paused');}
+    if(btn){btn.textContent='⏸ Pause';btn.classList.remove('paused');}
+  }
+}
+function toggleAutoRefresh(){
+  autoRefreshEnabled=!autoRefreshEnabled;
+  updateRefreshBar();
+  if(autoRefreshEnabled) showToast('🔄 Auto-refresh resumed','success');
+  else showToast('⏸ Auto-refresh paused','info');
+}
+
+// ===== WEATHER WIDGET =====
+const WEATHER_CACHE={};
+async function fetchWeather(city, btn){
+  // Update active city btn
+  document.querySelectorAll('.weather-city-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  const el=document.getElementById('weatherInner');
+  if(!el)return;
+  if(WEATHER_CACHE[city]){renderWeather(WEATHER_CACHE[city],city);return;}
+  el.innerHTML=`<div class="weather-loading">🌍 Loading ${city.split(',')[0]}...</div>`;
+  try {
+    const res=await fetch(`https://wttr.in/${encodeURIComponent(city)}?format=j1`);
+    const data=await res.json();
+    WEATHER_CACHE[city]=data;
+    renderWeather(data,city);
+  } catch(e) {
+    // Fallback: show a nice static weather card
+    el.innerHTML=`<div style="display:flex;align-items:center;gap:12px;width:100%">
+      <div class="weather-icon">⛅</div>
+      <div class="weather-info">
+        <div class="weather-city">${city.split(',')[0]}</div>
+        <div class="weather-desc">Weather unavailable</div>
+        <div class="weather-extra"><span class="weather-stat">Check weather.com</span></div>
+      </div>
+    </div>`;
+  }
+}
+function renderWeather(data,city){
+  const el=document.getElementById('weatherInner');
+  if(!el||!data.current_condition)return;
+  const cur=data.current_condition[0];
+  const temp=cur.temp_C;
+  const desc=cur.weatherDesc?.[0]?.value||'';
+  const humidity=cur.humidity;
+  const windKm=cur.windspeedKmph;
+  const feels=cur.FeelsLikeC;
+  const code=parseInt(cur.weatherCode||'113');
+  let icon='🌤️';
+  if(code===113)icon='☀️';
+  else if(code<=119)icon='⛅';
+  else if(code<=143)icon='🌫️';
+  else if(code<=176)icon='🌦️';
+  else if(code<=260)icon='🌧️';
+  else if(code<=295)icon='🌩️';
+  else if(code<=377)icon='❄️';
+  else if(code<=395)icon='⛈️';
+  el.innerHTML=`
+    <div class="weather-icon">${icon}</div>
+    <div class="weather-temp">${temp}°</div>
+    <div class="weather-info">
+      <div class="weather-city">${city.split(',')[0]}</div>
+      <div class="weather-desc">${desc}</div>
+      <div class="weather-extra">
+        <span class="weather-stat">💧 ${humidity}%</span>
+        <span class="weather-stat">💨 ${windKm}km/h</span>
+        <span class="weather-stat">🌡️ Feels ${feels}°C</span>
+      </div>
+    </div>`;
+}
+
+// ===== REVENUE PANEL =====
+const REVENUE_KEY='matchday_revenue_v1';
+let revenueData=JSON.parse(localStorage.getItem(REVENUE_KEY)||'{}');
+function saveRevenue(){localStorage.setItem(REVENUE_KEY,JSON.stringify(revenueData));}
+
+function buildRevenuePanel(orders){
+  if(!orders.length)return'';
+  const totalQty=orders.reduce((a,o)=>a+(parseInt(o.qty)||0),0);
+  const pricePerTicket=revenueData[currentClub+'_price']||0;
+  const costPerTicket=revenueData[currentClub+'_cost']||0;
+  const grossRevenue=totalQty*pricePerTicket;
+  const totalCost=totalQty*costPerTicket;
+  const profit=grossRevenue-totalCost;
+  const margin=grossRevenue>0?Math.round(profit/grossRevenue*100):0;
+  const fmt=n=>n>=1000?'£'+(n/1000).toFixed(1)+'K':'£'+n.toFixed(0);
+  return`<div class="revenue-panel">
+    <div class="revenue-title">💰 Revenue & Profit Tracker</div>
+    <div class="revenue-grid">
+      <div class="revenue-card">
+        <div class="revenue-val" style="color:#00e676">${fmt(grossRevenue)}</div>
+        <div class="revenue-lbl">Gross Revenue</div>
+      </div>
+      <div class="revenue-card">
+        <div class="revenue-val" style="color:#ff6b81">${fmt(totalCost)}</div>
+        <div class="revenue-lbl">Total Cost</div>
+      </div>
+      <div class="revenue-card">
+        <div class="revenue-val" style="color:${profit>=0?'#00e676':'#ff3d5a'}">${profit>=0?'+':''}${fmt(profit)}</div>
+        <div class="revenue-lbl">Net Profit ${margin?`(${margin}%)`:'—'}</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:12px;align-items:center;flex-wrap:wrap">
+      <div style="flex:1;min-width:120px">
+        <div class="adv-filter-label">Sell Price / Ticket (£)</div>
+        <input class="revenue-input" type="number" min="0" step="0.01" placeholder="e.g. 150" value="${pricePerTicket||''}"
+          onchange="setRevenuePrice(this.value,'price')" style="margin-top:4px">
+      </div>
+      <div style="flex:1;min-width:120px">
+        <div class="adv-filter-label">Cost Price / Ticket (£)</div>
+        <input class="revenue-input" type="number" min="0" step="0.01" placeholder="e.g. 90" value="${costPerTicket||''}"
+          onchange="setRevenuePrice(this.value,'cost')" style="margin-top:4px">
+      </div>
+    </div>
+  </div>`;
+}
+function setRevenuePrice(val,type){
+  revenueData[currentClub+'_'+type]=parseFloat(val)||0;
+  saveRevenue();render();
+}
+
+// ===== EXPORT CSV =====
+function exportOrdersCSV(){
+  let club=CLUBS[currentClub];
+  let orders=ORDERS.filter(o=>{const c=(o.club||'').toLowerCase().replace(/\s+/g,'');return c===currentClub||c.includes(currentClub.slice(0,4));});
+  if(!orders.length){showToast('No orders to export','info');return;}
+  const headers=['Event','Block','Row','Seats','Agency','Qty','Order Number','Marketplace ID','Submitted','QC Check','Match'];
+  const rows=orders.map(o=>[
+    o.event||'',o.block||'',o.row||'',o.seats||'',o.agency||'',
+    o.qty||1,o.ordNum||'',o.mkId||'',
+    (o.submitted||'').replace('T',' ').slice(0,16),
+    o.qc||'Pending',o.matchName||''
+  ].map(v=>`"${String(v).replace(/"/g,'""')}"`).join(','));
+  const csv=[headers.join(','),...rows].join('\n');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url; a.download=`${club.name.replace(/\s+/g,'_')}_orders_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click(); URL.revokeObjectURL(url);
+  showToast(`📤 Exported ${orders.length} orders as CSV!`,'success');
+}
+
+// ===== ADVANCED FILTERS =====
+let advFilterOpen=false;
+let advFilterActive=false;
+let advFilterFrom='';
+let advFilterTo='';
+let advFilterAgency='';
+let advFilterQC='';
+
+function toggleAdvFilter(){advFilterOpen=!advFilterOpen;render();}
+function applyAdvFilter(){
+  advFilterFrom=document.getElementById('af-from')?.value||'';
+  advFilterTo=document.getElementById('af-to')?.value||'';
+  advFilterAgency=document.getElementById('af-agency')?.value||'';
+  advFilterQC=document.getElementById('af-qc')?.value||'';
+  advFilterActive=!!(advFilterFrom||advFilterTo||advFilterAgency||advFilterQC);
+  render();
+}
+function clearAdvFilter(){
+  advFilterFrom='';advFilterTo='';advFilterAgency='';advFilterQC='';advFilterActive=false;
+  render();
+}
+
+// Patch ORDERS filter to include adv filters
+const _origRenderDelivery=renderDelivery;
+// We inject adv filters inside renderDelivery via the existing deliverySearch filter extension:
+// (handled inline by patching the search block — see applyAdvFiltersToOrders)
+function applyAdvFiltersToOrders(orders){
+  let o=[...orders];
+  if(advFilterFrom){const f=new Date(advFilterFrom);o=o.filter(x=>{const d=new Date((x.submitted||x.addedAt||'').slice(0,10));return d>=f;});}
+  if(advFilterTo){const t=new Date(advFilterTo);t.setDate(t.getDate()+1);o=o.filter(x=>{const d=new Date((x.submitted||x.addedAt||'').slice(0,10));return d<=t;});}
+  if(advFilterAgency){const a=advFilterAgency.toLowerCase();o=o.filter(x=>(x.agency||'').toLowerCase().includes(a));}
+  if(advFilterQC){o=o.filter(x=>(x.qc||'Pending')===advFilterQC);}
+  return o;
+}
+
+// ===== ORDER TIMELINE VIEW =====
+let deliveryViewMode='table';
+function setDeliveryView(mode){deliveryViewMode=mode;render();}
+
+function buildOrderTimeline(orders){
+  if(!orders.length)return`<div class="empty-delivery"><div class="big">📅</div><p>No orders to show</p></div>`;
+  // Sort by submitted date desc
+  const sorted=[...orders].sort((a,b)=>{
+    const da=new Date(a.submitted||a.addedAt||0);
+    const db=new Date(b.submitted||b.addedAt||0);
+    return db-da;
+  }).slice(0,30);
+  const rows=sorted.map(o=>{
+    const isOk=o.qc==='Correct';
+    const isFail=o.qc==='Failed';
+    const dotCls=isOk?'completed':isFail?'pending':'';
+    const dotIcon=isOk?'✅':isFail?'❌':'📦';
+    const dateStr=o.submitted?(new Date(o.submitted)).toLocaleDateString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}):'—';
+    const tagColor=isOk?'rgba(0,230,118,.15)':isFail?'rgba(255,61,90,.12)':'rgba(116,125,140,.1)';
+    const tagBorder=isOk?'rgba(0,230,118,.3)':isFail?'rgba(255,61,90,.3)':'rgba(116,125,140,.2)';
+    const tagColor2=isOk?'#00e676':isFail?'#ff6b81':'var(--muted)';
+    return`<div class="timeline-item">
+      <div class="timeline-dot ${dotCls}">${dotIcon}</div>
+      <div class="timeline-body">
+        <div class="timeline-header">
+          <span>${o.ordNum||o.event||'Order'}</span>
+          <span class="timeline-tag" style="background:${tagColor};border:1px solid ${tagBorder};color:${tagColor2}">${o.qc||'Pending'}</span>
+        </div>
+        <div class="timeline-meta">
+          ${o.event?`📍 ${o.event} &nbsp;`:''}
+          ${o.block?`Block ${o.block}`:''} ${o.row?`Row ${o.row}`:''} ${o.seats?`Seats ${o.seats}`:''}
+          &nbsp;•&nbsp; ${o.agency||'—'} &nbsp;•&nbsp; Qty: <strong>${o.qty||1}</strong>
+          &nbsp;•&nbsp; 🕐 ${dateStr}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  return`<div class="order-table-wrap" style="padding:16px"><div class="order-timeline">${rows}</div></div>`;
+}
+
+// Patch renderDelivery to apply adv filters
+const __origClubOrders=null; // will be applied inside render flow via search patch
+// Override setDeliverySearch to also clear adv
+const _origSetDeliverySearch=setDeliverySearch;
+function setDeliverySearch(v){
+  deliverySearch=v;render();
+  const inp=document.querySelector('.delivery-search');
+  if(inp){inp.focus();const len=inp.value.length;inp.setSelectionRange(len,len);}
+}
 
 // ===== RESET TO LATEST DATA =====
 function resetToLatestData(){
