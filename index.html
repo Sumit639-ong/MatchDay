@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MatchDay</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<title>MatchDay Pro — Live Football Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 /* ===== PROFESSIONAL UPGRADE — GLOBAL FONT & BASE ===== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  font-family: 'Inter', 'Constantia', Georgia, sans-serif !important;
+  font-family: 'DM Sans', system-ui, sans-serif !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -20,7 +20,7 @@ html { scroll-behavior: smooth; }
 
 /* Better input & button font */
 input, select, button, textarea {
-  font-family: 'Inter', 'Constantia', Georgia, sans-serif !important;
+  font-family: 'DM Sans', system-ui, sans-serif !important;
 }
 
 /* ===== GLASSMORPHISM CARDS ===== */
@@ -268,6 +268,682 @@ body.light-mode .order-table-wrap { box-shadow: 0 4px 20px rgba(0,0,0,.08) !impo
 .chart-box { border-radius: 14px !important; transition: all 0.2s !important; }
 .chart-box:hover { border-color: rgba(124,111,255,.2) !important; }
 
+
+/* ===== EPL STANDINGS WIDGET ===== */
+.standing-row { display:flex; align-items:center; gap:6px; padding:5px 0; border-bottom:1px solid var(--border); font-size:11px; }
+.standing-row:last-child { border-bottom:none; }
+.standing-rank { width:16px; text-align:center; font-weight:700; color:var(--muted); font-size:10px; flex-shrink:0; }
+.standing-rank.top4 { color:#00e676; }
+.standing-rank.rel { color:#ff3d5a; }
+.standing-team-logo { width:16px; height:16px; object-fit:contain; flex-shrink:0; }
+.standing-team-name { flex:1; font-weight:600; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.standing-pts { font-weight:800; color:var(--accent); font-size:12px; min-width:22px; text-align:right; }
+.standing-form { display:flex; gap:2px; }
+.standing-form-dot { width:8px; height:8px; border-radius:50%; }
+
+
+/* ===== UCL FINAL PREMIUM CARD ===== */
+.match-card[data-stage*="Final"] .card-content,
+.match-card-final-highlight { 
+  border-image: linear-gradient(135deg, #ffd700, #c084fc, #60b3ff) 1 !important;
+}
+.ucl-final-badge {
+  display:inline-flex; align-items:center; gap:4px;
+  background: linear-gradient(135deg, rgba(255,215,0,.2), rgba(255,215,0,.05));
+  border: 1px solid rgba(255,215,0,.4); border-radius:6px;
+  padding:3px 8px; font-size:9px; font-weight:800;
+  color:#ffd700; letter-spacing:1px; text-transform:uppercase;
+  animation: pulse-gold 2s ease-in-out infinite;
+}
+@keyframes pulse-gold {
+  0%,100% { box-shadow: 0 0 0 0 rgba(255,215,0,.3); }
+  50% { box-shadow: 0 0 12px 4px rgba(255,215,0,.15); }
+}
+/* EPL Top-4 accent */
+.rank-1 .standing-team-name { color: #ffd700 !important; }
+/* Relegation zone */
+.standing-rank.rel { background: rgba(255,61,90,.1); border-radius:3px; padding:1px 3px; }
+.standing-rank.top4 { background: rgba(0,230,118,.1); border-radius:3px; padding:1px 3px; }
+/* Standings header */
+.standings-header-row { 
+  display:flex; align-items:center; gap:6px; padding:4px 0 6px 0; 
+  border-bottom: 1px solid rgba(124,111,255,.2); margin-bottom:4px;
+  font-size:9px; font-weight:700; letter-spacing:1px; color:var(--muted);
+  text-transform:uppercase;
+}
+.standings-header-row .sh-rank { width:16px; text-align:center; }
+.standings-header-row .sh-logo { width:16px; }
+.standings-header-row .sh-name { flex:1; }
+.standings-header-row .sh-pts { min-width:22px; text-align:right; }
+
+
+/* ===== UCL FINAL GLOW CARD ===== */
+.match-card.ucl-final-glow {
+  border-color: rgba(255,215,0,.4) !important;
+  box-shadow: 0 0 20px rgba(255,215,0,.08), 0 4px 16px rgba(0,0,0,.4) !important;
+  background: linear-gradient(135deg, rgba(255,215,0,.04), var(--surface)) !important;
+}
+.match-card.ucl-final-glow:hover {
+  border-color: rgba(255,215,0,.6) !important;
+  box-shadow: 0 0 32px rgba(255,215,0,.15), 0 8px 24px rgba(0,0,0,.4) !important;
+}
+
+
+/* ===== UCL FINAL COUNTDOWN TIMER ===== */
+.ucl-countdown-box {
+  background: linear-gradient(135deg, rgba(255,215,0,.07), rgba(108,99,255,.05));
+  border: 1px solid rgba(255,215,0,.3);
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+.ucl-countdown-title {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #ffd700;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.ucl-countdown-units {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+.ucl-cd-unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.ucl-cd-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  letter-spacing: 2px;
+  color: #ffd700;
+  line-height: 1;
+  min-width: 44px;
+  text-align: center;
+  background: rgba(255,215,0,.07);
+  border: 1px solid rgba(255,215,0,.2);
+  border-radius: 8px;
+  padding: 4px 6px;
+}
+.ucl-cd-label {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+.ucl-cd-sep {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 24px;
+  color: rgba(255,215,0,.4);
+  align-self: flex-start;
+  padding-top: 4px;
+}
+.ucl-final-teams {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+  font-size: 11px;
+  font-weight: 700;
+}
+.ucl-final-team {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.ucl-final-vs {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 16px;
+  color: rgba(255,215,0,.5);
+}
+
+/* ===== FORM GUIDE ===== */
+.form-guide {
+  display: flex;
+  gap: 3px;
+  margin-top: 4px;
+}
+.form-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  font-size: 9px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0;
+}
+.form-w { background: rgba(0,230,118,.2); color: #00e676; border: 1px solid rgba(0,230,118,.3); }
+.form-d { background: rgba(255,193,7,.15); color: #ffc107; border: 1px solid rgba(255,193,7,.25); }
+.form-l { background: rgba(255,61,90,.15); color: #ff6b81; border: 1px solid rgba(255,61,90,.25); }
+
+/* ===== TITLE RACE WIDGET ===== */
+.title-race-bar-wrap {
+  margin-bottom: 8px;
+}
+.title-race-team-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.tr-team-name {
+  font-size: 11px;
+  font-weight: 700;
+  width: 90px;
+  flex-shrink: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tr-bar-track {
+  flex: 1;
+  height: 6px;
+  background: rgba(255,255,255,.06);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.tr-bar-fill {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.tr-pts {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--accent);
+  min-width: 24px;
+  text-align: right;
+}
+
+/* ===== HOT STREAK BADGE ===== */
+.hot-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  background: rgba(255,100,0,.15);
+  border: 1px solid rgba(255,100,0,.3);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 8px;
+  font-weight: 800;
+  color: #ff6400;
+  letter-spacing: .5px;
+  animation: flicker 2.5s ease-in-out infinite;
+}
+@keyframes flicker {
+  0%,100% { opacity:1; }
+  50% { opacity:.7; }
+}
+
+/* ===== MATCH CARD TEAM COLOR ACCENT ===== */
+.team-logo-img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,.4));
+}
+
+/* ===== PAGE LOAD ANIMATION ===== */
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.match-card {
+  animation: fadeSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.day-section:nth-child(1) .match-card { animation-delay: 0ms; }
+.day-section:nth-child(2) .match-card { animation-delay: 60ms; }
+.day-section:nth-child(3) .match-card { animation-delay: 120ms; }
+
+/* ===== SCORE WITH WINNER HIGHLIGHT ===== */
+.score-winner {
+  color: #00e676 !important;
+  text-shadow: 0 0 12px rgba(0,230,118,.4);
+}
+.score-loser {
+  color: var(--muted) !important;
+}
+
+/* ===== LIVE PULSE ON TICKER DOTS ===== */
+@keyframes tickerPulse {
+  0%,100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.8); opacity: .6; }
+}
+.ticker-item .dot { animation: tickerPulse 1.8s ease-in-out infinite; }
+
+/* ===== GRADIENT SEPARATOR ===== */
+.gradient-sep {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(124,111,255,.3), transparent);
+  margin: 12px 0;
+}
+
+/* ===== MATCH COUNT CHIP ===== */
+.matchday-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(124,111,255,.12);
+  border: 1px solid rgba(124,111,255,.25);
+  border-radius: 20px;
+  padding: 3px 10px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: .3px;
+  margin-bottom: 12px;
+}
+
+/* ===== GOAL DIFF MINI CHIP ===== */
+.gd-chip {
+  font-size: 9px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-weight: 700;
+  letter-spacing: .3px;
+}
+.gd-pos { background: rgba(0,230,118,.1); color: #00e676; }
+.gd-neg { background: rgba(255,61,90,.1); color: #ff6b81; }
+.gd-neu { background: rgba(255,255,255,.05); color: var(--muted); }
+
+
+/* ===== HERO PARTICLE CANVAS ===== */
+#heroCanvas {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.6;
+}
+.hero { position: relative; overflow: hidden; }
+.hero-inner { position: relative; z-index: 1; }
+
+/* ===== TODAY'S MATCH HERO CARD ===== */
+.hero-match-banner {
+  background: linear-gradient(135deg, rgba(124,111,255,.1), rgba(0,255,135,.05));
+  border: 1px solid rgba(124,111,255,.2);
+  border-radius: 14px;
+  padding: 10px 16px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all .2s;
+}
+.hero-match-banner:hover {
+  border-color: rgba(124,111,255,.4);
+  background: linear-gradient(135deg, rgba(124,111,255,.15), rgba(0,255,135,.08));
+  transform: translateY(-1px);
+}
+.hero-banner-tag {
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  background: rgba(255,61,90,.15);
+  border: 1px solid rgba(255,61,90,.3);
+  border-radius: 4px;
+  padding: 2px 6px;
+  color: #ff6b81;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+.hero-banner-match {
+  flex: 1;
+  font-weight: 700;
+  color: var(--text);
+}
+.hero-banner-time {
+  font-size: 10px;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+
+@keyframes livePulse {
+  0%,100% { opacity:1; transform:scale(1); }
+  50% { opacity:.4; transform:scale(1.4); }
+}
+
+
+/* ═══════════════════════════════════════════════
+   BOSS UPGRADE CSS — NEXT LEVEL UI
+   ═══════════════════════════════════════════════ */
+
+/* ── NEON GRID BACKGROUND ─────────────────── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(124,111,255,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124,111,255,.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── SCORE SPOTLIGHT MODAL ─────────────────── */
+.spotlight-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  background: rgba(3, 4, 14, 0.92);
+  backdrop-filter: blur(28px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.spotlight-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+.spotlight-card {
+  width: min(600px, 92vw);
+  background: linear-gradient(145deg, #09091e, #060816);
+  border: 1px solid rgba(124,111,255,.35);
+  border-radius: 28px;
+  padding: 36px 32px;
+  position: relative;
+  transform: scale(0.88) translateY(24px);
+  transition: transform 0.35s cubic-bezier(0.16,1,.3,1);
+  box-shadow: 0 40px 120px rgba(0,0,0,.8), 0 0 0 1px rgba(255,255,255,.04);
+}
+.spotlight-overlay.open .spotlight-card {
+  transform: scale(1) translateY(0);
+}
+.spotlight-close {
+  position: absolute;
+  top: 16px; right: 16px;
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,.1);
+  background: rgba(255,255,255,.05);
+  color: var(--muted);
+  font-size: 14px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .2s;
+}
+.spotlight-close:hover { background: rgba(255,61,90,.15); border-color: rgba(255,61,90,.4); color: #ff6b81; }
+
+.spotlight-league {
+  font-size: 10px; font-weight: 800; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--muted);
+  margin-bottom: 20px; display: flex; align-items: center; gap: 8px;
+}
+.spotlight-league::after {
+  content: ''; flex: 1; height: 1px;
+  background: linear-gradient(90deg, rgba(124,111,255,.3), transparent);
+}
+
+.spotlight-teams {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; margin-bottom: 28px;
+}
+.spotlight-team {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 10px; flex: 1;
+}
+.spotlight-team-logo {
+  width: 64px; height: 64px; object-fit: contain;
+  filter: drop-shadow(0 4px 16px rgba(0,0,0,.5));
+  transition: transform .3s;
+}
+.spotlight-team-logo:hover { transform: scale(1.1); }
+.spotlight-team-name {
+  font-size: 14px; font-weight: 800; text-align: center;
+  line-height: 1.2;
+}
+.spotlight-score-box {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 4px; flex-shrink: 0;
+}
+.spotlight-score {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 72px; line-height: 1;
+  display: flex; align-items: center; gap: 8px;
+}
+.spotlight-score-h { color: var(--text); }
+.spotlight-score-a { color: var(--text); }
+.spotlight-score-h.win { color: #00e676; text-shadow: 0 0 24px rgba(0,230,118,.4); }
+.spotlight-score-a.win { color: #00e676; text-shadow: 0 0 24px rgba(0,230,118,.4); }
+.spotlight-score-h.loss, .spotlight-score-a.loss { color: rgba(255,255,255,.25); }
+.spotlight-sep-big { color: rgba(255,255,255,.2); font-family:'Bebas Neue',sans-serif; font-size:48px; line-height:1; }
+.spotlight-status-chip {
+  font-size: 10px; font-weight: 800; letter-spacing: 1.5px;
+  padding: 4px 12px; border-radius: 20px; text-transform: uppercase;
+}
+.spotlight-status-chip.final { background: rgba(116,125,140,.15); border: 1px solid rgba(116,125,140,.3); color: #747d8c; }
+.spotlight-status-chip.live  { background: rgba(255,61,90,.15);   border: 1px solid rgba(255,61,90,.4); color: #ff3d5a; animation: livePulse 1.2s infinite; }
+.spotlight-status-chip.upcoming { background: rgba(0,230,118,.1); border: 1px solid rgba(0,230,118,.25); color: #00e676; }
+
+/* Stats bars in spotlight */
+.spotlight-stats { margin-top: 24px; }
+.spotlight-stat-title {
+  font-size: 9px; font-weight: 800; letter-spacing: 2px;
+  color: var(--muted); text-transform: uppercase; margin-bottom: 14px;
+  text-align: center;
+}
+.stat-bar-row {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 10px;
+}
+.stat-bar-label { font-size: 10px; color: var(--muted); width: 70px; text-align: right; flex-shrink:0; }
+.stat-bar-label.right { text-align: left; }
+.stat-bar-center { flex: 1; display: flex; align-items: center; gap: 3px; }
+.stat-bar-h {
+  height: 6px; border-radius: 6px 0 0 6px;
+  background: linear-gradient(90deg, transparent, #7c6fff);
+  transition: width 0.8s cubic-bezier(0.4,0,0.2,1);
+}
+.stat-bar-a {
+  height: 6px; border-radius: 0 6px 6px 0;
+  background: linear-gradient(90deg, #00e676, transparent);
+  transition: width 0.8s cubic-bezier(0.4,0,0.2,1);
+}
+.stat-bar-mid { width: 2px; height: 10px; background: rgba(255,255,255,.1); flex-shrink:0; }
+
+/* Match info row */
+.spotlight-meta {
+  display: flex; align-items: center; justify-content: center;
+  gap: 16px; margin-top: 20px; padding-top: 16px;
+  border-top: 1px solid rgba(255,255,255,.06);
+}
+.spotlight-meta-item {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+}
+.spotlight-meta-val { font-size: 13px; font-weight: 700; color: var(--text); }
+.spotlight-meta-lbl { font-size: 9px; color: var(--muted); letter-spacing: .5px; }
+.spotlight-form-row {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 16px; padding: 10px 14px;
+  background: rgba(255,255,255,.025); border-radius: 10px;
+}
+.spotlight-form-label { font-size: 9px; font-weight: 700; letter-spacing: 1px; color: var(--muted); text-transform: uppercase; }
+
+/* ── RIPPLE EFFECT ────────────────────────────── */
+.match-card { position: relative; overflow: hidden; cursor: pointer; }
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(124,111,255,.18);
+  transform: scale(0);
+  animation: rippleAnim 0.55s linear;
+  pointer-events: none;
+}
+@keyframes rippleAnim {
+  to { transform: scale(4); opacity: 0; }
+}
+
+/* ── 3D TROPHY HEADER (UCL) ─────────────────── */
+.ucl-trophy-banner {
+  background: linear-gradient(135deg, rgba(255,215,0,.07) 0%, rgba(77,168,255,.04) 100%);
+  border: 1px solid rgba(255,215,0,.2);
+  border-radius: 20px;
+  padding: 20px 24px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  position: relative;
+  overflow: hidden;
+}
+.ucl-trophy-banner::before {
+  content: '';
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: conic-gradient(from 0deg, transparent 0%, rgba(255,215,0,.03) 25%, transparent 50%);
+  animation: trophyRotate 8s linear infinite;
+}
+@keyframes trophyRotate { to { transform: rotate(360deg); } }
+.trophy-3d {
+  font-size: 52px;
+  filter: drop-shadow(0 0 20px rgba(255,215,0,.5));
+  animation: trophyFloat 3s ease-in-out infinite;
+  position: relative; z-index:1;
+  flex-shrink: 0;
+}
+@keyframes trophyFloat {
+  0%,100% { transform: translateY(0) rotate(-3deg); }
+  50%      { transform: translateY(-8px) rotate(3deg); }
+}
+.ucl-trophy-info { position: relative; z-index:1; }
+.ucl-trophy-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 26px; letter-spacing: 3px; color: #ffd700;
+  filter: drop-shadow(0 0 12px rgba(255,215,0,.3));
+  line-height: 1;
+}
+.ucl-trophy-sub { font-size: 11px; color: var(--muted); margin-top: 4px; letter-spacing: .5px; }
+.ucl-trophy-finalists {
+  display: flex; align-items: center; gap: 10px;
+  margin-top: 10px;
+}
+.ucl-finalist-badge {
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 8px; padding: 5px 10px;
+  font-size: 12px; font-weight: 700;
+}
+.ucl-finalist-vs {
+  font-family: 'Bebas Neue',sans-serif;
+  font-size: 18px; color: rgba(255,215,0,.4);
+}
+
+/* ── CONFETTI (canvas) ───────────────────────── */
+#confettiCanvas {
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 9999;
+}
+
+/* ── MAGNETIC BUTTON EFFECT ─────────────────── */
+.btn-add-header, .btn-history-header {
+  transition: all 0.2s cubic-bezier(0.4,0,0.2,1) !important;
+}
+
+/* ── ENHANCED MATCH CARD ─────────────────────── */
+.match-card {
+  transition: all 0.3s cubic-bezier(0.4,0,0.2,1) !important;
+}
+.match-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: 0;
+  background: linear-gradient(135deg, rgba(124,111,255,.06), transparent);
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+.match-card:hover::after { opacity: 1; }
+
+/* ── HEADER GLOW WHEN LIVE ───────────────────── */
+.site-header.has-live {
+  border-bottom-color: rgba(255,61,90,.3) !important;
+  box-shadow: 0 1px 24px rgba(255,61,90,.08) !important;
+}
+
+/* ── DAY HEADER UPGRADE ──────────────────────── */
+.day-header {
+  background: linear-gradient(90deg, rgba(124,111,255,.08), transparent) !important;
+  border-left: 3px solid rgba(124,111,255,.4) !important;
+  border-radius: 0 8px 8px 0 !important;
+}
+.day-header.today-header {
+  background: linear-gradient(90deg, rgba(0,255,135,.08), transparent) !important;
+  border-left-color: rgba(0,255,135,.6) !important;
+  color: #00e676 !important;
+}
+
+/* ── LEAGUE TAB BADGE PULSE ──────────────────── */
+.tab-count {
+  animation: countBadge 2s ease-in-out infinite;
+}
+@keyframes countBadge {
+  0%,100% { box-shadow: none; }
+  50% { box-shadow: 0 0 8px rgba(124,111,255,.4); }
+}
+
+/* ── GLASSMORPHISM SIDEBAR WIDGETS ───────────── */
+.widget {
+  background: linear-gradient(145deg, rgba(22,24,41,.95), rgba(14,16,32,.9)) !important;
+}
+
+/* ── SCROLL REVEAL ANIMATION ─────────────────── */
+.day-section {
+  animation: revealSection 0.4s cubic-bezier(0.16,1,.3,1) both;
+}
+.day-section:nth-child(1) { animation-delay: 0ms; }
+.day-section:nth-child(2) { animation-delay: 80ms; }
+.day-section:nth-child(3) { animation-delay: 160ms; }
+.day-section:nth-child(4) { animation-delay: 240ms; }
+@keyframes revealSection {
+  from { opacity:0; transform: translateY(20px); }
+  to   { opacity:1; transform: translateY(0); }
+}
+
+/* ── NEON ACCENT LINE ON ACTIVE TAB ─────────── */
+.league-tab.active::before {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 20%; right: 20%;
+  height: 2px;
+  background: currentColor;
+  border-radius: 2px 2px 0 0;
+  opacity: .4;
+}
+.league-tab { position: relative; }
+
+/* ── WINNER TEAM HIGHLIGHT ON FINAL CARDS ────── */
+.team-winner .team-name { color: #00e676 !important; }
+.team-loser  .team-name { color: var(--muted) !important; }
+
+/* ── PROBABILITY BARS ENHANCED ───────────────── */
+.prob-track { height: 5px !important; background: rgba(255,255,255,.04) !important; border-radius:5px !important; overflow:hidden; }
+.prob-home  { background: linear-gradient(90deg,#7c6fff,#a78bfa) !important; }
+.prob-draw  { background: rgba(255,193,7,.5) !important; }
+.prob-away  { background: linear-gradient(90deg,#00e676,#00b8d4) !important; }
+
 /* ===== SOON COUNTDOWN ===== */
 .soon-countdown { border-radius: 6px !important; font-weight: 800 !important; }
 
@@ -275,9 +951,558 @@ body.light-mode .order-table-wrap { box-shadow: 0 4px 20px rgba(0,0,0,.08) !impo
 @media (min-width: 1100px) {
   .header-inner { gap: 20px !important; }
 }
+
+/* ── TAB ACTIVE INDICATOR LINE ── */
+.league-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 16px; right: 16px; height: 2px;
+  border-radius: 2px 2px 0 0;
+  background: currentColor;
+  opacity: 0;
+}
+.league-tab.epl.active::after  { background: var(--epl-acc);  opacity: .6; }
+.league-tab.ucl.active::after  { background: var(--ucl-acc);  opacity: .5; }
+.league-tab.fifa.active::after { background: var(--fifa-acc); opacity: .5; }
+
+/* ── CARD STAGE LABEL ── */
+.stage-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px; font-weight: 700;
+  color: var(--muted); letter-spacing: .5px;
+}
+
+/* ── CONTENT AREA ── */
+.content-area { padding: 20px 24px; min-height: 60vh; }
+.layout-wrap  { max-width: 1440px; margin: 0 auto; display: flex; gap: 24px; }
+
+/* ── RESULT COUNT ── */
+#resCount {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px; color: var(--muted);
+  padding: 4px 10px;
+  background: rgba(255,255,255,.04);
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  margin-left: auto;
+}
+
+/* ── FORM DOTS (UPGRADED) ── */
+.form-dot {
+  width: 20px; height: 20px; border-radius: 5px;
+  font-size: 9px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Space Mono', monospace;
+  letter-spacing: 0;
+}
+.form-w { background: rgba(5,245,128,.15); color: #05f580; border: 1px solid rgba(5,245,128,.3); }
+.form-d { background: rgba(255,193,7,.12); color: #ffc107; border: 1px solid rgba(255,193,7,.25); }
+.form-l { background: rgba(255,45,85,.12); color: #ff6b81; border: 1px solid rgba(255,45,85,.25); }
+
+/* ── HOT BADGE UPGRADED ── */
+.hot-badge {
+  background: linear-gradient(90deg, rgba(255,100,0,.15), rgba(255,60,0,.1));
+  border: 1px solid rgba(255,90,0,.35);
+  border-radius: 5px; padding: 2px 7px;
+  font-size: 9px; font-weight: 700; color: #ff6d00;
+  font-family: 'Space Mono', monospace;
+  letter-spacing: .5px;
+}
+
+/* ── STANDINGS WIDGET ── */
+.standing-row { display:flex; align-items:center; gap:7px; padding:5px 0; border-bottom:1px solid var(--border); font-size:11px; }
+.standing-rank { width:18px; text-align:center; font-weight:700; color:var(--muted); font-size:10px; flex-shrink:0; font-family:'Space Mono',monospace; }
+.standing-rank.top4 { color: var(--epl-acc); background: rgba(5,245,128,.08); border-radius:4px; padding:1px 3px; }
+.standing-rank.rel  { color: var(--live);    background: rgba(255,45,85,.08);  border-radius:4px; padding:1px 3px; }
+.standing-pts { font-weight:800; color:var(--accent2); font-size:13px; min-width:24px; text-align:right; font-family:'Space Mono',monospace; }
+.standings-header-row { font-family:'Space Mono',monospace; }
+
+/* ── TITLE RACE ── */
+.tr-bar-fill { border-radius: 6px !important; }
+.tr-pts { font-family: 'Space Mono', monospace !important; }
+
+/* ── UCL COUNTDOWN ── */
+.ucl-cd-num {
+  font-family: 'Bebas Neue', sans-serif !important;
+  background: rgba(255,215,0,.06) !important;
+  border-color: rgba(255,215,0,.15) !important;
+  border-radius: 10px !important;
+}
+.ucl-cd-label { font-family: 'Space Mono', monospace; }
+
+/* ── HERO BANNER ── */
+.hero-banner-tag { font-family: 'Space Mono', monospace; }
+.hero-match-banner {
+  background: linear-gradient(135deg, rgba(108,99,255,.08), rgba(5,245,128,.04)) !important;
+  border-color: rgba(108,99,255,.2) !important;
+}
+
+/* ── UCL FINAL GLOW ── */
+.match-card.ucl-final-glow {
+  border-color: rgba(255,215,0,.4) !important;
+  box-shadow: 0 0 28px rgba(255,215,0,.07), var(--shadow2) !important;
+  background: linear-gradient(135deg, rgba(255,215,0,.03), var(--grad-card)) !important;
+}
+
 </style>
 <style>
-:root{--bg:#060710;--surface:#0e1020;--surface2:#161829;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.14);--text:#eef0ff;--muted:#6b7490;--dim:#2e3354;--epl:#38003c;--epl-acc:#00ff87;--ucl:#1a1464;--ucl-acc:#60b3ff;--fifa:#006633;--fifa-acc:#ffd700;--live:#ff3d5a;--upcoming:#00e676;--final:#747d8c;--accent:#7c6fff;--delivery-acc:#a78bfa;--shadow:rgba(0,0,0,0.5)}
+:root{
+  /* ── Core Palette ── */
+  --bg:#04050f;
+  --surface:#0a0c1a;
+  --surface2:#0f1221;
+  --surface3:#141728;
+  /* ── Borders ── */
+  --border:rgba(255,255,255,0.055);
+  --border2:rgba(255,255,255,0.11);
+  --border3:rgba(255,255,255,0.18);
+  /* ── Typography ── */
+  --text:#f0f2ff;
+  --text2:#c8ccee;
+  --muted:#5a6180;
+  --muted2:#7b85a8;
+  --dim:#1e2240;
+  /* ── League Colors ── */
+  --epl:#3d0044;
+  --epl-acc:#05f580;
+  --epl-acc2:#00c468;
+  --ucl:#0d0a5e;
+  --ucl-acc:#4da8ff;
+  --ucl-acc2:#2f7fd4;
+  --fifa:#003d1a;
+  --fifa-acc:#f5c518;
+  /* ── Status Colors ── */
+  --live:#ff2d55;
+  --live-bg:rgba(255,45,85,.1);
+  --upcoming:#00e676;
+  --upcoming-bg:rgba(0,230,118,.08);
+  --final:#4a5270;
+  --final-bg:rgba(74,82,112,.12);
+  /* ── Accent ── */
+  --accent:#6c63ff;
+  --accent2:#9d8fff;
+  --accent-bg:rgba(108,99,255,.1);
+  --accent-glow:rgba(108,99,255,.25);
+  --delivery-acc:#b085f5;
+  /* ── Shadows ── */
+  --shadow:rgba(0,0,0,0.6);
+  --shadow2:0 4px 24px rgba(0,0,0,.5);
+  --shadow3:0 12px 48px rgba(0,0,0,.7);
+  /* ── Gradients ── */
+  --grad-hero:linear-gradient(180deg, #07091a 0%, #04050f 100%);
+  --grad-card:linear-gradient(145deg, #0d0f1e, #090b17);
+  --grad-epl:linear-gradient(135deg, rgba(5,245,128,.06), rgba(61,0,68,.08));
+  --grad-ucl:linear-gradient(135deg, rgba(77,168,255,.06), rgba(13,10,94,.08));
+}
+
+/* ═══════════════════════════════════════════════════════
+   OBSIDIAN PRO — FULL STYLE OVERHAUL
+   ═══════════════════════════════════════════════════════ */
+
+/* ── GLOBAL RESETS ── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── NEON GRID BACKGROUND (UPGRADED) ── */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(108,99,255,.12), transparent),
+    linear-gradient(rgba(108,99,255,.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(108,99,255,.018) 1px, transparent 1px);
+  background-size: 100% 100%, 56px 56px, 56px 56px;
+  pointer-events: none;
+  z-index: 0;
+}
+body > * { position: relative; z-index: 1; }
+
+/* ── HEADER REDESIGN ── */
+.site-header {
+  background: rgba(4,5,15,.92) !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  border-bottom: 1px solid var(--border2) !important;
+  box-shadow: 0 1px 0 rgba(108,99,255,.08), 0 8px 32px rgba(0,0,0,.4) !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 200 !important;
+}
+.header-inner {
+  max-width: 1440px; margin: 0 auto;
+  padding: 0 24px; height: 60px;
+  display: flex; align-items: center; gap: 16px;
+}
+
+/* ── LOGO ── */
+.logo {
+  font-family: 'Syne', sans-serif !important;
+  font-size: 22px !important;
+  font-weight: 800 !important;
+  letter-spacing: 4px !important;
+  text-transform: uppercase !important;
+  background: linear-gradient(110deg, #fff 0%, #c0b8ff 35%, #6c63ff 65%, #05f580 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: transparent !important;
+  filter: drop-shadow(0 0 20px rgba(108,99,255,.5)) !important;
+  flex-shrink: 0 !important;
+}
+.logo span { color: transparent !important; }
+
+/* ── LIVE TICKER ── */
+.live-ticker { flex: 1; overflow: hidden; max-width: 560px; }
+.ticker-inner {
+  display: flex; gap: 28px;
+  animation: ticker 40s linear infinite;
+  white-space: nowrap;
+}
+.ticker-item {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px; font-weight: 500;
+  color: var(--muted2);
+  display: flex; align-items: center; gap: 7px;
+  flex-shrink: 0;
+  letter-spacing: .2px;
+}
+.ticker-item .dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--accent); flex-shrink: 0;
+}
+.ticker-live {
+  font-weight: 700; font-size: 9px;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--accent2);
+}
+
+/* ── HERO / TAB AREA ── */
+.hero {
+  background: var(--grad-hero) !important;
+  border-bottom: 1px solid var(--border) !important;
+  padding: 20px 24px !important;
+  position: relative; overflow: hidden;
+}
+.hero::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(108,99,255,.3), transparent);
+}
+
+/* ── LEAGUE TABS ── */
+.league-tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
+.league-tabs::-webkit-scrollbar { display: none; }
+
+.league-tab {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 18px; border-radius: 10px;
+  border: 1px solid var(--border2); cursor: pointer;
+  flex-shrink: 0; transition: all .22s cubic-bezier(.4,0,.2,1);
+  background: rgba(10,12,26,.8);
+  position: relative; overflow: hidden;
+  font-family: 'DM Sans', sans-serif;
+}
+.league-tab::before {
+  content: ''; position: absolute; inset: 0; opacity: 0;
+  transition: opacity .22s;
+  border-radius: inherit;
+}
+.league-tab:hover { border-color: var(--border3); transform: translateY(-1px); }
+.league-tab.epl::before  { background: var(--grad-epl); }
+.league-tab.ucl::before  { background: var(--grad-ucl); }
+.league-tab:hover::before, .league-tab.active::before { opacity: 1; }
+
+.league-tab.epl.active  { border-color: rgba(5,245,128,.35); box-shadow: 0 0 20px rgba(5,245,128,.1), 0 4px 16px rgba(0,0,0,.4) !important; }
+.league-tab.ucl.active  { border-color: rgba(77,168,255,.35); box-shadow: 0 0 20px rgba(77,168,255,.1), 0 4px 16px rgba(0,0,0,.4) !important; }
+.league-tab.fifa.active { border-color: rgba(245,197,24,.35); box-shadow: 0 0 20px rgba(245,197,24,.1), 0 4px 16px rgba(0,0,0,.4) !important; }
+
+.tab-icon { font-size: 18px; }
+.tab-name { font-size: 13px; font-weight: 700; color: var(--text); letter-spacing: .2px; }
+.tab-sub  { font-size: 10px; color: var(--muted); margin-top: 1px; font-weight: 500; }
+.tab-count {
+  background: var(--accent-bg); color: var(--accent2);
+  border: 1px solid rgba(108,99,255,.2);
+  border-radius: 20px; padding: 1px 8px;
+  font-size: 10px; font-weight: 700;
+  min-width: 22px; text-align: center;
+}
+
+/* ── FILTER BAR ── */
+.filter-bar { display: flex; align-items: center; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; }
+.filter-btn {
+  padding: 6px 14px; border-radius: 8px;
+  border: 1px solid var(--border2);
+  font-size: 11px; font-weight: 600; cursor: pointer;
+  background: transparent; color: var(--muted2);
+  transition: all .18s; letter-spacing: .2px;
+  font-family: 'DM Sans', sans-serif;
+}
+.filter-btn:hover { border-color: var(--border3); color: var(--text2); background: rgba(255,255,255,.04); }
+.filter-btn.active {
+  background: var(--accent); border-color: var(--accent);
+  color: #fff; box-shadow: 0 0 16px rgba(108,99,255,.3);
+}
+
+/* ── MATCH CARDS — PREMIUM REDESIGN ── */
+.match-card {
+  background: var(--grad-card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 16px !important;
+  overflow: hidden !important;
+  transition: all .25s cubic-bezier(.4,0,.2,1) !important;
+  position: relative !important;
+  cursor: pointer !important;
+  margin-bottom: 10px !important;
+}
+.match-card:hover {
+  border-color: var(--border3) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 40px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.06) !important;
+}
+.match-card.epl  { border-left: 3px solid rgba(5,245,128,.4) !important; }
+.match-card.ucl  { border-left: 3px solid rgba(77,168,255,.4) !important; }
+.match-card.fifa { border-left: 3px solid rgba(245,197,24,.4) !important; }
+.match-card.epl:hover  { border-left-color: rgba(5,245,128,.8) !important; }
+.match-card.ucl:hover  { border-left-color: rgba(77,168,255,.8) !important; }
+.match-card.live { border-left-color: var(--live) !important; }
+
+.card-content { flex: 1; padding: 14px 16px; }
+.card-actions {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 6px; padding: 10px 12px;
+  border-left: 1px solid var(--border);
+  background: rgba(255,255,255,.02);
+}
+
+/* ── LEAGUE PILL ── */
+.league-pill {
+  display: inline-flex; align-items: center;
+  padding: 2px 8px; border-radius: 4px;
+  font-size: 9px; font-weight: 700; letter-spacing: 1px;
+  text-transform: uppercase;
+  font-family: 'Space Mono', monospace;
+}
+.pill-epl  { background: rgba(5,245,128,.12); color: var(--epl-acc); border: 1px solid rgba(5,245,128,.2); }
+.pill-ucl  { background: rgba(77,168,255,.12); color: var(--ucl-acc); border: 1px solid rgba(77,168,255,.2); }
+.pill-fifa { background: rgba(245,197,24,.12); color: var(--fifa-acc); border: 1px solid rgba(245,197,24,.2); }
+
+/* ── STATUS BADGES ── */
+.status-badge {
+  padding: 3px 10px; border-radius: 6px;
+  font-size: 9px; font-weight: 800; letter-spacing: 1.2px;
+  text-transform: uppercase;
+  font-family: 'Space Mono', monospace;
+}
+.badge-final   { background: var(--final-bg); color: var(--final); border: 1px solid rgba(74,82,112,.3); }
+.badge-live    { background: var(--live-bg); color: var(--live); border: 1px solid rgba(255,45,85,.3); animation: pulseLive 1.4s ease-in-out infinite; }
+.badge-upcoming{ background: var(--upcoming-bg); color: var(--upcoming); border: 1px solid rgba(0,230,118,.2); }
+.badge-soon    { background: rgba(255,165,0,.1); color: #ffab40; border: 1px solid rgba(255,165,0,.25); }
+
+/* ── TEAM NAMES & MATCHUP ── */
+.matchup { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+.team-block { flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; }
+.team-name {
+  font-size: 13px; font-weight: 700;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  color: var(--text); letter-spacing: -.1px;
+  font-family: 'DM Sans', sans-serif;
+}
+.team-name.away { text-align: right; }
+.team-winner .team-name { color: var(--upcoming) !important; }
+.team-loser  .team-name { color: var(--muted) !important; }
+
+/* ── SCORE ── */
+.score-center { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+.score-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 30px; line-height: 1; letter-spacing: 1px;
+  color: var(--text);
+}
+.score-sep  { font-size: 16px; color: var(--dim); font-weight: 300; }
+.kickoff-time {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px; color: var(--muted); letter-spacing: 1px;
+}
+.score-winner { color: var(--upcoming) !important; text-shadow: 0 0 16px rgba(0,230,118,.35); }
+.score-loser  { color: var(--muted) !important; }
+
+/* ── WIN PROBABILITY BARS ── */
+.prob-section { margin-top: 10px; display: flex; align-items: center; gap: 7px; font-size: 10px; }
+.prob-team    { font-weight: 700; color: var(--text2); min-width: 28px; }
+.prob-track   { flex: 1; height: 4px; background: rgba(255,255,255,.05); border-radius: 4px; overflow: hidden; display: flex; }
+.prob-home    { background: linear-gradient(90deg, #6c63ff, #9d8fff); }
+.prob-draw    { background: rgba(255,193,7,.45); }
+.prob-away    { background: linear-gradient(90deg, #05f580, #00b8d4); }
+.prob-draw-label { color: var(--muted); font-size: 9px; }
+
+/* ── SOON BANNER ── */
+.soon-banner {
+  display: flex; align-items: center; gap: 7px;
+  background: linear-gradient(90deg, rgba(255,165,0,.1), rgba(255,165,0,.02));
+  border: 1px solid rgba(255,165,0,.2);
+  border-radius: 7px; padding: 5px 10px; margin-bottom: 10px;
+  font-size: 10px; font-weight: 600;
+}
+.soon-text { color: #ffab40; font-weight: 700; letter-spacing: .3px; }
+.soon-countdown { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text2); margin-left: auto; }
+
+/* ── DAY HEADERS ── */
+.day-header {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
+  text-transform: uppercase; color: var(--muted2);
+  padding: 6px 12px; margin-bottom: 10px;
+  background: linear-gradient(90deg, rgba(108,99,255,.07), transparent) !important;
+  border-left: 2px solid rgba(108,99,255,.4) !important;
+  border-radius: 0 6px 6px 0 !important;
+  font-family: 'Space Mono', monospace;
+}
+.day-header.today-header {
+  background: linear-gradient(90deg, rgba(5,245,128,.07), transparent) !important;
+  border-left-color: rgba(5,245,128,.5) !important;
+  color: var(--epl-acc) !important;
+}
+
+/* ── SIDEBAR WIDGETS ── */
+.sidebar { width: 280px; flex-shrink: 0; display: flex; flex-direction: column; gap: 14px; }
+.widget {
+  background: linear-gradient(145deg, rgba(14,16,34,.98), rgba(9,11,22,.95)) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 14px !important;
+  padding: 16px !important;
+  box-shadow: var(--shadow2) !important;
+}
+.widget-title {
+  font-size: 9px; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--muted);
+  margin-bottom: 12px; padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+  font-family: 'Space Mono', monospace;
+}
+
+/* ── STAT ROWS (OVERVIEW WIDGET) ── */
+.stat-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid var(--border); }
+.stat-row:last-child { border-bottom: none; }
+.stat-label { font-size: 11px; color: var(--muted2); font-weight: 500; }
+.stat-val   { font-size: 13px; font-weight: 700; color: var(--text); font-family: 'Space Mono', monospace; }
+
+/* ── NEXT MATCHES WIDGET ── */
+.next-match-item { padding: 7px 0; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 3px; }
+.next-match-item:last-child { border-bottom: none; }
+.next-match-teams { font-size: 11px; font-weight: 600; color: var(--text2); }
+.next-match-time  { font-size: 10px; color: var(--muted); font-family: 'Space Mono', monospace; }
+
+/* ── CARD BUTTONS ── */
+.card-btn {
+  width: 28px; height: 28px; border-radius: 7px;
+  border: 1px solid var(--border2); background: transparent;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all .18s; color: var(--muted);
+}
+.card-btn svg { width: 13px; height: 13px; stroke: currentColor; fill: none; }
+.edit-btn:hover { background: rgba(108,99,255,.15); border-color: rgba(108,99,255,.4); color: var(--accent2); }
+.del-btn:hover  { background: rgba(255,45,85,.12); border-color: rgba(255,45,85,.35); color: var(--live); }
+
+/* ── SEARCH & SORT ── */
+.search-wrap { position: relative; }
+.search-input {
+  width: 100%; background: rgba(255,255,255,.04);
+  border: 1px solid var(--border2);
+  border-radius: 8px; padding: 8px 12px 8px 32px;
+  color: var(--text); font-size: 12px;
+  font-family: 'DM Sans', sans-serif;
+  transition: border-color .18s;
+}
+.search-input:focus { outline: none; border-color: rgba(108,99,255,.5); background: rgba(108,99,255,.05); }
+.search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 13px; pointer-events: none; }
+
+/* ── ADD MATCH BUTTONS ── */
+.btn-add-header {
+  background: linear-gradient(135deg, #6c63ff, #5b53e8) !important;
+  border: none !important;
+  border-radius: 9px !important;
+  padding: 8px 16px !important;
+  font-weight: 700 !important; font-size: 12px !important;
+  color: #fff !important;
+  cursor: pointer !important;
+  box-shadow: 0 4px 16px rgba(108,99,255,.35) !important;
+  transition: all .2s !important;
+  letter-spacing: .3px !important;
+  font-family: 'DM Sans', sans-serif !important;
+}
+.btn-add-header:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 6px 24px rgba(108,99,255,.5) !important;
+}
+
+/* ── DATE BADGE / CLOCK ── */
+.date-badge {
+  font-size: 11px; font-weight: 600;
+  color: var(--muted2); letter-spacing: .3px;
+  font-family: 'Space Mono', monospace;
+  flex-shrink: 0;
+}
+
+/* ── MODAL REDESIGN ── */
+.modal-overlay {
+  background: rgba(2,3,12,.9) !important;
+  backdrop-filter: blur(20px) !important;
+}
+.modal-box {
+  background: linear-gradient(145deg, #0d0f22, #09091a) !important;
+  border: 1px solid rgba(108,99,255,.25) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 40px 100px rgba(0,0,0,.8) !important;
+}
+.modal-title { font-family: 'Syne', sans-serif !important; font-size: 18px !important; font-weight: 800 !important; letter-spacing: 1px !important; }
+.modal-close:hover { background: rgba(255,45,85,.12) !important; color: var(--live) !important; }
+.form-label { font-family: 'Space Mono', monospace; font-size: 9px !important; letter-spacing: 1.5px !important; color: var(--muted) !important; }
+.form-input, .form-select {
+  background: rgba(255,255,255,.04) !important;
+  border: 1px solid var(--border2) !important;
+  border-radius: 9px !important;
+  color: var(--text) !important;
+  font-family: 'DM Sans', sans-serif !important;
+  font-size: 13px !important;
+  transition: border-color .18s, background .18s !important;
+}
+.form-input:focus, .form-select:focus {
+  border-color: rgba(108,99,255,.5) !important;
+  background: rgba(108,99,255,.05) !important;
+  outline: none !important;
+}
+.btn-save {
+  background: linear-gradient(135deg, #6c63ff, #5b53e8) !important;
+  border-radius: 10px !important;
+  font-weight: 700 !important;
+  box-shadow: 0 4px 20px rgba(108,99,255,.4) !important;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(108,99,255,.3); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(108,99,255,.5); }
+
+/* ── TOAST NOTIFICATIONS ── */
+.toast {
+  border-radius: 10px !important;
+  font-family: 'DM Sans', sans-serif !important;
+  font-weight: 600 !important;
+  backdrop-filter: blur(16px) !important;
+}
+
 body.light-mode{--bg:#f0f2ff;--surface:#ffffff;--surface2:#e8eaf6;--border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.14);--text:#1a1d35;--muted:#6b7490;--dim:#c5c8e0;--epl-acc:#006633;--ucl-acc:#1a1464;--fifa-acc:#b8860b;--live:#e0001a;--upcoming:#007a3d;--final:#4a5568;--accent:#5b4df5;--delivery-acc:#7c5cbf;--shadow:rgba(100,100,150,0.15)}
 body.light-mode .match-card{background:#fff;border-color:rgba(0,0,0,0.1)}
 body.light-mode .league-tab{background:#e8eaf6}
@@ -829,6 +2054,10 @@ body.mobile-view .match-sel-btn{font-size:10px;padding:4px 10px}
 <header class="site-header">
   <div class="header-inner">
     <div class="logo">Match<span>Day</span></div>
+    <div id="liveIndicator" style="display:none;align-items:center;gap:4px;background:rgba(255,61,90,.12);border:1px solid rgba(255,61,90,.35);border-radius:6px;padding:3px 8px;font-size:10px;font-weight:800;color:#ff6b81;letter-spacing:.8px;flex-shrink:0">
+      <span style="width:6px;height:6px;border-radius:50%;background:#ff3d5a;animation:livePulse 1.2s ease-in-out infinite"></span>
+      LIVE
+    </div>
     <div class="live-ticker"><div class="ticker-inner" id="ticker"></div></div>
     <div class="header-right">
       <div class="date-badge" id="liveClock"></div>
@@ -876,16 +2105,18 @@ body.mobile-view .match-sel-btn{font-size:10px;padding:4px 10px}
 </header>
 
 <div class="hero">
+  <canvas id="heroCanvas"></canvas>
   <div class="hero-inner">
+  <div id="heroBanner"></div>
     <div class="league-tabs" id="leagueTabs">
       <div class="league-tab epl active" onclick="switchLeague('epl')" id="tab-epl">
         <span class="tab-icon">🏴󠁧󠁢󠁥󠁮󠁧󠁿</span>
-        <div class="tab-info"><div class="tab-name">Premier League</div><div class="tab-sub">England • Top Flight</div></div>
+        <div class="tab-info"><div class="tab-name">Premier League</div><div class="tab-sub">England • Matchday 37</div></div>
         <span class="tab-count" id="cnt-epl">20</span>
       </div>
       <div class="league-tab ucl" onclick="switchLeague('ucl')" id="tab-ucl">
         <span class="tab-icon">⭐</span>
-        <div class="tab-info"><div class="tab-name">Champions League</div><div class="tab-sub">Europe • Semi-finals</div></div>
+        <div class="tab-info"><div class="tab-name">Champions League</div><div class="tab-sub">Europe • 🏆 Grand Final</div></div>
         <span class="tab-count" id="cnt-ucl">5</span>
       </div>
       <div class="league-tab fifa" onclick="switchLeague('fifa')" id="tab-fifa">
@@ -900,7 +2131,7 @@ body.mobile-view .match-sel-btn{font-size:10px;padding:4px 10px}
       </div>
       <span id="cnt-history" style="display:none">0</span>
     </div>
-  </div>
+    </div>
 </div>
 
 <div class="main">
@@ -933,6 +2164,17 @@ body.mobile-view .match-sel-btn{font-size:10px;padding:4px 10px}
       <div class="widget-title">➕ Quick Add</div>
       <div style="font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:14px">Add a new match or delivery order instantly.</div>
       <button onclick="handleAddBtn()" style="width:100%;padding:12px;border-radius:12px;border:1px solid rgba(124,111,255,.35);background:linear-gradient(135deg,rgba(124,111,255,.15),rgba(124,111,255,.05));color:#c4b5fd;font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;letter-spacing:.3px" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(124,111,255,.25)'" onmouseout="this.style.transform='';this.style.boxShadow=''">+ Add New Entry</button>
+    </div>
+    <div class="widget" id="titleRaceWidget" style="display:none">
+      <div class="widget-title">🥇 Title Race</div>
+      <div id="titleRaceContent"></div>
+      <div class="gradient-sep"></div>
+      <div style="font-size:9px;color:var(--muted);letter-spacing:.5px">3 matches remaining · Matchday 37</div>
+    </div>
+    <div id="uclCountdownWidget" style="display:none"></div>
+    <div class="widget" id="standingsWidget" style="display:none">
+      <div class="widget-title">🏆 EPL Standings</div>
+      <div id="standingsContent"></div>
     </div>
   </aside>
 </div>
@@ -1309,34 +2551,66 @@ const CLUBS = {
   brentford:   { name:'Brentford',         abbr:'BRE',     color:'#E30613', logo:'https://crests.football-data.org/402.png' },
 };
 
-const ALL_TEAMS={'Arsenal FC':{color:'#EF0107',logo:'https://crests.football-data.org/57.png'},'Arsenal':{color:'#EF0107',logo:'https://crests.football-data.org/57.png'},'Manchester City':{color:'#6CABDD',logo:'https://crests.football-data.org/65.png'},'Liverpool FC':{color:'#C8102E',logo:'https://crests.football-data.org/64.png'},'Chelsea FC':{color:'#034694',logo:'https://crests.football-data.org/61.png'},'Manchester United':{color:'#DA291C',logo:'https://crests.football-data.org/66.png'},'Tottenham Hotspur':{color:'#132257',logo:'https://crests.football-data.org/73.png'},'Newcastle United':{color:'#241F20',logo:'https://crests.football-data.org/67.png'},'Aston Villa':{color:'#670E36',logo:'https://crests.football-data.org/58.png'},'West Ham United':{color:'#7A263A',logo:'https://crests.football-data.org/563.png'},'Nottingham Forest':{color:'#DD0000',logo:'https://crests.football-data.org/351.png'},'Wolverhampton':{color:'#FDB913',logo:'https://crests.football-data.org/76.png'},'Fulham FC':{color:'#CC0000',logo:'https://crests.football-data.org/63.png'},'Brentford FC':{color:'#E30613',logo:'https://crests.football-data.org/402.png'},'Crystal Palace':{color:'#1B458F',logo:'https://crests.football-data.org/354.png'},'Everton FC':{color:'#003399',logo:'https://crests.football-data.org/62.png'},'AFC Bournemouth':{color:'#DA291C',logo:'https://crests.football-data.org/1044.png'},'Leeds United':{color:'#FFCD00',logo:'https://crests.football-data.org/341.png'},'Burnley FC':{color:'#6C1D45',logo:'https://crests.football-data.org/328.png'},'Sunderland AFC':{color:'#EB172B',logo:'https://crests.football-data.org/387.png'},'Brighton & Hove Albion':{color:'#0057B8',logo:'https://crests.football-data.org/397.png'},'Brighton':{color:'#0057B8',logo:'https://crests.football-data.org/397.png'},'PSG':{color:'#004170',logo:'https://crests.football-data.org/559.png'},'Bayern Munich':{color:'#DC052D',logo:'https://crests.football-data.org/5.png'},'Real Madrid':{color:'#FEBE10',logo:'https://crests.football-data.org/86.png'},'FC Barcelona':{color:'#A50044',logo:'https://crests.football-data.org/81.png'},'Atletico Madrid':{color:'#CE3524',logo:'https://crests.football-data.org/78.png'},'Sporting CP':{color:'#4E9A2E',logo:'https://crests.football-data.org/498.png'},'Atalanta BC':{color:'#1E3E77',logo:'https://crests.football-data.org/102.png'},'Inter Milan':{color:'#010E80',logo:'https://crests.football-data.org/108.png'},'TBD':{color:'#333355',logo:''}};
+const ALL_TEAMS={'Arsenal FC':{color:'#EF0107',logo:'https://crests.football-data.org/57.png'},'Arsenal':{color:'#EF0107',logo:'https://crests.football-data.org/57.png'},'Manchester City':{color:'#6CABDD',logo:'https://crests.football-data.org/65.png'},'Liverpool FC':{color:'#C8102E',logo:'https://crests.football-data.org/64.png'},'Chelsea FC':{color:'#034694',logo:'https://crests.football-data.org/61.png'},'Manchester United':{color:'#DA291C',logo:'https://crests.football-data.org/66.png'},'Tottenham Hotspur':{color:'#132257',logo:'https://crests.football-data.org/73.png'},'Newcastle United':{color:'#241F20',logo:'https://crests.football-data.org/67.png'},'Aston Villa':{color:'#670E36',logo:'https://crests.football-data.org/58.png'},'West Ham United':{color:'#7A263A',logo:'https://crests.football-data.org/563.png'},'Nottingham Forest':{color:'#DD0000',logo:'https://crests.football-data.org/351.png'},'Wolverhampton':{color:'#FDB913',logo:'https://crests.football-data.org/76.png'},'Fulham FC':{color:'#CC0000',logo:'https://crests.football-data.org/63.png'},'Brentford FC':{color:'#E30613',logo:'https://crests.football-data.org/402.png'},'Crystal Palace':{color:'#1B458F',logo:'https://crests.football-data.org/354.png'},'Everton FC':{color:'#003399',logo:'https://crests.football-data.org/62.png'},'AFC Bournemouth':{color:'#DA291C',logo:'https://crests.football-data.org/1044.png'},'Leeds United':{color:'#FFCD00',logo:'https://crests.football-data.org/341.png'},'Burnley FC':{color:'#6C1D45',logo:'https://crests.football-data.org/328.png'},'Sunderland AFC':{color:'#EB172B',logo:'https://crests.football-data.org/387.png'},'Brighton & Hove Albion':{color:'#0057B8',logo:'https://crests.football-data.org/397.png'},'Brighton':{color:'#0057B8',logo:'https://crests.football-data.org/397.png'},'PSG':{color:'#004170',logo:'https://crests.football-data.org/559.png'},'Bayern Munich':{color:'#DC052D',logo:'https://crests.football-data.org/5.png'},'Real Madrid':{color:'#FEBE10',logo:'https://crests.football-data.org/86.png'},'FC Barcelona':{color:'#A50044',logo:'https://crests.football-data.org/81.png'},'Atletico Madrid':{color:'#CE3524',logo:'https://crests.football-data.org/78.png'},'Sporting CP':{color:'#4E9A2E',logo:'https://crests.football-data.org/498.png'},'Atalanta BC':{color:'#1E3E77',logo:'https://crests.football-data.org/102.png'},'Inter Milan':{color:'#010E80',logo:'https://crests.football-data.org/108.png'},'TBD':{color:'#333355',logo:''},
+'Wolverhampton Wanderers':{color:'#FDB913',logo:'https://crests.football-data.org/76.png'},
+'West Ham United':{color:'#7A263A',logo:'https://crests.football-data.org/563.png'},
+'Fulham FC':{color:'#CC0000',logo:'https://crests.football-data.org/63.png'},
+'Leeds United':{color:'#FFCD00',logo:'https://crests.football-data.org/341.png'},
+'AFC Bournemouth':{color:'#DA291C',logo:'https://crests.football-data.org/1044.png'},
+'Burnley FC':{color:'#6C1D45',logo:'https://crests.football-data.org/328.png'},
+'Sunderland AFC':{color:'#EB172B',logo:'https://crests.football-data.org/387.png'},
+'Paris Saint-Germain':{color:'#004170',logo:'https://crests.football-data.org/559.png'},
+'Bayern Munich':{color:'#DC052D',logo:'https://crests.football-data.org/5.png'},
+'Arsenal FC':{color:'#EF0107',logo:'https://crests.football-data.org/57.png'},
+'Sporting CP':{color:'#4E9A2E',logo:'https://crests.football-data.org/498.png'},
+};
 
 const DEFAULT_DATA={
   epl:{name:'Premier League',class:'epl',pill:'pill-epl',matches:[
-    {id:1,status:'final',home:'Tottenham Hotspur',away:'Brighton',scoreH:2,scoreA:2,time:'Sat Apr 18, 10:00 PM IST',stage:'Matchday 34'},
-    {id:2,status:'final',home:'Chelsea FC',away:'Manchester United',scoreH:0,scoreA:1,time:'Sun Apr 19, 12:30 AM IST',stage:'Matchday 34'},
-    {id:3,status:'final',home:'Aston Villa',away:'Sunderland AFC',scoreH:4,scoreA:3,time:'Sun Apr 19, 6:30 PM IST',stage:'Matchday 34'},
-    {id:4,status:'final',home:'Everton FC',away:'Liverpool FC',scoreH:1,scoreA:2,time:'Sun Apr 19, 6:30 PM IST',stage:'Matchday 34'},
-    {id:5,status:'final',home:'Manchester City',away:'Arsenal FC',scoreH:2,scoreA:1,time:'Sun Apr 19, 9:00 PM IST',stage:'Matchday 34'},
-    {id:6,status:'scheduled',home:'Sunderland AFC',away:'Nottingham Forest',time:'Sat Apr 26, 12:30 AM IST',stage:'Matchday 36',probH:34.8,probA:35.7,probD:29.5},
-    {id:7,status:'scheduled',home:'Liverpool FC',away:'Crystal Palace',time:'Sat Apr 26, 7:30 PM IST',stage:'Matchday 36',probH:66,probA:14.8,probD:19.2},
-    {id:8,status:'scheduled',home:'Arsenal FC',away:'Newcastle United',time:'Sat Apr 26, 10:00 PM IST',stage:'Matchday 36',probH:64.9,probA:15.4,probD:19.7},
-    {id:9,status:'scheduled',home:'Manchester United',away:'Brentford FC',time:'Tue Apr 29, 12:30 AM IST',stage:'Matchday 37',probH:51.9,probA:24.1,probD:24},
-    {id:10,status:'scheduled',home:'Newcastle United',away:'Brighton',time:'Sat May 2, 7:30 PM IST',stage:'Matchday 37',probH:39.7,probA:34.8,probD:25.5}
+    // ===== MATCHDAY 36 RESULTS =====
+    {id:101,status:'final',home:'Leeds United',away:'Burnley FC',scoreH:3,scoreA:1,time:'Sat May 2, 12:30 AM IST',stage:'Matchday 36'},
+    {id:102,status:'final',home:'Brentford FC',away:'West Ham United',scoreH:3,scoreA:0,time:'Sat May 2, 7:30 PM IST',stage:'Matchday 36'},
+    {id:103,status:'final',home:'Newcastle United',away:'Brighton & Hove Albion',scoreH:3,scoreA:1,time:'Sat May 2, 7:30 PM IST',stage:'Matchday 36'},
+    {id:104,status:'final',home:'Wolverhampton',away:'Sunderland AFC',scoreH:1,scoreA:1,time:'Sat May 2, 7:30 PM IST',stage:'Matchday 36'},
+    {id:105,status:'final',home:'Arsenal FC',away:'Fulham FC',scoreH:3,scoreA:0,time:'Sat May 2, 10:00 PM IST',stage:'Matchday 36'},
+    {id:106,status:'final',home:'AFC Bournemouth',away:'Crystal Palace',scoreH:3,scoreA:0,time:'Sun May 3, 6:30 PM IST',stage:'Matchday 36'},
+    {id:107,status:'final',home:'Manchester United',away:'Liverpool FC',scoreH:3,scoreA:2,time:'Sun May 3, 8:00 PM IST',stage:'Matchday 36'},
+    {id:108,status:'final',home:'Aston Villa',away:'Tottenham Hotspur',scoreH:1,scoreA:2,time:'Sun May 3, 11:30 PM IST',stage:'Matchday 36'},
+    {id:109,status:'final',home:'Chelsea FC',away:'Nottingham Forest',scoreH:1,scoreA:3,time:'Mon May 4, 7:30 PM IST',stage:'Matchday 36'},
+    {id:110,status:'final',home:'Everton FC',away:'Manchester City',scoreH:3,scoreA:3,time:'Tue May 5, 12:30 AM IST',stage:'Matchday 36'},
+    // ===== MATCHDAY 37 UPCOMING =====
+    {id:111,status:'scheduled',home:'Liverpool FC',away:'Chelsea FC',time:'Sat May 9, 5:00 PM IST',stage:'Matchday 37',probH:51.8,probD:23.3,probA:24.9},
+    {id:112,status:'scheduled',home:'Brighton & Hove Albion',away:'Wolverhampton',time:'Sat May 9, 7:30 PM IST',stage:'Matchday 37',probH:76.5,probD:14.6,probA:8.9},
+    {id:113,status:'scheduled',home:'Fulham FC',away:'AFC Bournemouth',time:'Sat May 9, 7:30 PM IST',stage:'Matchday 37',probH:36.1,probD:26.1,probA:37.8},
+    {id:114,status:'scheduled',home:'Sunderland AFC',away:'Manchester United',time:'Sat May 9, 7:30 PM IST',stage:'Matchday 37',probH:25.0,probD:25.7,probA:49.3},
+    {id:115,status:'scheduled',home:'Manchester City',away:'Brentford FC',time:'Sat May 9, 10:00 PM IST',stage:'Matchday 37',probH:71.3,probD:16.1,probA:12.6},
+    {id:116,status:'scheduled',home:'Burnley FC',away:'Aston Villa',time:'Sun May 10, 6:30 PM IST',stage:'Matchday 37',probH:18.0,probD:22.5,probA:59.5},
+    {id:117,status:'scheduled',home:'Crystal Palace',away:'Everton FC',time:'Sun May 10, 6:30 PM IST',stage:'Matchday 37',probH:34.0,probD:28.7,probA:37.3},
+    {id:118,status:'scheduled',home:'Nottingham Forest',away:'Newcastle United',time:'Sun May 10, 6:30 PM IST',stage:'Matchday 37',probH:35.6,probD:26.5,probA:37.9},
+    {id:119,status:'scheduled',home:'West Ham United',away:'Arsenal FC',time:'Sun May 10, 9:00 PM IST',stage:'Matchday 37',probH:17.6,probD:22.2,probA:60.2},
+    {id:120,status:'scheduled',home:'Tottenham Hotspur',away:'Leeds United',time:'Tue May 12, 12:30 AM IST',stage:'Matchday 37',probH:50.8,probD:24.7,probA:24.5},
   ]},
   ucl:{name:'Champions League',class:'ucl',pill:'pill-ucl',matches:[
-    {id:1,status:'final',home:'Tottenham Hotspur',away:'Atletico Madrid',scoreH:3,scoreA:2,time:'Thu Mar 19, 1:30 AM IST',stage:'QF 1st Leg'},
-    {id:2,status:'final',home:'Bayern Munich',away:'Atalanta BC',scoreH:4,scoreA:1,time:'Thu Mar 19, 1:30 AM IST',stage:'QF 1st Leg'},
-    {id:3,status:'final',home:'PSG',away:'Liverpool FC',scoreH:2,scoreA:0,time:'Thu Apr 9, 12:30 AM IST',stage:'SF 1st Leg'},
-    {id:4,status:'scheduled',home:'PSG',away:'Bayern Munich',time:'Wed Apr 29, 12:30 AM IST',stage:'Semi-Final',probH:41.8,probA:34,probD:24.2},
-    {id:5,status:'scheduled',home:'Atletico Madrid',away:'Arsenal FC',time:'Thu Apr 30, 12:30 AM IST',stage:'Semi-Final',probH:33.6,probA:37.4,probD:29},
-    {id:6,status:'scheduled',home:'TBD',away:'TBD',time:'Sat May 30, 9:30 PM IST',stage:'Grand Final 🏆'}
+    // ===== QUARTER-FINALS =====
+    {id:201,status:'final',home:'Paris Saint-Germain',away:'Liverpool FC',scoreH:2,scoreA:0,time:'Thu Apr 9, 12:30 AM IST',stage:'QF 1st Leg'},
+    {id:202,status:'final',home:'FC Barcelona',away:'Atletico Madrid',scoreH:0,scoreA:2,time:'Thu Apr 9, 12:30 AM IST',stage:'QF 1st Leg'},
+    {id:203,status:'final',home:'Liverpool FC',away:'Paris Saint-Germain',scoreH:0,scoreA:2,time:'Wed Apr 15, 12:30 AM IST',stage:'QF 2nd Leg'},
+    {id:204,status:'final',home:'Atletico Madrid',away:'FC Barcelona',scoreH:1,scoreA:2,time:'Wed Apr 15, 12:30 AM IST',stage:'QF 2nd Leg'},
+    {id:205,status:'final',home:'Bayern Munich',away:'Real Madrid',scoreH:4,scoreA:3,time:'Thu Apr 16, 12:30 AM IST',stage:'QF 2nd Leg'},
+    {id:206,status:'final',home:'Arsenal FC',away:'Sporting CP',scoreH:0,scoreA:0,time:'Thu Apr 16, 12:30 AM IST',stage:'QF 2nd Leg'},
+    // ===== SEMI-FINALS =====
+    {id:207,status:'final',home:'Paris Saint-Germain',away:'Bayern Munich',scoreH:5,scoreA:4,time:'Wed Apr 29, 12:30 AM IST',stage:'SF 1st Leg'},
+    {id:208,status:'final',home:'Atletico Madrid',away:'Arsenal FC',scoreH:1,scoreA:1,time:'Thu Apr 30, 12:30 AM IST',stage:'SF 1st Leg'},
+    {id:209,status:'final',home:'Arsenal FC',away:'Atletico Madrid',scoreH:1,scoreA:0,time:'Wed May 6, 12:30 AM IST',stage:'SF 2nd Leg'},
+    {id:210,status:'final',home:'Bayern Munich',away:'Paris Saint-Germain',scoreH:1,scoreA:1,time:'Thu May 7, 12:30 AM IST',stage:'SF 2nd Leg'},
+    // ===== GRAND FINAL =====
+    {id:211,status:'scheduled',home:'Paris Saint-Germain',away:'Arsenal FC',time:'Sat May 30, 9:30 PM IST',stage:'🏆 UCL Grand Final',probH:42.8,probD:27.3,probA:29.9},
   ]},
   fifa:{name:'FIFA World Cup',class:'fifa',pill:'pill-fifa',matches:[]}
 };
 
 // ===== STORAGE KEYS =====
-const DB_KEY='matchday_db_v6';
+const DB_KEY='matchday_db_v9';
 const DELIVERY_KEY='matchday_delivery_v3';
 const NOTIF_KEY='matchday_notif_v1';
 const HISTORY_KEY='matchday_history_v1';
@@ -1608,9 +2882,16 @@ setInterval(updateClock,1000);updateClock();
 
 function buildTicker(){
   const all=[];
-  Object.entries(DATA).forEach(([key,league])=>{if(!league.matches)return;league.matches.filter(m=>m.status==='scheduled').slice(0,2).forEach(m=>all.push({...m,league:league.name||key.toUpperCase()}));});
+  // Today's matches first
+  Object.entries(DATA).forEach(([key,league])=>{
+    if(!league.matches)return;
+    const todayMatches=league.matches.filter(m=>m.status==='scheduled'&&isWithin24Hours(m.time));
+    const upcomingMatches=league.matches.filter(m=>m.status==='scheduled'&&!isWithin24Hours(m.time)).slice(0,2);
+    todayMatches.forEach(m=>all.push({...m,league:league.name||key.toUpperCase(),isToday:true}));
+    if(!todayMatches.length)upcomingMatches.forEach(m=>all.push({...m,league:league.name||key.toUpperCase()}));
+  });
   if(!all.length){document.getElementById('ticker').innerHTML='';return;}
-  const html=[...all,...all].map(m=>`<div class="ticker-item"><span class="dot"></span><span class="ticker-live">${m.league}</span> ${m.home} vs ${m.away} — ${m.time}</div>`).join('');
+  const html=[...all,...all].map(m=>`<div class="ticker-item">${m.isToday?'<span class="dot" style="background:#ff3d5a;box-shadow:0 0 6px #ff3d5a"></span>':'<span class="dot"></span>'}<span class="ticker-live">${m.league}</span> ${m.home} vs ${m.away}${m.isToday?' <span style="color:#ff3d5a;font-size:9px;font-weight:800">TODAY</span>':''} — ${m.time}</div>`).join('');
   document.getElementById('ticker').innerHTML=html;
 }
 
@@ -1644,6 +2925,9 @@ function handleAddBtn(){if(currentLeague==='delivery')openAddOrderModal();else o
 
 // ===== RENDER =====
 function render(){
+  updateStandingsVisibility();
+  renderHeroBanner();
+  updateLiveIndicator();
   const el=document.getElementById('matchList');
   if(currentLeague==='delivery'){renderDelivery(el);updateSidebar([]);document.getElementById('resCount').textContent='';return;}
   if(currentLeague==='fifa'){renderFIFA(el);updateSidebar([]);document.getElementById('resCount').textContent='64 matches scheduled';return;}
@@ -1657,7 +2941,8 @@ function render(){
   document.getElementById('resCount').textContent=matches.length+' match'+(matches.length!==1?'es':'');
   if(!matches.length){el.innerHTML=`<div class="empty-state"><div class="big">🔍</div><p>No matches for this filter.</p></div>`;updateSidebar([]);return;}
   const groups=groupByDay(matches);
-  el.innerHTML=Object.entries(groups).map(([day,ms])=>{const{label,cls,extra}=dayLabel(day);return`<div class="day-section"><div class="day-header ${cls}">${label}${extra} <span class="match-count">${ms.length} match${ms.length!==1?'es':''}</span></div>${ms.map(m=>matchCard(m,league)).join('')}</div>`;}).join('');
+  if(currentLeague==='ucl'){const uclSumEl=document.createElement('div');el.parentNode.insertBefore(uclSumEl,el);uclSumEl.id='uclSummaryBox';uclSummaryBox.innerHTML='';renderUCLSummary(uclSummaryBox);}else{const old=document.getElementById('uclSummaryBox');if(old)old.remove();}
+  el.innerHTML=Object.entries(groups).map(([day,ms])=>{const{label,cls,extra}=dayLabel(day);return`<div class="day-section"><div class="day-header ${cls}${cls==='today'?' today-header':''}">${label}${extra} <span class="match-count">${ms.length} match${ms.length!==1?'es':''}</span></div>${ms.map(m=>matchCard(m,league)).join('')}</div>`;}).join('');
   updateSidebar(DATA[currentLeague].matches.filter(m=>m.status==='scheduled'));
   updateStats();
 }
@@ -2022,19 +3307,21 @@ function renderFIFA(el){
 // ===== MATCH CARD =====
 function matchCard(m,league){
   const isFinal=m.status==='final';const isLive=m.status==='live';
+  const isUCLFinal=!isFinal&&(m.stage||'').toLowerCase().includes('final')&&league.class==='ucl';
   const isSoon=!isFinal&&!isLive&&isWithin24Hours(m.time);
   const countdown=isSoon?getCountdown(m.time):'';
   const soonClass=isSoon?' soon':'';
   const badgeCls=isFinal?'badge-final':isLive?'badge-live':isSoon?'badge-soon':'badge-upcoming';
   const badgeText=isFinal?'FT':isLive?'● LIVE':isSoon?'⚡ SOON':'Upcoming';
-  const soonBanner=isSoon?`<div class="soon-banner"><span class="soon-fire">🔥</span><span class="soon-text">MATCH IN NEXT 24 HRS</span>${countdown?`<span class="soon-countdown">${countdown}</span>`:''}</div>`:'';
+  const soonBanner=isSoon?`<div class="soon-banner"><span class="soon-fire">🔥</span><span class="soon-text">MATCH IN NEXT 24 HRS</span>${countdown?`<span class="soon-countdown">${countdown}</span>`:''}</div>`
+    :isUCLFinal?`<div class="soon-banner" style="background:linear-gradient(135deg,rgba(255,215,0,.12),rgba(255,215,0,.04));border-color:rgba(255,215,0,.3)"><span>🏆</span><span class="soon-text" style="color:#ffd700">UCL GRAND FINAL — MAY 30</span><span class="ucl-final-badge">LISBON 2026</span></div>`:'';
   const probHtml=(!isFinal&&!isLive&&m.probH)?`<div class="prob-section"><span class="prob-team">${Math.round(m.probH)}%</span><div class="prob-track"><div class="prob-home" style="width:${Math.round(m.probH)}%"></div><div class="prob-draw" style="width:${Math.round(m.probD)}%"></div><div class="prob-away" style="width:${Math.round(m.probA)}%"></div></div><span class="prob-draw-label">D ${Math.round(m.probD)}%</span><span class="prob-team right">${Math.round(m.probA)}%</span></div>`:'';
   const isCustom=!!m.userAdded;
   const leagueClass=isCustom?'custom-league':league.class;
   const pillClass=isCustom?'pill-custom':league.pill;
   const leagueName=isCustom?(m.customLeagueName||'Custom'):league.name;
   const userBadge=isCustom?'<span class="user-badge">✦ Custom</span>':'';
-  return`<div class="match-card ${leagueClass}${soonClass}"><div class="card-content">${soonBanner}<div class="card-top"><span class="league-pill ${pillClass}">${leagueName}</span>${userBadge}<span class="stage-label">${m.stage||''}</span><span class="status-badge ${badgeCls}">${badgeText}</span></div><div class="matchup"><div class="team-block">${teamLogoHtml(m.home,28)}<div class="team-name home">${m.home}</div></div><div class="score-center">${isFinal||isLive?`<span class="score-num">${m.scoreH??0}</span><span class="score-sep">–</span><span class="score-num">${m.scoreA??0}</span>`:`<span class="kickoff-time">${m.time.split(', ').slice(2).join(', ')}</span>`}</div><div class="team-block" style="justify-content:flex-end;gap:8px;flex-direction:row-reverse">${teamLogoHtml(m.away,28)}<div class="team-name away">${m.away}</div></div></div>${probHtml}<div class="card-time">${m.time}</div></div><div class="card-actions"><div class="card-btn edit-btn" onclick="openEditModal(${m.id})" title="Edit Match"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div><div class="card-btn del-btn" onclick="confirmDelete(${m.id},'${currentLeague}')" title="Delete Match"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></div></div></div>`;
+  return`<div class="match-card ${leagueClass}${soonClass}${isUCLFinal?' ucl-final-glow':''}" data-stage="${m.stage||''}""><div class="card-content">${soonBanner}<div class="card-top"><span class="league-pill ${pillClass}">${leagueName}</span>${userBadge}<span class="stage-label">${m.stage||''}</span><span class="status-badge ${badgeCls}">${badgeText}</span></div><div class="matchup"><div class="team-block${isFinal?(m.scoreH>m.scoreA?' team-winner':m.scoreH<m.scoreA?' team-loser':''): ''}">${teamLogoHtml(m.home,28)}<div class="team-name home">${m.home}</div></div><div class="score-center">${isFinal||isLive?`<span class="score-num ${m.scoreH>m.scoreA?'score-winner':m.scoreH<m.scoreA?'score-loser':''}">${m.scoreH??0}</span><span class="score-sep">–</span><span class="score-num ${m.scoreA>m.scoreH?'score-winner':m.scoreA<m.scoreH?'score-loser':''}">${m.scoreA??0}</span>`:`<span class="kickoff-time">${m.time.split(', ').slice(2).join(', ')}</span>`}</div><div class="team-block" style="justify-content:flex-end;gap:8px;flex-direction:row-reverse" class="team-block${isFinal?(m.scoreA>m.scoreH?' team-winner':m.scoreA<m.scoreH?' team-loser':''): ''}">${teamLogoHtml(m.away,28)}<div class="team-name away">${m.away}</div></div></div><div style="display:flex;justify-content:space-between;padding:4px 0 0;opacity:.8">${formHtml(m.home)}<div style="transform:scaleX(-1)">${formHtml(m.away)}</div></div>${probHtml}<div class="card-time">${m.time}</div></div><div class="card-actions"><div class="card-btn edit-btn" onclick="openEditModal(${m.id})" title="Edit Match"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div><div class="card-btn del-btn" onclick="confirmDelete(${m.id},'${currentLeague}')" title="Delete Match"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></div></div></div>`;
 }
 
 function teamLogoHtml(name,size=26){
@@ -2316,6 +3603,564 @@ function toggleViewMode() {
   }
 })();
 
+
+
+// ===== UCL FINAL LIVE COUNTDOWN =====
+const UCL_FINAL_DATE = new Date('2026-05-30T16:00:00Z'); // 9:30 PM IST
+
+function updateUCLCountdown() {
+  const el = document.getElementById('uclCountdownBox');
+  if (!el) return;
+  const now = new Date();
+  const diff = UCL_FINAL_DATE - now;
+  if (diff <= 0) { el.innerHTML = '<div style="color:#ffd700;font-weight:800;font-size:14px">🏆 MATCH DAY!</div>'; return; }
+  const days = Math.floor(diff / 86400000);
+  const hrs  = Math.floor((diff % 86400000) / 3600000);
+  const mins = Math.floor((diff % 3600000) / 60000);
+  const secs = Math.floor((diff % 60000) / 1000);
+  el.querySelector('#cd-days').textContent  = String(days).padStart(2,'0');
+  el.querySelector('#cd-hours').textContent = String(hrs).padStart(2,'0');
+  el.querySelector('#cd-mins').textContent  = String(mins).padStart(2,'0');
+  el.querySelector('#cd-secs').textContent  = String(secs).padStart(2,'0');
+}
+
+function renderUCLCountdownWidget() {
+  const box = document.getElementById('uclCountdownWidget');
+  if (!box) return;
+  box.style.display = (currentLeague === 'ucl') ? '' : 'none';
+  if (currentLeague !== 'ucl') return;
+  box.innerHTML = `
+  <div class="ucl-countdown-box">
+    <div class="ucl-countdown-title">🏆 UCL GRAND FINAL COUNTDOWN</div>
+    <div class="ucl-final-teams">
+      <div class="ucl-final-team">
+        <img src="https://crests.football-data.org/559.png" style="width:20px;height:20px;object-fit:contain">
+        <span>PSG</span>
+      </div>
+      <div class="ucl-final-vs">VS</div>
+      <div class="ucl-final-team">
+        <img src="https://crests.football-data.org/57.png" style="width:20px;height:20px;object-fit:contain">
+        <span>Arsenal</span>
+      </div>
+    </div>
+    <div style="font-size:9px;color:var(--muted);margin:5px 0 10px;letter-spacing:.5px">📍 Lisbon · May 30, 2026 · 9:30 PM IST</div>
+    <div id="uclCountdownBox">
+      <div class="ucl-countdown-units">
+        <div class="ucl-cd-unit"><div class="ucl-cd-num" id="cd-days">21</div><div class="ucl-cd-label">Days</div></div>
+        <div class="ucl-cd-sep">:</div>
+        <div class="ucl-cd-unit"><div class="ucl-cd-num" id="cd-hours">00</div><div class="ucl-cd-label">Hours</div></div>
+        <div class="ucl-cd-sep">:</div>
+        <div class="ucl-cd-unit"><div class="ucl-cd-num" id="cd-mins">00</div><div class="ucl-cd-label">Mins</div></div>
+        <div class="ucl-cd-sep">:</div>
+        <div class="ucl-cd-unit"><div class="ucl-cd-num" id="cd-secs">00</div><div class="ucl-cd-label">Secs</div></div>
+      </div>
+    </div>
+  </div>`;
+  updateUCLCountdown();
+}
+
+setInterval(updateUCLCountdown, 1000);
+
+// ===== FORM GUIDE DATA (Last 5 matches) =====
+const TEAM_FORM = {
+  'Arsenal FC':             ['W','W','D','W','W'],
+  'Manchester City':        ['D','W','W','W','D'],
+  'Manchester United':      ['W','W','L','D','W'],
+  'Liverpool FC':           ['L','W','L','W','D'],
+  'Aston Villa':            ['L','W','D','W','L'],
+  'AFC Bournemouth':        ['W','W','D','W','W'],
+  'Brentford FC':           ['W','L','W','W','W'],
+  'Brighton & Hove Albion': ['W','D','W','W','W'],
+  'Chelsea FC':             ['L','D','W','L','D'],
+  'Everton FC':             ['D','W','L','D','W'],
+  'Fulham FC':              ['L','W','D','L','W'],
+  'Sunderland AFC':         ['D','L','W','D','L'],
+  'Newcastle United':       ['W','W','L','W','L'],
+  'Leeds United':           ['W','W','D','L','W'],
+  'Crystal Palace':         ['L','D','L','W','L'],
+  'Nottingham Forest':      ['W','D','D','L','W'],
+  'Tottenham Hotspur':      ['W','L','D','L','W'],
+  'West Ham United':        ['L','L','D','L','L'],
+  'Burnley FC':             ['L','L','L','L','L'],
+  'Wolverhampton':          ['D','L','L','L','D'],
+  'Paris Saint-Germain':    ['W','W','W','D','W'],
+  'Bayern Munich':          ['W','W','L','W','D'],
+  'Atletico Madrid':        ['L','W','D','W','L'],
+};
+
+function formHtml(team) {
+  const form = TEAM_FORM[team];
+  if (!form) return '';
+  const hotStreak = form.slice(-3).every(r=>r==='W');
+  return `<div style="display:flex;align-items:center;gap:5px;margin-top:4px">
+    <div class="form-guide">${form.map(r=>`<div class="form-dot form-${r.toLowerCase()}">${r}</div>`).join('')}</div>
+    ${hotStreak ? '<span class="hot-badge">🔥 Hot</span>' : ''}
+  </div>`;
+}
+
+// ===== TITLE RACE WIDGET =====
+function renderTitleRace() {
+  const el = document.getElementById('titleRaceContent');
+  if (!el) return;
+  const top5 = EPL_STANDINGS.slice(0, 5);
+  const maxPts = top5[0].pts;
+  const colors = ['#ffd700','#c0c0c0','#a0522d','#00e676','#00e676'];
+  el.innerHTML = top5.map((t, i) => `
+    <div class="title-race-team-row">
+      <div class="tr-team-name" style="color:${i===0?'#ffd700':'var(--text)'}">${t.name.replace(' FC','').replace(' United','').replace(' City','')}</div>
+      <div class="tr-bar-track">
+        <div class="tr-bar-fill" style="width:${Math.round(t.pts/maxPts*100)}%;background:${colors[i]}"></div>
+      </div>
+      <div class="tr-pts" style="color:${colors[i]}">${t.pts}</div>
+    </div>
+  `).join('');
+}
+
+function renderTitleRaceVisibility() {
+  const w = document.getElementById('titleRaceWidget');
+  if (w) w.style.display = (currentLeague==='epl') ? '' : 'none';
+  renderTitleRace();
+}
+
+
+// ===== HERO PARTICLE CANVAS =====
+(function(){
+  const canvas = document.getElementById('heroCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const particles = [];
+  const COLORS = ['rgba(124,111,255,', 'rgba(0,255,135,', 'rgba(96,179,255,'];
+  
+  function resize() {
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+  
+  for (let i = 0; i < 35; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 2 + 0.5,
+      dx: (Math.random() - 0.5) * 0.4,
+      dy: (Math.random() - 0.5) * 0.4,
+      color: COLORS[Math.floor(Math.random() * COLORS.length)],
+      alpha: Math.random() * 0.5 + 0.1,
+    });
+  }
+  
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = p.color + p.alpha + ')';
+      ctx.fill();
+      p.x += p.dx; p.y += p.dy;
+      if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
+      if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
+    });
+    // Draw connections
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i+1; j < particles.length; j++) {
+        const dist = Math.hypot(particles[i].x-particles[j].x, particles[i].y-particles[j].y);
+        if (dist < 80) {
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = `rgba(124,111,255,${0.06*(1-dist/80)})`;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ===== TODAY'S MATCH HERO BANNER =====
+function renderHeroBanner() {
+  const el = document.getElementById('heroBanner');
+  if (!el) return;
+  // Find today's matches across all leagues
+  const todayMatches = [];
+  Object.entries(DATA).forEach(([key, league]) => {
+    if (!league.matches) return;
+    league.matches.filter(m => m.status === 'scheduled' && isWithin24Hours(m.time)).forEach(m => {
+      todayMatches.push({...m, leagueName: league.name, leagueKey: key});
+    });
+  });
+  if (!todayMatches.length) { el.innerHTML = ''; return; }
+  const featured = todayMatches[0];
+  el.innerHTML = `<div class="hero-match-banner" onclick="switchLeague('${featured.leagueKey}');setFilter('soon',document.querySelector('.filter-btn:nth-child(4)'))">
+    <div class="hero-banner-tag">⚡ Today</div>
+    <div class="hero-banner-match">
+      ${featured.home} <span style="color:var(--muted);font-size:10px">vs</span> ${featured.away}
+      <span style="color:var(--muted);font-size:10px;margin-left:6px">${featured.leagueName}</span>
+    </div>
+    <div class="hero-banner-time">${featured.time.split(', ').slice(-1)[0]}</div>
+    ${todayMatches.length > 1 ? `<div style="font-size:9px;color:var(--accent);font-weight:700">+${todayMatches.length-1} more</div>` : ''}
+  </div>`;
+}
+
+
+// ===== UCL SEMI-FINAL SUMMARY (shown at top of UCL section) =====
+function renderUCLSummary(el) {
+  const summaryHtml = `<div style="margin-bottom:14px">
+    <div class="matchday-chip">🏆 UCL 2025/26 — Grand Final Confirmed</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div style="background:rgba(255,215,0,.05);border:1px solid rgba(255,215,0,.2);border-radius:12px;padding:12px;text-align:center">
+        <img src="https://crests.football-data.org/559.png" style="width:32px;height:32px;object-fit:contain;margin-bottom:6px">
+        <div style="font-weight:800;font-size:13px">Paris Saint-Germain</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:2px">SF vs Bayern Munich</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:#ffd700;margin-top:4px">6 – 5 <span style="font-size:11px;font-weight:400">Agg</span></div>
+        ${formHtml('Paris Saint-Germain')}
+      </div>
+      <div style="background:rgba(239,1,7,.05);border:1px solid rgba(239,1,7,.2);border-radius:12px;padding:12px;text-align:center">
+        <img src="https://crests.football-data.org/57.png" style="width:32px;height:32px;object-fit:contain;margin-bottom:6px">
+        <div style="font-weight:800;font-size:13px">Arsenal FC</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:2px">SF vs Atletico Madrid</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:#EF0107;margin-top:4px">2 – 1 <span style="font-size:11px;font-weight:400">Agg</span></div>
+        ${formHtml('Arsenal FC')}
+      </div>
+    </div>
+  </div>`;
+  el.insertAdjacentHTML('afterbegin', summaryHtml);
+}
+
+
+function updateLiveIndicator() {
+  const el = document.getElementById('liveIndicator');
+  if (!el) return;
+  let hasToday = false;
+  Object.values(DATA).forEach(league => {
+    if (league.matches) {
+      league.matches.forEach(m => { if (m.status==='scheduled' && isWithin24Hours(m.time)) hasToday=true; });
+    }
+  });
+  el.style.display = hasToday ? 'flex' : 'none';
+}
+
+// ===== EPL STANDINGS DATA (Live as of May 9, 2026) =====
+const EPL_STANDINGS = [
+  {rank:1,name:'Arsenal FC',abbr:'ARS',logo:'https://crests.football-data.org/57.png',pts:76,w:23,d:7,l:5,gd:'+45'},
+  {rank:2,name:'Manchester City',abbr:'MCI',logo:'https://crests.football-data.org/65.png',pts:71,w:21,d:8,l:5,gd:'+38'},
+  {rank:3,name:'Manchester United',abbr:'MUN',logo:'https://crests.football-data.org/66.png',pts:64,w:18,d:10,l:7,gd:'+22'},
+  {rank:4,name:'Liverpool FC',abbr:'LFC',logo:'https://crests.football-data.org/64.png',pts:58,w:17,d:7,l:11,gd:'+14'},
+  {rank:5,name:'Aston Villa',abbr:'AVL',logo:'https://crests.football-data.org/58.png',pts:58,w:17,d:7,l:11,gd:'+12'},
+  {rank:6,name:'AFC Bournemouth',abbr:'BOU',logo:'https://crests.football-data.org/1044.png',pts:52,w:12,d:16,l:7,gd:'+8'},
+  {rank:7,name:'Brentford FC',abbr:'BRE',logo:'https://crests.football-data.org/402.png',pts:51,w:14,d:9,l:12,gd:'+5'},
+  {rank:8,name:'Brighton',abbr:'BRI',logo:'https://crests.football-data.org/397.png',pts:50,w:13,d:11,l:11,gd:'+4'},
+  {rank:9,name:'Chelsea FC',abbr:'CFC',logo:'https://crests.football-data.org/61.png',pts:48,w:13,d:9,l:13,gd:'+2'},
+  {rank:10,name:'Everton FC',abbr:'EVE',logo:'https://crests.football-data.org/62.png',pts:48,w:13,d:9,l:13,gd:'+1'},
+  {rank:11,name:'Fulham FC',abbr:'FUL',logo:'https://crests.football-data.org/63.png',pts:48,w:14,d:6,l:15,gd:'-2'},
+  {rank:12,name:'Sunderland',abbr:'SUN',logo:'https://crests.football-data.org/387.png',pts:47,w:12,d:11,l:12,gd:'-3'},
+  {rank:13,name:'Newcastle',abbr:'NEW',logo:'https://crests.football-data.org/67.png',pts:45,w:13,d:6,l:16,gd:'-5'},
+  {rank:14,name:'Leeds United',abbr:'LEE',logo:'https://crests.football-data.org/341.png',pts:43,w:10,d:13,l:12,gd:'-7'},
+  {rank:15,name:'Crystal Palace',abbr:'CRY',logo:'https://crests.football-data.org/354.png',pts:43,w:11,d:10,l:13,gd:'-8'},
+  {rank:16,name:'Nottingham Forest',abbr:'NFO',logo:'https://crests.football-data.org/351.png',pts:42,w:11,d:9,l:15,gd:'-10'},
+  {rank:17,name:'Tottenham',abbr:'TOT',logo:'https://crests.football-data.org/73.png',pts:37,w:9,d:10,l:16,gd:'-15'},
+  {rank:18,name:'West Ham',abbr:'WHU',logo:'https://crests.football-data.org/563.png',pts:36,w:9,d:9,l:17,gd:'-18'},
+  {rank:19,name:'Burnley FC',abbr:'BUR',logo:'https://crests.football-data.org/328.png',pts:20,w:4,d:8,l:23,gd:'-42'},
+  {rank:20,name:'Wolves',abbr:'WOL',logo:'https://crests.football-data.org/76.png',pts:18,w:3,d:9,l:23,gd:'-48'},
+];
+
+function renderStandings(){
+  const el=document.getElementById('standingsContent');
+  if(!el)return;
+  const headerRow=`<div class="standings-header-row">
+    <div class="sh-rank">#</div>
+    <div class="sh-logo"></div>
+    <div class="sh-name">Team</div>
+    <div class="sh-pts">PTS</div>
+  </div>`;
+  el.innerHTML=headerRow+EPL_STANDINGS.map((t,i)=>{
+    const rankCls=t.rank<=4?'top4':t.rank>=18?'rel':'';
+    const rowCls=i===0?'rank-1':'';
+    return`<div class="standing-row ${rowCls}">
+      <div class="standing-rank ${rankCls}">${t.rank}</div>
+      <img class="standing-team-logo" src="${t.logo}" onerror="this.style.display='none'">
+      <div class="standing-team-name">${t.name}</div>
+      <div class="standing-pts">${t.pts}</div>
+    </div>`;
+  }).join('');
+}
+
+function updateStandingsVisibility(){
+  const sw=document.getElementById('standingsWidget');
+  if(sw)sw.style.display=(currentLeague==='epl')?'':'none';
+  renderStandings();
+  renderTitleRaceVisibility();
+  renderUCLCountdownWidget();
+}
+
+
+// ═══════════════════════════════════════════════
+// BOSS-LEVEL JS — NEXT LEVEL INTERACTIONS
+// ═══════════════════════════════════════════════
+
+// ── MATCH STATS MOCK DATA (realistic-looking) ──
+const MATCH_STATS_DB = {};
+function getMatchStats(homeTeam, awayTeam, status) {
+  const key = homeTeam + '|' + awayTeam;
+  if (MATCH_STATS_DB[key]) return MATCH_STATS_DB[key];
+  // Seed RNG from team names for consistency
+  const seed = (homeTeam + awayTeam).split('').reduce((a,c)=>a+c.charCodeAt(0),0);
+  const rng = (min, max, offset=0) => {
+    const s = (seed + offset) % 97;
+    return Math.floor(min + (max-min) * (((s * 1103515245 + 12345) >>> 16) & 0x7fff) / 32768);
+  };
+  const stats = {
+    possession_h: rng(35,65,1),
+    shots_h: rng(4,18,2),
+    shots_on_target_h: rng(2,9,3),
+    corners_h: rng(2,10,4),
+    fouls_h: rng(6,18,5),
+    xG_h: (rng(4,22,6)/10).toFixed(1),
+  };
+  stats.possession_a = 100 - stats.possession_h;
+  stats.shots_a = rng(4,18,12);
+  stats.shots_on_target_a = rng(1,8,13);
+  stats.corners_a = rng(1,9,14);
+  stats.fouls_a = rng(6,18,15);
+  stats.xG_a = (rng(3,20,16)/10).toFixed(1);
+  MATCH_STATS_DB[key] = stats;
+  return stats;
+}
+
+// ── SPOTLIGHT OPEN / CLOSE ──────────────────────
+function openSpotlight(matchId, leagueKey) {
+  const league = DATA[leagueKey] || DATA[currentLeague];
+  if (!league) return;
+  const m = league.matches.find(x => x.id === matchId);
+  if (!m) return;
+
+  const ht = ALL_TEAMS[m.home] || {};
+  const at = ALL_TEAMS[m.away] || {};
+  const isFin = m.status === 'final';
+  const isLv  = m.status === 'live';
+
+  document.getElementById('sp-league').textContent = (league.name || leagueKey.toUpperCase()) + '  ·  ' + (m.stage || '');
+  document.getElementById('sp-home-name').textContent = m.home;
+  document.getElementById('sp-away-name').textContent = m.away;
+  document.getElementById('sp-home-logo').src = ht.logo || '';
+  document.getElementById('sp-away-logo').src = at.logo || '';
+
+  const scoreH = m.scoreH ?? 0;
+  const scoreA = m.scoreA ?? 0;
+  const sh = document.getElementById('sp-score-h');
+  const sa = document.getElementById('sp-score-a');
+
+  if (isFin || isLv) {
+    sh.textContent = scoreH; sa.textContent = scoreA;
+    sh.className = 'spotlight-score-h' + (scoreH > scoreA ? ' win' : scoreH < scoreA ? ' loss' : '');
+    sa.className = 'spotlight-score-a' + (scoreA > scoreH ? ' win' : scoreA < scoreH ? ' loss' : '');
+  } else {
+    sh.textContent = '?'; sa.textContent = '?';
+    sh.className = 'spotlight-score-h'; sa.className = 'spotlight-score-a';
+  }
+
+  const chip = document.getElementById('sp-status-chip');
+  chip.textContent = isFin ? 'Full Time' : isLv ? '● LIVE' : 'Upcoming';
+  chip.className = 'spotlight-status-chip ' + (isFin ? 'final' : isLv ? 'live' : 'upcoming');
+
+  // Stats bars
+  const stats = getMatchStats(m.home, m.away, m.status);
+  document.getElementById('sp-stats').innerHTML = `
+    <div class="spotlight-stat-title">Match Statistics</div>
+    ${buildStatBar('Possession', stats.possession_h, stats.possession_a, '%')}
+    ${buildStatBar('Shots', stats.shots_h, stats.shots_a)}
+    ${buildStatBar('On Target', stats.shots_on_target_h, stats.shots_on_target_a)}
+    ${buildStatBar('Corners', stats.corners_h, stats.corners_a)}
+    ${buildStatBar('Fouls', stats.fouls_h, stats.fouls_a)}
+    ${buildStatBar('xG', parseFloat(stats.xG_h), parseFloat(stats.xG_a), '', true)}
+  `;
+
+  // Form row
+  const formH = TEAM_FORM[m.home] || [];
+  const formA = TEAM_FORM[m.away] || [];
+  document.getElementById('sp-form-row').innerHTML = `
+    <div>
+      <div class="spotlight-form-label" style="margin-bottom:6px">${m.home} Form</div>
+      <div class="form-guide">${formH.map(r=>`<div class="form-dot form-${r.toLowerCase()}">${r}</div>`).join('')}</div>
+    </div>
+    <div style="text-align:right">
+      <div class="spotlight-form-label" style="margin-bottom:6px">${m.away} Form</div>
+      <div class="form-guide" style="justify-content:flex-end">${formA.map(r=>`<div class="form-dot form-${r.toLowerCase()}">${r}</div>`).join('')}</div>
+    </div>
+  `;
+
+  // Meta
+  document.getElementById('sp-meta').innerHTML = `
+    <div class="spotlight-meta-item"><div class="spotlight-meta-val">${m.time ? m.time.split(',').slice(0,2).join(',') : '—'}</div><div class="spotlight-meta-lbl">Date</div></div>
+    <div style="width:1px;height:28px;background:rgba(255,255,255,.08)"></div>
+    <div class="spotlight-meta-item"><div class="spotlight-meta-val">${m.stage || '—'}</div><div class="spotlight-meta-lbl">Stage</div></div>
+    <div style="width:1px;height:28px;background:rgba(255,255,255,.08)"></div>
+    <div class="spotlight-meta-item"><div class="spotlight-meta-val">${(league.name||'').replace(' League','').replace('Champions','UCL')}</div><div class="spotlight-meta-lbl">Competition</div></div>
+  `;
+
+  document.getElementById('spotlightOverlay').classList.add('open');
+
+  // Animate bars after open
+  setTimeout(() => {
+    document.querySelectorAll('.stat-bar-h, .stat-bar-a').forEach(b => {
+      b.style.width = b.dataset.w + '%';
+    });
+  }, 80);
+
+  // If UCL final, fire confetti!
+  if (m.stage && m.stage.toLowerCase().includes('final') && leagueKey === 'ucl') {
+    fireConfetti();
+  }
+}
+
+function buildStatBar(label, valH, valA, suffix='', decimal=false) {
+  const total = valH + valA || 1;
+  const wH = Math.round(valH / total * 100);
+  const wA = 100 - wH;
+  const dH = decimal ? valH.toFixed(1) : valH;
+  const dA = decimal ? valA.toFixed(1) : valA;
+  return `<div class="stat-bar-row">
+    <div class="stat-bar-label">${dH}${suffix}</div>
+    <div class="stat-bar-center">
+      <div class="stat-bar-h" data-w="${wH}" style="width:0%"></div>
+      <div class="stat-bar-mid"></div>
+      <div class="stat-bar-a" data-w="${wA}" style="width:0%"></div>
+    </div>
+    <div class="stat-bar-label right">${dA}${suffix}</div>
+  </div>
+  <div style="text-align:center;font-size:9px;color:var(--muted);margin:-6px 0 6px;letter-spacing:.5px">${label}</div>`;
+}
+
+function closeSpotlight(e) {
+  if (e.target === document.getElementById('spotlightOverlay')) closeSpotlightDirect();
+}
+function closeSpotlightDirect() {
+  document.getElementById('spotlightOverlay').classList.remove('open');
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSpotlightDirect(); });
+
+// ── RIPPLE EFFECT ─────────────────────────────
+function addRipple(e, el) {
+  const rect = el.getBoundingClientRect();
+  const r = document.createElement('span');
+  r.className = 'ripple';
+  const size = Math.max(rect.width, rect.height) * 1.5;
+  r.style.cssText = `width:${size}px;height:${size}px;left:${e.clientX-rect.left-size/2}px;top:${e.clientY-rect.top-size/2}px`;
+  el.appendChild(r);
+  setTimeout(() => r.remove(), 600);
+}
+
+// ── CONFETTI ENGINE ───────────────────────────
+function fireConfetti() {
+  const canvas = document.getElementById('confettiCanvas');
+  if (!canvas) return;
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const ctx = canvas.getContext('2d');
+  const COLORS = ['#ffd700','#00e676','#7c6fff','#60b3ff','#ff6b81','#fff','#c084fc'];
+  const pieces = Array.from({length: 160}, () => ({
+    x: Math.random() * canvas.width,
+    y: -20,
+    r: Math.random() * 8 + 3,
+    d: Math.random() * 2 + 1,
+    color: COLORS[Math.floor(Math.random() * COLORS.length)],
+    tilt: Math.random() * 10 - 5,
+    tiltAngle: Math.random() * Math.PI,
+    tiltSpeed: Math.random() * 0.05 + 0.01,
+    shape: Math.random() > 0.5 ? 'circle' : 'rect',
+  }));
+  let frame = 0;
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    pieces.forEach(p => {
+      ctx.fillStyle = p.color;
+      if (p.shape === 'circle') {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+        ctx.fill();
+      } else {
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.tiltAngle);
+        ctx.fillRect(-p.r, -p.r/2, p.r*2, p.r);
+        ctx.restore();
+      }
+      p.y += p.d * 3;
+      p.x += Math.sin(p.tiltAngle) * 1.5;
+      p.tiltAngle += p.tiltSpeed;
+      if (p.y > canvas.height) { p.y = -20; p.x = Math.random() * canvas.width; }
+    });
+    frame++;
+    if (frame < 200) requestAnimationFrame(draw);
+    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+  draw();
+}
+
+// ── UCL TROPHY HEADER ─────────────────────────
+function renderUCLTrophyBanner(el) {
+  const trophy = `
+  <div class="ucl-trophy-banner">
+    <div class="trophy-3d">🏆</div>
+    <div class="ucl-trophy-info">
+      <div class="ucl-trophy-title">UEFA Champions League</div>
+      <div class="ucl-trophy-sub">2025/26 Season · Grand Final Confirmed · Lisbon, Portugal</div>
+      <div class="ucl-trophy-finalists">
+        <div class="ucl-finalist-badge">
+          <img src="https://crests.football-data.org/559.png" style="width:18px;height:18px;object-fit:contain">
+          Paris Saint-Germain
+        </div>
+        <div class="ucl-finalist-vs">VS</div>
+        <div class="ucl-finalist-badge">
+          <img src="https://crests.football-data.org/57.png" style="width:18px;height:18px;object-fit:contain">
+          Arsenal FC
+        </div>
+        <div style="font-size:10px;color:var(--muted);margin-left:4px">· May 30</div>
+      </div>
+    </div>
+  </div>`;
+  el.insertAdjacentHTML('afterbegin', trophy);
+}
+
+// ── OVERRIDE matchCard TO ADD SPOTLIGHT CLICK ─
+const _origMatchCard = matchCard;
+function matchCard(m, league) {
+  const html = _origMatchCard(m, league);
+  // Inject onclick into the card div
+  return html.replace(
+    /^(<div class="match-card [^"]*"[^>]*>)/,
+    (full, tag) => tag.replace('>', ` onclick="openSpotlight(${m.id},'${league?.class||currentLeague}');event.stopPropagation()" onmousedown="addRipple(event,this)">`)
+  );
+}
+
+// ── LIVE HEADER GLOW ─────────────────────────
+function checkLiveHeader() {
+  const header = document.querySelector('.site-header');
+  if (!header) return;
+  let hasLive = Object.values(DATA).some(l => l.matches?.some(m => m.status === 'live'));
+  header.classList.toggle('has-live', hasLive);
+}
+setInterval(checkLiveHeader, 5000);
+
+// ── UCL TROPHY + SUMMARY in render (patch) ────
+const _origRenderForUCL = render;
+function render() {
+  _origRenderForUCL();
+  // After render, inject UCL trophy if on UCL tab
+  if (currentLeague === 'ucl') {
+    const el = document.getElementById('matchList');
+    if (el && !el.parentElement.querySelector('.ucl-trophy-banner')) {
+      renderUCLTrophyBanner(el.parentElement);
+    }
+  } else {
+    document.querySelector('.ucl-trophy-banner')?.remove();
+  }
+  checkLiveHeader();
+}
+
 // ===== INIT =====
 checkAdminSession();
 if(isAdminLoggedIn){
@@ -2331,5 +4176,44 @@ render();
 updateStats();
 buildTicker();
 </script>
+
+<!-- ═══ SCORE SPOTLIGHT MODAL ═══ -->
+<div class="spotlight-overlay" id="spotlightOverlay" onclick="closeSpotlight(event)">
+  <div class="spotlight-card" id="spotlightCard">
+    <button class="spotlight-close" onclick="closeSpotlightDirect()">✕</button>
+    <div class="spotlight-league" id="sp-league">Premier League</div>
+    <div class="spotlight-teams">
+      <div class="spotlight-team" id="sp-home-block">
+        <img class="spotlight-team-logo" id="sp-home-logo" src="" onerror="this.style.display='none'">
+        <div class="spotlight-team-name" id="sp-home-name">Home</div>
+      </div>
+      <div class="spotlight-score-box">
+        <div class="spotlight-score">
+          <span class="spotlight-score-h" id="sp-score-h">0</span>
+          <span class="spotlight-sep-big">–</span>
+          <span class="spotlight-score-a" id="sp-score-a">0</span>
+        </div>
+        <span class="spotlight-status-chip" id="sp-status-chip">FT</span>
+      </div>
+      <div class="spotlight-team" id="sp-away-block">
+        <img class="spotlight-team-logo" id="sp-away-logo" src="" onerror="this.style.display='none'">
+        <div class="spotlight-team-name" id="sp-away-name">Away</div>
+      </div>
+    </div>
+
+    <!-- Fake match stats bars (generated dynamically) -->
+    <div class="spotlight-stats" id="sp-stats"></div>
+
+    <!-- Form row -->
+    <div class="spotlight-form-row" id="sp-form-row"></div>
+
+    <!-- Meta info -->
+    <div class="spotlight-meta" id="sp-meta"></div>
+  </div>
+</div>
+
+<!-- ═══ CONFETTI CANVAS ═══ -->
+<canvas id="confettiCanvas"></canvas>
+
 </body>
 </html>
