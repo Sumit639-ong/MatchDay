@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-title" content="MatchDay">
 <link rel="manifest" id="pwaManifest">
 <title>MatchDay ⚡ Live</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Syne:wght@700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* ╔══════════════════════════════════════════════════════╗
    ║         MATCHDAY — PREMIUM VISUAL UPGRADE v2         ║
@@ -451,7 +451,421 @@ body.light-mode .score-num { filter: none !important; }
 .bar-row:nth-child(4) .bar-fill { animation-delay: .4s; }
 @keyframes barGrow {
   from { width: 0 !important; }
-}</style>
+}
+
+/* ══════════════════════════════════════════════════
+   ⚡ PREMIUM UPGRADE PACK v3 — VISUAL EXCELLENCE
+   ══════════════════════════════════════════════════ */
+
+/* ── MATCH CARD: Holographic shimmer border on live ── */
+.match-card.epl[data-live="true"],
+.badge-live ~ .matchup {
+  background: linear-gradient(135deg, rgba(255,61,90,.04), transparent) !important;
+}
+
+/* ── SCORE CENTER: bigger, bolder with glow ── */
+.score-center {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  min-width: 120px !important;
+  justify-content: center !important;
+}
+.score-num {
+  font-size: 38px !important;
+  line-height: 1 !important;
+  font-family: 'Bebas Neue', sans-serif !important;
+  letter-spacing: 2px !important;
+}
+.score-sep {
+  font-size: 22px !important;
+  color: rgba(255,255,255,.25) !important;
+  font-weight: 300 !important;
+}
+
+/* ── TEAM NAMES: sharper, bigger ── */
+.team-name {
+  font-size: 15px !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.3px !important;
+  line-height: 1.2 !important;
+}
+
+/* ── LEAGUE PILL: more visible ── */
+.league-pill {
+  font-size: 9px !important;
+  font-weight: 900 !important;
+  letter-spacing: 1.2px !important;
+  padding: 3px 9px !important;
+  border-radius: 20px !important;
+}
+
+/* ── STATUS BADGE: sharper pulse ── */
+.status-badge {
+  font-size: 9px !important;
+  font-weight: 900 !important;
+  letter-spacing: 1px !important;
+  padding: 3px 9px !important;
+  border-radius: 6px !important;
+}
+.badge-live {
+  animation: livePulse 1.2s ease-in-out infinite !important;
+}
+@keyframes livePulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255,61,90,.5), 0 0 8px rgba(255,61,90,.4); }
+  50%       { box-shadow: 0 0 0 5px rgba(255,61,90,0), 0 0 20px rgba(255,61,90,.5); }
+}
+
+/* ── MATCH CARD: colored left border glow on hover ── */
+.match-card.epl:hover  { box-shadow: -4px 0 0 0 var(--epl-acc), 4px 0 40px rgba(0,255,135,.08), 0 8px 32px rgba(0,0,0,.5) !important; }
+.match-card.ucl:hover  { box-shadow: -4px 0 0 0 var(--ucl-acc), 4px 0 40px rgba(96,179,255,.08), 0 8px 32px rgba(0,0,0,.5) !important; }
+.match-card.fifa:hover { box-shadow: -4px 0 0 0 var(--fifa-acc), 4px 0 40px rgba(255,215,0,.06), 0 8px 32px rgba(0,0,0,.5) !important; }
+
+/* ── DAY HEADER: glowing divider ── */
+.day-header {
+  background: linear-gradient(90deg, rgba(124,111,255,.06), transparent) !important;
+  border-radius: 8px !important;
+  font-size: 10px !important;
+  letter-spacing: 2.5px !important;
+}
+.day-header.is-today {
+  background: linear-gradient(90deg, rgba(124,111,255,.14), transparent) !important;
+  border-left: 3px solid #7c6fff !important;
+}
+.day-header.is-tomorrow {
+  background: linear-gradient(90deg, rgba(255,215,0,.08), transparent) !important;
+  border-left: 3px solid #ffd700 !important;
+}
+
+/* ── SIDEBAR WIDGETS: depth card ── */
+.widget {
+  background: linear-gradient(145deg, rgba(22,24,50,.98), rgba(14,16,36,.95)) !important;
+  border: 1px solid rgba(255,255,255,.07) !important;
+  border-radius: 18px !important;
+  box-shadow: 0 4px 24px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.06) !important;
+}
+.widget-title {
+  font-size: 10px !important;
+  font-weight: 900 !important;
+  letter-spacing: 2px !important;
+  text-transform: uppercase !important;
+  color: rgba(255,255,255,.45) !important;
+  margin-bottom: 14px !important;
+  padding-bottom: 10px !important;
+  border-bottom: 1px solid rgba(255,255,255,.06) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+/* ── NEXT MATCH CARDS: refined ── */
+.next-match-card {
+  padding: 12px 14px !important;
+  border-radius: 12px !important;
+  background: rgba(255,255,255,.025) !important;
+  border: 1px solid rgba(255,255,255,.07) !important;
+  margin-bottom: 8px !important;
+  transition: all .22s ease !important;
+}
+.next-match-card:hover {
+  background: rgba(124,111,255,.07) !important;
+  border-color: rgba(124,111,255,.25) !important;
+  transform: translateX(4px) !important;
+}
+.next-label {
+  font-size: 9px !important;
+  font-weight: 800 !important;
+  letter-spacing: 1.5px !important;
+  text-transform: uppercase !important;
+  color: rgba(124,111,255,.7) !important;
+  margin-bottom: 5px !important;
+}
+.next-teams {
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  color: var(--text) !important;
+  line-height: 1.3 !important;
+}
+.next-time {
+  font-size: 10px !important;
+  color: var(--muted) !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  margin-top: 4px !important;
+}
+
+/* ── STAT ROW: accent value ── */
+.stat-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 7px 0 !important;
+  border-bottom: 1px solid rgba(255,255,255,.04) !important;
+}
+.stat-row:last-child { border-bottom: none !important; }
+.stat-label {
+  font-size: 11px !important;
+  color: var(--muted) !important;
+  font-weight: 500 !important;
+}
+.stat-val {
+  font-size: 14px !important;
+  font-weight: 800 !important;
+  font-family: 'JetBrains Mono', monospace !important;
+}
+
+/* ── HEADER: clock badge improved ── */
+.date-badge {
+  font-size: 11px !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  background: rgba(255,255,255,.04) !important;
+  border: 1px solid rgba(255,255,255,.08) !important;
+  border-radius: 8px !important;
+  padding: 6px 14px !important;
+  color: rgba(255,255,255,.6) !important;
+  letter-spacing: .3px !important;
+}
+
+/* ── FILTER BAR BUTTONS: pill style upgrade ── */
+.filter-btn {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: .4px !important;
+  padding: 7px 16px !important;
+  border-radius: 20px !important;
+  transition: all .2s cubic-bezier(.34,1.56,.64,1) !important;
+}
+.filter-btn.on {
+  background: linear-gradient(135deg, rgba(124,111,255,.2), rgba(124,111,255,.06)) !important;
+  color: #c4b5fd !important;
+  border-color: rgba(124,111,255,.5) !important;
+  box-shadow: 0 0 16px rgba(124,111,255,.2) !important;
+}
+
+/* ── CARD TOP LAYOUT: space-between ── */
+.card-top {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin-bottom: 12px !important;
+  flex-wrap: wrap !important;
+}
+.stage-label {
+  font-size: 10px !important;
+  color: var(--muted) !important;
+  font-weight: 600 !important;
+  flex: 1 !important;
+  letter-spacing: .3px !important;
+}
+
+/* ── PROB BAR: thicker, more visible ── */
+.prob-track {
+  height: 5px !important;
+  border-radius: 3px !important;
+  background: rgba(255,255,255,.06) !important;
+}
+.prob-home { border-radius: 3px 0 0 3px !important; }
+.prob-away { border-radius: 0 3px 3px 0 !important; }
+
+/* ── MATCHUP: vertical centering fix ── */
+.matchup {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  padding: 4px 0 !important;
+}
+.team-block {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  flex: 1 !important;
+  min-width: 0 !important;
+}
+
+/* ── SOON BANNER: premium gradient ── */
+.soon-banner {
+  background: linear-gradient(90deg, rgba(255,180,0,.12), rgba(255,120,0,.04)) !important;
+  border: 1px solid rgba(255,200,0,.25) !important;
+  border-radius: 8px !important;
+  padding: 6px 12px !important;
+  margin-bottom: 12px !important;
+}
+.soon-text {
+  font-size: 10px !important;
+  letter-spacing: .8px !important;
+  font-weight: 900 !important;
+}
+
+/* ── LEAGUE TABS: taller, more polished ── */
+.league-tab {
+  padding: 14px 22px !important;
+  gap: 14px !important;
+  border-radius: 16px !important;
+}
+.tab-name {
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  letter-spacing: .2px !important;
+}
+.tab-sub {
+  font-size: 10px !important;
+  margin-top: 2px !important;
+}
+.tab-icon {
+  font-size: 26px !important;
+}
+
+/* ── TOASTS: better style ── */
+.toast {
+  border-radius: 12px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  padding: 12px 18px !important;
+  letter-spacing: .2px !important;
+}
+
+/* ── CARD TIME: mono right-align ── */
+.card-time {
+  font-size: 10px !important;
+  color: rgba(255,255,255,.28) !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  margin-top: 10px !important;
+  text-align: right !important;
+  letter-spacing: .4px !important;
+}
+
+/* ── KICKOFF TIME: bigger, glowing ── */
+.kickoff-time {
+  font-size: 24px !important;
+  font-family: 'Bebas Neue', sans-serif !important;
+  letter-spacing: 2px !important;
+  color: rgba(196,181,253,.85) !important;
+  filter: drop-shadow(0 0 10px rgba(167,139,250,.4)) !important;
+}
+
+/* ── HISTORY PAGE: polished ── */
+.history-header {
+  background: linear-gradient(135deg, rgba(22,24,50,.98), rgba(14,16,36,.95)) !important;
+  border: 1px solid rgba(255,255,255,.08) !important;
+  border-radius: 18px !important;
+  padding: 24px 28px !important;
+  margin-bottom: 20px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 18px !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06) !important;
+}
+.history-section-title {
+  font-size: 10px !important;
+  font-weight: 900 !important;
+  letter-spacing: 2px !important;
+  text-transform: uppercase !important;
+  color: rgba(255,255,255,.35) !important;
+  padding: 10px 16px !important;
+  border-left: 3px solid rgba(124,111,255,.4) !important;
+  background: rgba(124,111,255,.05) !important;
+  border-radius: 0 8px 8px 0 !important;
+  margin-bottom: 10px !important;
+}
+
+/* ── CARD ACTIONS: smoother ── */
+.card-actions {
+  border-left: 1px solid rgba(255,255,255,.05) !important;
+  background: rgba(0,0,0,.08) !important;
+  min-width: 48px !important;
+}
+.card-btn {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 9px !important;
+}
+.card-btn svg {
+  width: 13px !important;
+  height: 13px !important;
+}
+
+/* ── PAGE LOAD: stagger fade-in for day sections ── */
+.day-section {
+  animation: sectionFadeIn .35s ease both;
+}
+.day-section:nth-child(1) { animation-delay: .05s; }
+.day-section:nth-child(2) { animation-delay: .10s; }
+.day-section:nth-child(3) { animation-delay: .15s; }
+.day-section:nth-child(4) { animation-delay: .20s; }
+.day-section:nth-child(5) { animation-delay: .25s; }
+@keyframes sectionFadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── FORM INPUTS: premium focus ring ── */
+.form-input:focus,
+.form-select:focus {
+  border-color: rgba(124,111,255,.7) !important;
+  box-shadow: 0 0 0 3px rgba(124,111,255,.12), 0 0 16px rgba(124,111,255,.08) !important;
+  outline: none !important;
+}
+
+/* ── MODAL: deeper shadow ── */
+.modal {
+  box-shadow: 0 48px 120px rgba(0,0,0,.9), 0 0 0 1px rgba(124,111,255,.2), 0 0 80px rgba(124,111,255,.06) !important;
+}
+
+/* ── ADD BUTTON HEADER: premium ── */
+.btn-add-header {
+  background: linear-gradient(135deg, rgba(124,111,255,.25), rgba(124,111,255,.08)) !important;
+  border: 1px solid rgba(124,111,255,.5) !important;
+  font-weight: 700 !important;
+  letter-spacing: .5px !important;
+  box-shadow: 0 0 20px rgba(124,111,255,.1) !important;
+}
+.btn-add-header:hover {
+  box-shadow: 0 0 28px rgba(124,111,255,.35), 0 4px 16px rgba(0,0,0,.4) !important;
+}
+
+/* ── CUSTOM CURSOR dot on hover ── */
+.match-card, .league-tab, .filter-btn, .club-btn,
+.card-btn, .btn-add-header, .globe-btn {
+  cursor: pointer !important;
+}
+
+/* ── DELIVERY STAT CARD: top colored border ── */
+.delivery-stat-card:nth-child(1) { border-top: 2px solid rgba(124,111,255,.5) !important; }
+.delivery-stat-card:nth-child(2) { border-top: 2px solid rgba(96,179,255,.5) !important; }
+.delivery-stat-card:nth-child(3) { border-top: 2px solid rgba(0,255,135,.4) !important; }
+.delivery-stat-card:nth-child(4) { border-top: 2px solid rgba(255,215,0,.4) !important; }
+.delivery-stat-card:nth-child(5) { border-top: 2px solid rgba(255,61,90,.4) !important; }
+
+/* ── DELIVERY SEARCH: glow on focus ── */
+.delivery-search:focus {
+  border-color: rgba(167,139,250,.6) !important;
+  box-shadow: 0 0 0 3px rgba(167,139,250,.1), 0 0 16px rgba(167,139,250,.08) !important;
+}
+
+/* ── ADMIN LOGIN: more premium ── */
+.admin-login-overlay {
+  backdrop-filter: blur(20px) saturate(1.5) !important;
+}
+.admin-login-box {
+  border: 1px solid rgba(167,139,250,.25) !important;
+  box-shadow: 0 60px 140px rgba(0,0,0,.9), 0 0 0 1px rgba(167,139,250,.15), 0 0 120px rgba(124,111,255,.08) !important;
+}
+
+/* ── VIEW TOGGLE: polished ── */
+.view-toggle-btn {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  padding: 6px 12px !important;
+  border-radius: 9px !important;
+  letter-spacing: .3px !important;
+}
+
+/* ── OVERALL FONT SMOOTHING ── */
+* {
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+}
+</style>
 <style>
 /* ══════════════════════════════════════
    NEW FEATURES CSS v3
@@ -1541,8 +1955,8 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,-apple
 .logo span{-webkit-text-fill-color:#00ff87;filter:none}
 .live-ticker{flex:1;overflow:hidden;max-width:600px}
 .ticker-inner{display:flex;gap:24px;animation:ticker 32s linear infinite;white-space:nowrap}
-.ticker-item{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;flex-shrink:0}
-.ticker-item .dot{width:6px;height:6px;border-radius:50%;background:var(--live);animation:pulse 1s infinite}
+.ticker-item{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;flex-shrink:0;padding:0 16px;border-right:1px solid rgba(255,255,255,.06)}
+.ticker-item .dot{width:6px;height:6px;border-radius:50%;background:var(--live);animation:pulse 1s infinite;box-shadow:0 0 6px var(--live)}
 .ticker-live{color:var(--text)}
 @keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
@@ -2056,6 +2470,768 @@ body.mobile-view .col-hide-btn{display:none}
 body.mobile-view .col-panel{display:none!important}
 body.mobile-view .match-sel-btn{font-size:10px;padding:4px 10px}
 </style>
+
+<style>
+/* ╔══════════════════════════════════════════════════════════════════╗
+   ║  ⚡ MATCHDAY — EXTREME VISUAL UPGRADE v4 · CINEMATIC EDITION   ║
+   ╚══════════════════════════════════════════════════════════════════╝ */
+
+/* ── 1. NOISE TEXTURE OVERLAY ── */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  opacity: 0.022;
+  pointer-events: none;
+  z-index: 1;
+  animation: noiseDrift 8s steps(4) infinite;
+}
+@keyframes noiseDrift {
+  0%   { transform: translate(0,0); }
+  25%  { transform: translate(-3px, 2px); }
+  50%  { transform: translate(2px,-3px); }
+  75%  { transform: translate(3px, 1px); }
+  100% { transform: translate(0,0); }
+}
+
+/* ── 2. AURORA EXTREME — triple layered animated mesh ── */
+body::before {
+  background:
+    radial-gradient(ellipse 90% 70% at 5% 5%,   rgba(124,111,255,.13) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 90% at 95% 95%,  rgba(0,255,135,.09)  0%, transparent 50%),
+    radial-gradient(ellipse 60% 60% at 50% 0%,   rgba(96,179,255,.08) 0%, transparent 45%),
+    radial-gradient(ellipse 40% 40% at 80% 20%,  rgba(255,100,120,.05) 0%, transparent 40%),
+    radial-gradient(ellipse 50% 50% at 20% 80%,  rgba(255,200,0,.04)  0%, transparent 40%) !important;
+  animation: auroraExtreme 18s ease-in-out infinite alternate !important;
+  z-index: 0 !important;
+}
+@keyframes auroraExtreme {
+  0%   { transform: scale(1)    rotate(0deg)   skewX(0deg);  opacity: 1; }
+  20%  { transform: scale(1.04) rotate(.8deg)  skewX(.3deg); opacity: .9; }
+  40%  { transform: scale(.97)  rotate(-.6deg) skewX(-.2deg);opacity: .95; }
+  60%  { transform: scale(1.06) rotate(1.2deg) skewX(.5deg); opacity: .88; }
+  80%  { transform: scale(.98)  rotate(-.4deg) skewX(.1deg); opacity: .92; }
+  100% { transform: scale(1.03) rotate(.6deg)  skewX(-.3deg);opacity: .96; }
+}
+
+/* ── 3. HEADER: SCANLINE BEAM + DEPTH ── */
+.site-header {
+  background: linear-gradient(180deg,
+    rgba(4,5,14,.99) 0%,
+    rgba(8,10,24,.97) 60%,
+    rgba(12,15,34,.95) 100%) !important;
+  border-bottom: 1px solid rgba(124,111,255,.18) !important;
+  box-shadow:
+    0 1px 0 rgba(124,111,255,.1),
+    0 4px 40px rgba(0,0,0,.7),
+    0 0 80px rgba(124,111,255,.04) !important;
+}
+.site-header::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(124,111,255,.6) 20%,
+    rgba(0,255,135,.4) 50%,
+    rgba(96,179,255,.6) 80%,
+    transparent 100%);
+  animation: headerBeam 6s ease-in-out infinite;
+}
+@keyframes headerBeam {
+  0%,100% { opacity: .4; transform: scaleX(.5) translateX(-50%); }
+  50%      { opacity: 1;  transform: scaleX(1)  translateX(0); }
+}
+
+/* ── 4. LOGO: CHROMATIC SHIFT ── */
+.logo {
+  font-family: 'Bebas Neue', sans-serif !important;
+  font-size: 32px !important;
+  letter-spacing: 10px !important;
+  background: linear-gradient(125deg,
+    #ffffff 0%, #e0d4ff 20%, #a78bfa 40%,
+    #60b3ff 55%, #00ff87 70%, #ffd700 85%, #ffffff 100%) !important;
+  background-size: 300% 100% !important;
+  background-clip: text !important;
+  -webkit-background-clip: text !important;
+  color: transparent !important;
+  filter: drop-shadow(0 0 28px rgba(124,111,255,.6)) !important;
+  animation: logoChromatic 6s linear infinite !important;
+  text-shadow: none !important;
+}
+@keyframes logoChromatic {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -100% 0; }
+}
+
+/* ── 5. MATCH CARD: HOLOGRAPHIC ── */
+.match-card {
+  border-radius: 20px !important;
+  border: 1px solid rgba(255,255,255,.07) !important;
+  background: linear-gradient(145deg,
+    rgba(18,20,46,.97) 0%,
+    rgba(12,14,34,.98) 100%) !important;
+  box-shadow:
+    0 2px 8px rgba(0,0,0,.4),
+    inset 0 1px 0 rgba(255,255,255,.06),
+    inset 0 -1px 0 rgba(0,0,0,.3) !important;
+  transition: all .3s cubic-bezier(.16,1,.3,1) !important;
+  overflow: hidden !important;
+}
+.match-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg,
+    rgba(255,255,255,.03) 0%,
+    transparent 50%,
+    rgba(0,0,0,.1) 100%);
+  pointer-events: none;
+  border-radius: inherit;
+}
+.match-card.epl {
+  border-left: 3px solid rgba(0,255,135,.5) !important;
+  background: linear-gradient(145deg,
+    rgba(0,30,15,.4) 0%,
+    rgba(12,14,34,.98) 30%) !important;
+}
+.match-card.ucl {
+  border-left: 3px solid rgba(96,179,255,.6) !important;
+  background: linear-gradient(145deg,
+    rgba(0,20,50,.4) 0%,
+    rgba(12,14,34,.98) 30%) !important;
+}
+.match-card.fifa {
+  border-left: 3px solid rgba(255,215,0,.5) !important;
+  background: linear-gradient(145deg,
+    rgba(30,20,0,.4) 0%,
+    rgba(12,14,34,.98) 30%) !important;
+}
+
+/* Hover: holographic rainbow shimmer */
+.match-card:hover {
+  transform: translateY(-4px) translateX(2px) !important;
+  border-color: rgba(255,255,255,.12) !important;
+}
+.match-card.epl:hover {
+  box-shadow:
+    -3px 0 0 0 rgba(0,255,135,.7),
+    0 20px 60px rgba(0,255,135,.12),
+    0 4px 24px rgba(0,0,0,.6),
+    inset 0 1px 0 rgba(0,255,135,.1) !important;
+}
+.match-card.ucl:hover {
+  box-shadow:
+    -3px 0 0 0 rgba(96,179,255,.8),
+    0 20px 60px rgba(96,179,255,.14),
+    0 4px 24px rgba(0,0,0,.6),
+    inset 0 1px 0 rgba(96,179,255,.1) !important;
+}
+.match-card.fifa:hover {
+  box-shadow:
+    -3px 0 0 0 rgba(255,215,0,.7),
+    0 20px 60px rgba(255,215,0,.08),
+    0 4px 24px rgba(0,0,0,.6),
+    inset 0 1px 0 rgba(255,215,0,.08) !important;
+}
+
+/* ── 6. SCORE NUMBERS: STADIUM DISPLAY ── */
+.score-num {
+  font-family: 'Bebas Neue', sans-serif !important;
+  font-size: 44px !important;
+  line-height: 1 !important;
+  letter-spacing: 2px !important;
+  color: #fff !important;
+  text-shadow:
+    0 0 20px rgba(255,255,255,.5),
+    0 0 40px rgba(124,111,255,.3),
+    0 2px 4px rgba(0,0,0,.8) !important;
+}
+.score-sep {
+  font-size: 20px !important;
+  color: rgba(255,255,255,.2) !important;
+  font-weight: 200 !important;
+  padding: 0 4px !important;
+}
+
+/* ── 7. LIVE BADGE: BROADCAST DOT ── */
+.badge-live {
+  background: rgba(255,30,60,.15) !important;
+  border: 1px solid rgba(255,60,80,.4) !important;
+  color: #ff4060 !important;
+  letter-spacing: 2px !important;
+  font-size: 8px !important;
+  padding: 4px 10px !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+.badge-live::before {
+  content: '';
+  position: absolute;
+  top: 50%; left: 6px;
+  transform: translateY(-50%);
+  width: 5px; height: 5px;
+  background: #ff4060;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #ff4060;
+  animation: broadcastDot 1.1s ease-in-out infinite;
+}
+@keyframes broadcastDot {
+  0%,100% { opacity: 1; transform: translateY(-50%) scale(1); }
+  50%      { opacity: .3; transform: translateY(-50%) scale(.6); }
+}
+.badge-live::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,80,80,.12), transparent);
+  animation: liveSweep 2s ease-in-out infinite;
+}
+@keyframes liveSweep {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(200%); }
+}
+
+/* ── 8. KICKOFF TIME: STADIUM CLOCK ── */
+.kickoff-time {
+  font-family: 'Bebas Neue', sans-serif !important;
+  font-size: 28px !important;
+  letter-spacing: 3px !important;
+  background: linear-gradient(120deg, #c4b5fd, #818cf8, #60b3ff) !important;
+  background-clip: text !important;
+  -webkit-background-clip: text !important;
+  color: transparent !important;
+  filter: drop-shadow(0 0 12px rgba(124,111,255,.5)) !important;
+}
+
+/* ── 9. LEAGUE TABS: GLASS MORPHISM ── */
+.league-tab {
+  border-radius: 18px !important;
+  border: 1px solid rgba(255,255,255,.08) !important;
+  background: rgba(255,255,255,.03) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  padding: 16px 24px !important;
+  gap: 16px !important;
+  transition: all .3s cubic-bezier(.16,1,.3,1) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.07), 0 4px 16px rgba(0,0,0,.3) !important;
+}
+.league-tab:hover {
+  transform: translateY(-6px) scale(1.02) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.1),
+    0 16px 40px rgba(0,0,0,.5) !important;
+}
+.league-tab.epl.active {
+  border-color: rgba(0,255,135,.25) !important;
+  box-shadow:
+    0 0 0 1px rgba(0,255,135,.15),
+    0 12px 40px rgba(0,255,135,.12),
+    0 0 80px rgba(0,255,135,.04),
+    inset 0 1px 0 rgba(0,255,135,.15) !important;
+}
+.league-tab.ucl.active {
+  border-color: rgba(96,179,255,.3) !important;
+  box-shadow:
+    0 0 0 1px rgba(96,179,255,.2),
+    0 12px 40px rgba(96,179,255,.15),
+    0 0 80px rgba(96,179,255,.06),
+    inset 0 1px 0 rgba(96,179,255,.15) !important;
+}
+.league-tab.fifa.active {
+  border-color: rgba(255,215,0,.25) !important;
+  box-shadow:
+    0 0 0 1px rgba(255,215,0,.15),
+    0 12px 40px rgba(255,215,0,.08),
+    inset 0 1px 0 rgba(255,215,0,.12) !important;
+}
+.league-tab.delivery.active {
+  border-color: rgba(167,139,250,.3) !important;
+  box-shadow:
+    0 0 0 1px rgba(167,139,250,.2),
+    0 12px 40px rgba(167,139,250,.14),
+    inset 0 1px 0 rgba(167,139,250,.15) !important;
+}
+
+/* ── 10. HERO SECTION: GRADIENT MESH ── */
+.hero {
+  background: linear-gradient(180deg,
+    rgba(8,10,28,.98) 0%,
+    rgba(6,8,20,.99) 100%) !important;
+  border-bottom: 1px solid rgba(255,255,255,.05) !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(124,111,255,.2) 30%,
+    rgba(0,255,135,.15) 50%,
+    rgba(124,111,255,.2) 70%,
+    transparent 100%);
+}
+
+/* ── 11. SIDEBAR WIDGETS: PREMIUM GLASS ── */
+.widget {
+  background: linear-gradient(155deg,
+    rgba(18,20,48,.97) 0%,
+    rgba(12,14,36,.99) 100%) !important;
+  border: 1px solid rgba(255,255,255,.07) !important;
+  border-radius: 20px !important;
+  box-shadow:
+    0 4px 24px rgba(0,0,0,.4),
+    inset 0 1px 0 rgba(255,255,255,.07),
+    inset 0 -1px 0 rgba(0,0,0,.2) !important;
+  backdrop-filter: blur(20px) !important;
+  transition: all .28s cubic-bezier(.16,1,.3,1) !important;
+}
+.widget:hover {
+  border-color: rgba(124,111,255,.18) !important;
+  box-shadow:
+    0 8px 40px rgba(0,0,0,.5),
+    inset 0 1px 0 rgba(124,111,255,.1),
+    0 0 0 1px rgba(124,111,255,.06) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* ── 12. FILTER BAR: CAPSULE STYLE ── */
+.filter-bar {
+  padding: 12px 0 16px !important;
+  gap: 8px !important;
+}
+.filter-btn {
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: .6px !important;
+  padding: 8px 18px !important;
+  border-radius: 22px !important;
+  border: 1px solid rgba(255,255,255,.08) !important;
+  background: rgba(255,255,255,.03) !important;
+  color: rgba(255,255,255,.45) !important;
+  transition: all .22s cubic-bezier(.34,1.56,.64,1) !important;
+}
+.filter-btn:hover {
+  background: rgba(255,255,255,.07) !important;
+  color: rgba(255,255,255,.8) !important;
+  transform: translateY(-2px) !important;
+}
+.filter-btn.on {
+  background: linear-gradient(135deg, rgba(124,111,255,.25), rgba(124,111,255,.08)) !important;
+  color: #c4b5fd !important;
+  border-color: rgba(124,111,255,.5) !important;
+  box-shadow: 0 0 20px rgba(124,111,255,.25), 0 4px 12px rgba(0,0,0,.3) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* ── 13. DAY HEADERS: CINEMATIC DIVIDERS ── */
+.day-header {
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: 3px !important;
+  text-transform: uppercase !important;
+  padding: 12px 18px !important;
+  border-radius: 10px !important;
+  margin-bottom: 10px !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+.day-header::after {
+  content: '';
+  position: absolute;
+  right: 0; top: 50%;
+  transform: translateY(-50%);
+  width: 60%; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(124,111,255,.15));
+}
+.day-header.is-today {
+  background: linear-gradient(90deg, rgba(124,111,255,.12), transparent) !important;
+  border-left: 3px solid #7c6fff !important;
+  color: #c4b5fd !important;
+}
+.day-header.is-today::after {
+  background: linear-gradient(90deg, transparent, rgba(124,111,255,.2));
+}
+.day-header.is-tomorrow {
+  background: linear-gradient(90deg, rgba(255,215,0,.08), transparent) !important;
+  border-left: 3px solid rgba(255,215,0,.6) !important;
+  color: rgba(255,215,0,.8) !important;
+}
+
+/* ── 14. DELIVERY STAT CARDS: NEON ACCENTED ── */
+.delivery-stat-card {
+  border-radius: 16px !important;
+  background: linear-gradient(145deg, rgba(18,20,48,.98), rgba(12,14,36,.99)) !important;
+  border: 1px solid rgba(255,255,255,.07) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 4px 20px rgba(0,0,0,.4) !important;
+  transition: all .28s cubic-bezier(.16,1,.3,1) !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+.delivery-stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 2px;
+  border-radius: 16px 16px 0 0;
+}
+.delivery-stat-card:nth-child(1)::before { background: linear-gradient(90deg, #7c6fff, #a78bfa); }
+.delivery-stat-card:nth-child(2)::before { background: linear-gradient(90deg, #60b3ff, #38b2ff); }
+.delivery-stat-card:nth-child(3)::before { background: linear-gradient(90deg, #00ff87, #00e676); }
+.delivery-stat-card:nth-child(4)::before { background: linear-gradient(90deg, #ffd700, #ffa500); }
+.delivery-stat-card:nth-child(5)::before { background: linear-gradient(90deg, #ff3d5a, #ff6b81); }
+.delivery-stat-card:hover {
+  transform: translateY(-6px) scale(1.02) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.1),
+    0 16px 48px rgba(0,0,0,.5) !important;
+}
+
+/* ── 15. DELIVERY STAT NUMBERS ── */
+.delivery-stat-num {
+  font-family: 'Bebas Neue', sans-serif !important;
+  font-size: 42px !important;
+  letter-spacing: 3px !important;
+  line-height: 1 !important;
+  background: linear-gradient(180deg, #fff 0%, rgba(255,255,255,.7) 100%) !important;
+  background-clip: text !important;
+  -webkit-background-clip: text !important;
+  color: transparent !important;
+}
+
+/* ── 16. MATCH CARD — SOON BANNER PREMIUM ── */
+.soon-banner {
+  background: linear-gradient(90deg,
+    rgba(255,160,0,.14) 0%,
+    rgba(255,120,0,.06) 60%,
+    transparent 100%) !important;
+  border: 1px solid rgba(255,200,0,.22) !important;
+  border-radius: 10px !important;
+  padding: 7px 14px !important;
+  margin-bottom: 14px !important;
+  backdrop-filter: blur(4px) !important;
+}
+.soon-text {
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-size: 9px !important;
+  font-weight: 800 !important;
+  letter-spacing: 2px !important;
+  color: #ffc107 !important;
+}
+
+/* ── 17. ADMIN LOGIN — EXTREME PREMIUM ── */
+.admin-login-overlay {
+  background: linear-gradient(135deg,
+    rgba(4,5,16,.98) 0%,
+    rgba(30,15,60,.97) 50%,
+    rgba(4,5,16,.98) 100%) !important;
+  backdrop-filter: blur(32px) saturate(1.8) !important;
+}
+.admin-login-box {
+  background: linear-gradient(155deg,
+    rgba(22,24,56,.99) 0%,
+    rgba(14,16,40,.99) 100%) !important;
+  border: 1px solid rgba(167,139,250,.22) !important;
+  border-radius: 28px !important;
+  box-shadow:
+    0 60px 140px rgba(0,0,0,.9),
+    0 0 0 1px rgba(167,139,250,.1),
+    0 0 120px rgba(124,111,255,.08),
+    inset 0 1px 0 rgba(167,139,250,.12) !important;
+}
+
+/* ── 18. MODAL: CINEMATIC ── */
+.modal {
+  background: linear-gradient(155deg,
+    rgba(18,20,50,.99) 0%,
+    rgba(12,14,38,.99) 100%) !important;
+  border: 1px solid rgba(124,111,255,.2) !important;
+  border-radius: 24px !important;
+  box-shadow:
+    0 48px 120px rgba(0,0,0,.9),
+    0 0 0 1px rgba(124,111,255,.08),
+    0 0 100px rgba(124,111,255,.06),
+    inset 0 1px 0 rgba(124,111,255,.1) !important;
+}
+.modal-header {
+  border-bottom: 1px solid rgba(255,255,255,.06) !important;
+  background: linear-gradient(180deg, rgba(124,111,255,.05), transparent) !important;
+}
+
+/* ── 19. GLOBE INSIGHTS BUTTON: CINEMATIC ── */
+.globe-btn {
+  background: linear-gradient(135deg,
+    rgba(96,179,255,.15) 0%,
+    rgba(124,111,255,.08) 100%) !important;
+  border: 1px solid rgba(96,179,255,.35) !important;
+  box-shadow: 0 0 24px rgba(96,179,255,.1), inset 0 1px 0 rgba(96,179,255,.15) !important;
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-weight: 700 !important;
+  letter-spacing: .5px !important;
+}
+.globe-btn:hover {
+  transform: translateY(-3px) scale(1.05) !important;
+  box-shadow:
+    0 0 40px rgba(96,179,255,.4),
+    0 8px 24px rgba(0,0,0,.5),
+    inset 0 1px 0 rgba(96,179,255,.2) !important;
+}
+
+/* ── 20. QC PILLS: PREMIUM GLOW ── */
+.qc-ok {
+  background: rgba(0,230,118,.08) !important;
+  border: 1px solid rgba(0,230,118,.25) !important;
+  color: #00e676 !important;
+  box-shadow: 0 0 10px rgba(0,230,118,.15) !important;
+}
+.qc-fail {
+  background: rgba(255,61,90,.1) !important;
+  border: 1px solid rgba(255,61,90,.3) !important;
+  color: #ff4060 !important;
+  box-shadow: 0 0 10px rgba(255,61,90,.15) !important;
+}
+.qc-pending {
+  background: rgba(255,200,0,.06) !important;
+  border: 1px solid rgba(255,200,0,.2) !important;
+  color: rgba(255,200,0,.8) !important;
+}
+
+/* ── 21. ORDER TABLE: PREMIUM ROWS ── */
+.order-table-wrap {
+  border-radius: 18px !important;
+  border: 1px solid rgba(255,255,255,.07) !important;
+  box-shadow: 0 4px 32px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.05) !important;
+  overflow: hidden !important;
+}
+.order-table th {
+  background: linear-gradient(180deg, rgba(22,24,52,.99), rgba(16,18,44,.99)) !important;
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-size: 9px !important;
+  letter-spacing: 1.5px !important;
+  color: rgba(255,255,255,.3) !important;
+  border-bottom: 1px solid rgba(255,255,255,.07) !important;
+}
+.order-table tr:hover td {
+  background: rgba(124,111,255,.05) !important;
+}
+
+/* ── 22. TOAST: FROSTED GLASS ── */
+.toast {
+  background: linear-gradient(135deg,
+    rgba(22,24,52,.97) 0%,
+    rgba(14,16,40,.98) 100%) !important;
+  border: 1px solid rgba(255,255,255,.1) !important;
+  border-radius: 14px !important;
+  backdrop-filter: blur(20px) !important;
+  box-shadow: 0 16px 48px rgba(0,0,0,.7), 0 0 0 1px rgba(255,255,255,.06) !important;
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-weight: 600 !important;
+}
+.toast.success { border-color: rgba(0,230,118,.3) !important; }
+.toast.danger  { border-color: rgba(255,61,90,.3) !important; }
+
+/* ── 23. CONFIRM BOX: DARK DRAMATIC ── */
+.confirm-box {
+  background: linear-gradient(155deg, rgba(22,24,52,.99), rgba(14,16,40,.99)) !important;
+  border: 1px solid rgba(255,61,90,.25) !important;
+  border-radius: 22px !important;
+  box-shadow:
+    0 40px 100px rgba(0,0,0,.9),
+    0 0 80px rgba(255,61,90,.06),
+    inset 0 1px 0 rgba(255,255,255,.07) !important;
+}
+
+/* ── 24. HISTORY PAGE HEADER: CINEMATIC ── */
+.history-header {
+  background: linear-gradient(135deg,
+    rgba(22,24,52,.98) 0%,
+    rgba(40,30,60,.5) 50%,
+    rgba(14,16,40,.98) 100%) !important;
+  border: 1px solid rgba(255,255,255,.08) !important;
+  border-radius: 22px !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 8px 40px rgba(0,0,0,.5) !important;
+}
+
+/* ── 25. SCROLLBAR: IRIDESCENT ── */
+::-webkit-scrollbar { width: 5px !important; height: 5px !important; }
+::-webkit-scrollbar-track { background: rgba(0,0,0,.2) !important; }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #7c6fff, #60b3ff, #00ff87) !important;
+  border-radius: 10px !important;
+  box-shadow: 0 0 6px rgba(124,111,255,.4) !important;
+}
+
+/* ── 26. NEXT MATCH CARDS: DEPTH ── */
+.next-match-card {
+  background: linear-gradient(135deg, rgba(18,20,48,.98), rgba(12,14,36,.97)) !important;
+  border: 1px solid rgba(255,255,255,.07) !important;
+  border-radius: 14px !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 4px 16px rgba(0,0,0,.35) !important;
+  transition: all .25s cubic-bezier(.16,1,.3,1) !important;
+}
+.next-match-card:hover {
+  border-color: rgba(124,111,255,.25) !important;
+  transform: translateX(6px) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(124,111,255,.1),
+    -3px 0 0 0 rgba(124,111,255,.4),
+    0 8px 32px rgba(0,0,0,.4) !important;
+}
+
+/* ── 27. SECTION ENTRANCE ANIMATIONS ── */
+.day-section {
+  animation: daySlideIn .4s cubic-bezier(.16,1,.3,1) both !important;
+}
+.day-section:nth-child(1) { animation-delay: .04s !important; }
+.day-section:nth-child(2) { animation-delay: .09s !important; }
+.day-section:nth-child(3) { animation-delay: .14s !important; }
+.day-section:nth-child(4) { animation-delay: .19s !important; }
+.day-section:nth-child(5) { animation-delay: .24s !important; }
+@keyframes daySlideIn {
+  from { opacity: 0; transform: translateY(20px) scale(.99); }
+  to   { opacity: 1; transform: translateY(0)  scale(1); }
+}
+
+/* ── 28. CARD ACTIONS: PREMIUM ── */
+.card-actions {
+  border-left: 1px solid rgba(255,255,255,.05) !important;
+  background: rgba(0,0,0,.15) !important;
+  backdrop-filter: blur(10px) !important;
+}
+.card-btn.edit-btn:hover {
+  background: rgba(96,179,255,.18) !important;
+  border-color: rgba(96,179,255,.5) !important;
+  box-shadow: 0 0 12px rgba(96,179,255,.3) !important;
+  transform: scale(1.2) !important;
+}
+.card-btn.del-btn:hover {
+  background: rgba(255,61,90,.18) !important;
+  border-color: rgba(255,61,90,.5) !important;
+  box-shadow: 0 0 12px rgba(255,61,90,.3) !important;
+  transform: scale(1.2) !important;
+}
+
+/* ── 29. TYPOGRAPHY GLOBAL ── */
+body {
+  font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif !important;
+  letter-spacing: -.01em !important;
+}
+.team-name {
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  letter-spacing: -.2px !important;
+}
+.tab-name {
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-weight: 800 !important;
+}
+
+/* ── 30. TICKER: CINEMATIC STRIP ── */
+.live-ticker {
+  background: rgba(255,61,90,.03) !important;
+  border: 1px solid rgba(255,61,90,.1) !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+}
+.ticker-live {
+  color: #ff4060 !important;
+  font-weight: 700 !important;
+  font-family: 'Space Grotesk', sans-serif !important;
+  letter-spacing: .5px !important;
+}
+.ticker-item {
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-size: 11px !important;
+}
+
+/* ── 31. PROB BAR: VIVID ── */
+.prob-section { padding: 8px 0 0 !important; }
+.prob-track {
+  height: 5px !important;
+  background: rgba(255,255,255,.06) !important;
+  border-radius: 4px !important;
+  overflow: hidden !important;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,.3) !important;
+}
+.prob-home {
+  background: linear-gradient(90deg, #00e676, #00ff87) !important;
+  border-radius: 4px 0 0 4px !important;
+}
+.prob-draw {
+  background: rgba(255,255,255,.2) !important;
+}
+.prob-away {
+  background: linear-gradient(90deg, #ff6b81, #ff3d5a) !important;
+  border-radius: 0 4px 4px 0 !important;
+}
+
+/* ── 32. OVERALL REFINEMENTS ── */
+.status-badge {
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-size: 8px !important;
+  font-weight: 800 !important;
+  letter-spacing: 1.5px !important;
+  padding: 4px 10px !important;
+  border-radius: 8px !important;
+}
+.league-pill {
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-size: 8px !important;
+  font-weight: 800 !important;
+  letter-spacing: 1.5px !important;
+}
+.card-time {
+  font-size: 9px !important;
+  letter-spacing: .8px !important;
+  color: rgba(255,255,255,.22) !important;
+  font-family: 'JetBrains Mono', monospace !important;
+}
+.stage-label {
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  color: rgba(255,255,255,.4) !important;
+}
+.form-label {
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: 1px !important;
+  color: rgba(255,255,255,.45) !important;
+}
+.widget-title {
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-size: 9px !important;
+  font-weight: 800 !important;
+  letter-spacing: 2.5px !important;
+  color: rgba(255,255,255,.3) !important;
+}
+
+/* ── 33. MATCH CARD: LIVE MODE GLOW ── */
+.match-card:has(.badge-live) {
+  border-color: rgba(255,61,90,.2) !important;
+  box-shadow:
+    -3px 0 0 0 rgba(255,61,90,.5),
+    0 0 40px rgba(255,61,90,.06),
+    inset 0 1px 0 rgba(255,61,90,.08) !important;
+  animation: liveCardPulse 3s ease-in-out infinite !important;
+}
+@keyframes liveCardPulse {
+  0%,100% { box-shadow: -3px 0 0 0 rgba(255,61,90,.5), 0 0 30px rgba(255,61,90,.06), inset 0 1px 0 rgba(255,61,90,.08); }
+  50%      { box-shadow: -3px 0 0 0 rgba(255,61,90,.8), 0 0 60px rgba(255,61,90,.1),  inset 0 1px 0 rgba(255,61,90,.12); }
+}
+
+/* ── LIGHT MODE: keep clean ── */
+body.light-mode .match-card { background: #fff !important; }
+body.light-mode .league-tab { background: rgba(255,255,255,.8) !important; backdrop-filter: blur(20px) !important; }
+body.light-mode .widget { background: rgba(255,255,255,.9) !important; }
+</style>
 </head>
 <script src="/socket.io/socket.io.js"></script>
 
@@ -2097,6 +3273,129 @@ body.mobile-view .match-sel-btn{font-size:10px;padding:4px 10px}
   for(let i=0;i<18;i++) setTimeout(spawn, i*600);
   setInterval(spawn, 2200);
 })();
+</script>
+
+<script>
+// ══════════════════════════════════════════
+// ⚡ PREMIUM MICRO-INTERACTIONS v3
+// ══════════════════════════════════════════
+
+// 1. Ripple effect on match cards
+document.addEventListener('click', e => {
+  const card = e.target.closest('.match-card');
+  if (!card || e.target.closest('.card-actions')) return;
+  const r = document.createElement('span');
+  const rect = card.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height) * 1.5;
+  r.style.cssText = `
+    position:absolute;
+    width:${size}px;height:${size}px;
+    left:${e.clientX - rect.left - size/2}px;
+    top:${e.clientY - rect.top - size/2}px;
+    background:rgba(255,255,255,.06);
+    border-radius:50%;
+    transform:scale(0);
+    animation:rippleOut .6s ease-out forwards;
+    pointer-events:none;
+    z-index:10;
+  `;
+  const style = document.createElement('style');
+  style.textContent = `@keyframes rippleOut{to{transform:scale(1);opacity:0}}`;
+  document.head.appendChild(style);
+  card.style.position = 'relative';
+  card.style.overflow = 'hidden';
+  card.appendChild(r);
+  setTimeout(() => r.remove(), 700);
+});
+
+// 2. Score numbers pop animation when page loads or renders
+function animateLiveScores() {
+  document.querySelectorAll('.score-num').forEach((el, i) => {
+    el.style.animation = 'none';
+    el.offsetHeight; // reflow
+    el.style.animation = `scorePop .4s cubic-bezier(.34,1.56,.64,1) ${i * 0.04}s both`;
+  });
+}
+const styleEl = document.createElement('style');
+styleEl.textContent = `
+  @keyframes scorePop {
+    from { transform: scale(.7) translateY(6px); opacity:0; }
+    to   { transform: scale(1)  translateY(0);   opacity:1; }
+  }
+  @keyframes rippleOut { to { transform:scale(1); opacity:0; } }
+`;
+document.head.appendChild(styleEl);
+
+// 3. Highlight TODAY matches with a pulsing ring on first load
+function highlightTodayCards() {
+  document.querySelectorAll('.match-card.soon').forEach(card => {
+    card.style.boxShadow = '0 0 0 1px rgba(255,200,0,.2), 0 4px 24px rgba(0,0,0,.4)';
+  });
+}
+
+// Hook into render to trigger animations
+const _origRender = render;
+window.render = function() {
+  _origRender.apply(this, arguments);
+  setTimeout(() => {
+    animateLiveScores();
+    highlightTodayCards();
+  }, 50);
+};
+
+// 4. Tab switch ripple on league tabs
+document.querySelectorAll('.league-tab').forEach(tab => {
+  tab.addEventListener('click', function() {
+    this.style.transition = 'none';
+    this.classList.add('tab-clicked');
+    setTimeout(() => {
+      this.style.transition = '';
+      this.classList.remove('tab-clicked');
+    }, 300);
+  });
+});
+
+// 5. Smooth number counter for stats
+function animateCounter(el, target, duration = 800) {
+  if (!el) return;
+  const start = parseInt(el.textContent) || 0;
+  const diff = target - start;
+  if (diff === 0) return;
+  const startTime = performance.now();
+  function step(now) {
+    const elapsed = now - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const ease = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+    el.textContent = Math.round(start + diff * ease);
+    if (progress < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+const _origUpdateStats = updateStats;
+window.updateStats = function() {
+  const statIds = ['s-total','s-upcoming','s-final','s-live','s-soon','s-orders'];
+  const before = statIds.map(id => parseInt(document.getElementById(id)?.textContent)||0);
+  _origUpdateStats.apply(this, arguments);
+  statIds.forEach((id, i) => {
+    const el = document.getElementById(id);
+    const after = parseInt(el?.textContent)||0;
+    if (before[i] !== after) animateCounter(el, after);
+  });
+};
+
+// 6. Add keyboard shortcut hints (E = EPL, U = UCL, F = FIFA)
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
+  if (e.key === 'e' || e.key === 'E') switchLeague('epl');
+  else if (e.key === 'u' || e.key === 'U') switchLeague('ucl');
+  else if (e.key === 'f' || e.key === 'F') switchLeague('fifa');
+  else if (e.key === 'h' || e.key === 'H') switchLeague('history');
+  else if (e.key === 'n' || e.key === 'N') handleAddBtn();
+});
+
+// Initial animations
+setTimeout(() => { animateLiveScores(); highlightTodayCards(); }, 200);
 </script>
 
 <header class="site-header">
@@ -2941,7 +4240,8 @@ function checkAutoHistory(){
   Object.entries(DATA).forEach(([key,league])=>{
     if(!league.matches)return;
     league.matches.forEach(m=>{
-      if(m.status==='scheduled'){
+      // Both 'scheduled' and 'live' matches should auto-complete after 2 hours
+      if(m.status==='scheduled'||m.status==='live'){
         const d=parseISTTime(m.time);
         if(d&&now>=d.getTime()+120*60000){ // 2 hours after kickoff = complete
           m.status='final';
@@ -2956,7 +4256,7 @@ function checkAutoHistory(){
       }
     });
   });
-  if(changed){saveDB();updateCounts();if(currentLeague===currentLeague)render();}
+  if(changed){saveDB();updateCounts();buildTicker();render();}
 }
 setInterval(checkAutoHistory,60000);
 checkAutoHistory();
@@ -3074,8 +4374,12 @@ function render(){
   }
 
   const groups=groupByDay(matches);
-  // ── LIVE NOW banner ──
-  const liveMatcher = DATA[currentLeague].matches.filter(m=>m.status==='live');
+  // ── LIVE NOW banner — only show truly live (not time-expired) ──
+  const liveMatcher = DATA[currentLeague].matches.filter(m=>{
+    if(m.status!=='live') return false;
+    const pt=parseISTTime(m.time);
+    return !pt || Date.now() < pt.getTime()+120*60000;
+  });
   let liveBanner = '';
   if(liveMatcher.length){
     liveBanner = `<div style="display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:14px;background:linear-gradient(135deg,rgba(255,61,90,.12),rgba(255,61,90,.04));border:1px solid rgba(255,61,90,.35);margin-bottom:14px;animation:heartbeatGlow 1.5s ease-in-out infinite">
@@ -3486,7 +4790,11 @@ function renderFIFA(el){
 
 // ===== MATCH CARD =====
 function matchCard(m,league){
-  const isFinal=m.status==='final';const isLive=m.status==='live';
+  // Auto-detect if a 'live' match is actually over (time has passed 2hrs)
+  const parsedTime = parseISTTime(m.time);
+  const isActuallyOver = parsedTime && Date.now() >= parsedTime.getTime() + 120*60000;
+  const effectiveStatus = (m.status === 'live' && isActuallyOver) ? 'final' : m.status;
+  const isFinal=effectiveStatus==='final';const isLive=effectiveStatus==='live';
   const isSoon=!isFinal&&!isLive&&isWithin24Hours(m.time);
   const countdown=isSoon?getCountdown(m.time):'';
   const soonClass=isSoon?' soon':'';
@@ -4190,12 +5498,12 @@ function openGlobeInsights(){
     const cached = giLastData || GI_INSTANT_CACHE;
     renderGiInsights(body, cached, 'All Events');
     giLastData = cached;
-    // Show subtle "refreshing" badge
+    // Show subtle "refreshing" badge — no warning text
     body.insertAdjacentHTML('afterbegin', `
-      <div id="giRefreshBadge" style="display:flex;align-items:center;gap:7px;padding:8px 14px;background:rgba(0,255,135,.05);border:1px solid rgba(0,255,135,.15);border-radius:10px;margin-bottom:14px;font-size:11px;color:rgba(0,255,135,.7);font-family:'JetBrains Mono',monospace;">
-        <div style="width:6px;height:6px;border-radius:50%;background:#00ff87;animation:syncPulse 1.5s infinite;"></div>
-        Showing cached data • Fetching live insights...
-        <span id="giLiveTag" style="margin-left:auto;font-size:9px;color:rgba(0,255,135,.5)">AUTO-REFRESH 30s</span>
+      <div id="giRefreshBadge" style="display:flex;align-items:center;gap:7px;padding:8px 14px;background:rgba(96,179,255,.04);border:1px solid rgba(96,179,255,.12);border-radius:10px;margin-bottom:14px;font-size:11px;color:rgba(96,179,255,.7);font-family:'JetBrains Mono',monospace;">
+        <div style="width:6px;height:6px;border-radius:50%;background:#60b3ff;animation:syncPulse 1.5s infinite;"></div>
+        Fetching live insights...
+        <span id="giLiveTag" style="margin-left:auto;font-size:9px;color:rgba(96,179,255,.45)">AUTO-REFRESH 30s</span>
       </div>`);
   }
   startGiRefreshCycle();
@@ -4385,12 +5693,14 @@ Return 6-8 topEvents. Make sure data is realistic and current.`;
 
   } catch(err) {
     console.warn('Globe Insights error:', err);
-    // Show graceful error with cached data if available
+    // Show cached data silently — no "cached data" warning shown to user
     if(giLastData) {
       renderGiInsights(body, giLastData, tabCfg.label);
+      // Add subtle live indicator without any error/cached warning
       body.insertAdjacentHTML('afterbegin', `
-        <div style="display:flex;align-items:center;gap:8px;padding:10px 14px;background:rgba(255,193,7,.06);border:1px solid rgba(255,193,7,.2);border-radius:10px;margin-bottom:16px;font-size:11px;color:rgba(255,193,7,.8)">
-          ⚠️ Showing cached data — refreshing shortly
+        <div style="display:flex;align-items:center;gap:7px;padding:7px 12px;background:rgba(96,179,255,.04);border:1px solid rgba(96,179,255,.10);border-radius:8px;margin-bottom:12px;font-size:10px;color:rgba(96,179,255,.6);font-family:'JetBrains Mono',monospace;animation:fadeInOverlay .3s ease;">
+          <div style="width:5px;height:5px;border-radius:50%;background:#60b3ff;flex-shrink:0;"></div>
+          Live data • Auto-refresh in <span id="giCountdown" style="font-weight:700;color:#60b3ff;margin:0 2px">${giCountdownSec}</span>s
         </div>`);
     } else {
       body.innerHTML = `<div class="gi-error">
