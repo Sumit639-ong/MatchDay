@@ -5811,5 +5811,422 @@ function renderGiInsights(container, data, tabLabel){
 }
 
 </script>
+
+<!-- ══════════════════════════════════════════════
+     MATCHDAY AI — FLOATING ASSISTANT BUTTON + POPUP
+     ══════════════════════════════════════════════ -->
+<style>
+/* FAB Button */
+#md-ai-fab {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7c6fff, #00ff87);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  box-shadow: 0 4px 24px rgba(124,111,255,.5), 0 0 0 0 rgba(124,111,255,.4);
+  animation: mdAiFabPulse 2.5s ease-in-out infinite;
+  transition: transform .2s cubic-bezier(.34,1.56,.64,1), box-shadow .2s;
+}
+#md-ai-fab:hover {
+  transform: scale(1.12);
+  box-shadow: 0 8px 32px rgba(124,111,255,.7), 0 0 0 0 rgba(124,111,255,.3);
+}
+#md-ai-fab:active { transform: scale(0.95); }
+@keyframes mdAiFabPulse {
+  0%   { box-shadow: 0 4px 24px rgba(124,111,255,.5), 0 0 0 0 rgba(124,111,255,.4); }
+  60%  { box-shadow: 0 4px 24px rgba(124,111,255,.5), 0 0 0 12px rgba(124,111,255,.0); }
+  100% { box-shadow: 0 4px 24px rgba(124,111,255,.5), 0 0 0 0 rgba(124,111,255,.0); }
+}
+#md-ai-fab .fab-emoji { font-size: 24px; line-height: 1; transition: transform .2s; }
+#md-ai-fab.open .fab-emoji { transform: rotate(20deg) scale(0.85); }
+
+/* Tooltip label */
+#md-ai-label {
+  position: fixed;
+  bottom: 34px;
+  left: 86px;
+  background: rgba(14,16,38,.95);
+  border: 1px solid rgba(124,111,255,.3);
+  color: rgba(255,255,255,.85);
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .4px;
+  padding: 6px 13px;
+  border-radius: 20px;
+  z-index: 9998;
+  pointer-events: none;
+  white-space: nowrap;
+  box-shadow: 0 4px 16px rgba(0,0,0,.5);
+  animation: mdLabelFadeIn .4s ease;
+  backdrop-filter: blur(12px);
+}
+#md-ai-label.hidden { display: none; }
+@keyframes mdLabelFadeIn {
+  from { opacity: 0; transform: translateX(-8px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* Popup panel */
+#md-ai-popup {
+  position: fixed;
+  bottom: 88px;
+  left: 20px;
+  width: 320px;
+  max-height: 500px;
+  background: rgba(10,12,30,.97);
+  border: 1px solid rgba(124,111,255,.25);
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  z-index: 9997;
+  box-shadow: 0 24px 80px rgba(0,0,0,.8), 0 0 0 1px rgba(255,255,255,.04), 0 0 60px rgba(124,111,255,.08);
+  backdrop-filter: blur(24px);
+  transform: scale(0.85) translateY(16px);
+  opacity: 0;
+  pointer-events: none;
+  transition: all .25s cubic-bezier(.34,1.56,.64,1);
+  overflow: hidden;
+}
+#md-ai-popup.open {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* Popup header */
+.md-ai-header {
+  background: linear-gradient(135deg, rgba(124,111,255,.12), rgba(0,255,135,.05));
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.md-ai-header-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 16px;
+  letter-spacing: 3px;
+  background: linear-gradient(120deg, #fff, #c4b5fd, #00ff87);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  line-height: 1;
+}
+.md-ai-badge {
+  background: rgba(0,255,135,.1);
+  color: #00ff87;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  padding: 3px 8px;
+  border-radius: 20px;
+  border: 1px solid rgba(0,255,135,.25);
+  font-family: 'JetBrains Mono', monospace;
+  text-transform: uppercase;
+}
+.md-ai-status {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: auto;
+  font-size: 9px;
+  color: rgba(0,255,135,.7);
+  font-family: 'JetBrains Mono', monospace;
+}
+.md-ai-dot {
+  width: 6px; height: 6px;
+  background: #00ff87;
+  border-radius: 50%;
+  box-shadow: 0 0 6px #00ff87;
+  animation: mdDotPulse 2s ease-in-out infinite;
+}
+@keyframes mdDotPulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+.md-ai-close {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,.3);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0 0 0 8px;
+  line-height: 1;
+  transition: color .15s;
+}
+.md-ai-close:hover { color: rgba(255,255,255,.8); }
+
+/* Messages area */
+#md-ai-msgs {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(124,111,255,.3) transparent;
+  max-height: 280px;
+}
+.md-msg { display: flex; gap: 8px; align-items: flex-end; }
+.md-msg.user { flex-direction: row-reverse; }
+.md-avatar {
+  width: 26px; height: 26px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; flex-shrink: 0;
+}
+.md-avatar.ai {
+  background: linear-gradient(135deg, rgba(124,111,255,.3), rgba(0,255,135,.2));
+  border: 1px solid rgba(124,111,255,.3);
+}
+.md-avatar.user {
+  background: rgba(167,139,250,.15);
+  border: 1px solid rgba(167,139,250,.3);
+  font-size: 10px;
+  font-weight: 800;
+  color: #c4b5fd;
+  font-family: 'Inter', sans-serif;
+}
+.md-bubble {
+  max-width: 80%;
+  padding: 9px 13px;
+  border-radius: 14px;
+  font-size: 12.5px;
+  line-height: 1.55;
+  font-family: 'Inter', sans-serif;
+}
+.md-bubble.ai {
+  background: rgba(22,24,52,.95);
+  color: rgba(255,255,255,.82);
+  border: 1px solid rgba(255,255,255,.06);
+  border-bottom-left-radius: 4px;
+}
+.md-bubble.user {
+  background: linear-gradient(135deg, rgba(124,111,255,.2), rgba(124,111,255,.08));
+  color: #c4b5fd;
+  border: 1px solid rgba(124,111,255,.2);
+  border-bottom-right-radius: 4px;
+}
+.md-typing-bubble {
+  display: flex; gap: 4px; align-items: center; padding: 12px 14px;
+}
+.md-typing-bubble span {
+  width: 5px; height: 5px;
+  background: #7c6fff;
+  border-radius: 50%;
+  animation: mdTyping 1.2s ease-in-out infinite;
+}
+.md-typing-bubble span:nth-child(2) { animation-delay: .2s; }
+.md-typing-bubble span:nth-child(3) { animation-delay: .4s; }
+@keyframes mdTyping { 0%,100%{transform:translateY(0);opacity:.4} 50%{transform:translateY(-4px);opacity:1} }
+
+/* Quick chips */
+#md-ai-chips {
+  padding: 0 12px 10px;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+.md-chip {
+  background: rgba(124,111,255,.07);
+  border: 1px solid rgba(124,111,255,.2);
+  color: rgba(196,181,253,.8);
+  font-size: 10.5px;
+  font-weight: 600;
+  padding: 4px 11px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: all .15s;
+  white-space: nowrap;
+  letter-spacing: .2px;
+}
+.md-chip:hover {
+  background: rgba(124,111,255,.18);
+  border-color: rgba(124,111,255,.5);
+  color: #c4b5fd;
+  transform: translateY(-1px);
+}
+
+/* Input row */
+.md-ai-input-row {
+  border-top: 1px solid rgba(255,255,255,.05);
+  padding: 10px 12px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  background: rgba(6,7,20,.5);
+  flex-shrink: 0;
+}
+#md-ai-input {
+  flex: 1;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.08);
+  color: rgba(255,255,255,.85);
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 12.5px;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  transition: border-color .15s;
+}
+#md-ai-input::placeholder { color: rgba(255,255,255,.2); }
+#md-ai-input:focus { border-color: rgba(124,111,255,.5); }
+#md-ai-send {
+  background: linear-gradient(135deg, #7c6fff, #5a45cc);
+  border: none;
+  color: #fff;
+  width: 34px; height: 34px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: transform .1s, box-shadow .15s;
+  box-shadow: 0 2px 12px rgba(124,111,255,.4);
+}
+#md-ai-send:hover { transform: scale(1.08); box-shadow: 0 4px 20px rgba(124,111,255,.6); }
+#md-ai-send:active { transform: scale(0.93); }
+</style>
+
+<!-- FAB Button -->
+<button id="md-ai-fab" onclick="mdAiToggle()" title="Ask MatchDay AI">
+  <span class="fab-emoji">⚽</span>
+</button>
+<div id="md-ai-label">Ask me anything</div>
+
+<!-- AI Popup -->
+<div id="md-ai-popup">
+  <div class="md-ai-header">
+    <div class="md-ai-header-logo">MATCHDAY</div>
+    <div class="md-ai-badge">AI</div>
+    <div class="md-ai-status">
+      <div class="md-ai-dot"></div>
+      <span>Online</span>
+    </div>
+    <button class="md-ai-close" onclick="mdAiToggle()">✕</button>
+  </div>
+
+  <div id="md-ai-msgs">
+    <div class="md-msg">
+      <div class="md-avatar ai">⚽</div>
+      <div class="md-bubble ai">Hey! I'm your MatchDay AI. Ask me anything — fixtures, standings, UCL Final, delivery orders, or any football question! 🏆</div>
+    </div>
+  </div>
+
+  <div id="md-ai-chips">
+    <div class="md-chip" onclick="mdAiChip('Premier League standings?')">🏆 PL Table</div>
+    <div class="md-chip" onclick="mdAiChip('Man United next match?')">🔴 Man Utd</div>
+    <div class="md-chip" onclick="mdAiChip('Champions League Final PSG vs Arsenal — who will win?')">⚽ UCL Final</div>
+    <div class="md-chip" onclick="mdAiChip('My 4 delivery orders for Man United, 8 tickets, all completed. Give a summary.')">📦 My Orders</div>
+    <div class="md-chip" onclick="mdAiChip('FIFA World Cup 2026 — latest news?')">🌍 WC 2026</div>
+  </div>
+
+  <div class="md-ai-input-row">
+    <input id="md-ai-input" placeholder="Ask anything about football..." onkeydown="if(event.key==='Enter')mdAiSend()" />
+    <button id="md-ai-send" onclick="mdAiSend()">↑</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  const SYSTEM = `You are MatchDay AI — an expert football assistant embedded in the MatchDay dashboard for user Sumit. You have full context of the dashboard:
+- Premier League: Matchday 37, Arsenal leading the table
+- Champions League: PSG vs Arsenal Final upcoming
+- FIFA World Cup 2026: USA/Canada/Mexico hosts
+- Delivery Tracker: Manchester United orders — 4 total orders, 8 tickets, 4 completed, 0 QC pending, 0 pending
+- Overview: 34 total matches tracked, 6 upcoming, 28 completed, 0 live now, 24 total delivery orders
+
+Be concise (2-5 sentences), accurate, enthusiastic, and helpful. Use football emojis naturally. For delivery questions, reference the above data. For match questions, give realistic current information.`;
+
+  const history = [];
+  let isOpen = false;
+
+  window.mdAiToggle = function() {
+    isOpen = !isOpen;
+    const popup = document.getElementById('md-ai-popup');
+    const fab   = document.getElementById('md-ai-fab');
+    const label = document.getElementById('md-ai-label');
+    popup.classList.toggle('open', isOpen);
+    fab.classList.toggle('open', isOpen);
+    label.classList.toggle('hidden', isOpen);
+    if(isOpen) {
+      setTimeout(() => document.getElementById('md-ai-input').focus(), 300);
+    }
+  };
+
+  window.mdAiChip = function(text) {
+    document.getElementById('md-ai-input').value = text;
+    mdAiSend();
+  };
+
+  function addMsg(role, html) {
+    const msgs = document.getElementById('md-ai-msgs');
+    const d = document.createElement('div');
+    d.className = 'md-msg' + (role === 'user' ? ' user' : '');
+    const avatarHTML = role === 'user'
+      ? `<div class="md-avatar user">S</div>`
+      : `<div class="md-avatar ai">⚽</div>`;
+    d.innerHTML = avatarHTML + `<div class="md-bubble ${role}">${html}</div>`;
+    msgs.appendChild(d);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  function addTyping() {
+    const msgs = document.getElementById('md-ai-msgs');
+    const d = document.createElement('div');
+    d.className = 'md-msg'; d.id = 'md-ai-typing';
+    d.innerHTML = `<div class="md-avatar ai">⚽</div><div class="md-bubble ai"><div class="md-typing-bubble"><span></span><span></span><span></span></div></div>`;
+    msgs.appendChild(d);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  function removeTyping() {
+    const t = document.getElementById('md-ai-typing');
+    if(t) t.remove();
+  }
+
+  window.mdAiSend = async function() {
+    const inp = document.getElementById('md-ai-input');
+    const text = inp.value.trim();
+    if(!text) return;
+    inp.value = '';
+    addMsg('user', text.replace(/</g,'&lt;'));
+    history.push({ role: 'user', content: text });
+    addTyping();
+
+    try {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 500,
+          system: SYSTEM,
+          messages: history
+        })
+      });
+      const data = await res.json();
+      const reply = (data.content || []).map(b => b.text || '').join('') || 'Sorry, try again!';
+      removeTyping();
+      history.push({ role: 'assistant', content: reply });
+      addMsg('ai', reply.replace(/\n/g, '<br>').replace(/</g, c => c === '<br>' ? '<br>' : '&lt;'));
+    } catch(e) {
+      removeTyping();
+      addMsg('ai', 'Connection hiccup! Try again in a moment. ⚽');
+    }
+  };
+})();
+</script>
+
 </body>
 </html>
