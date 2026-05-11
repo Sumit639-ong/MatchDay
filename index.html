@@ -3245,6 +3245,182 @@ body.light-mode .widget { background: rgba(255,255,255,.9) !important; }
     // For now we just confirm data is coming
   });
 </script>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+// 🔄 BACKEND AUTO-REFRESH SYSTEM — Smart Polling + Socket.io
+// Polls /api/orders every 30s, Socket.io for real-time push
+// ══════════════════════════════════════════════════════════════
+(function(){
+  const POLL_INTERVAL = 30000; // 30 seconds
+  const SYNC_ENDPOINT = '/api/orders';
+  let lastPollTime = null;
+  let pollTimer = null;
+  let consecutiveErrors = 0;
+  const MAX_BACKOFF = 120000; // max 2 min on error
+
+  // Visual sync indicator update
+  function setSyncStatus(status, msg){
+    const dot = document.querySelector('.gi-refresh-dot');
+    const el = document.getElementById('syncStatusMsg');
+    if(dot){
+      dot.style.background = status === 'ok' ? '#00ff87' : status === 'error' ? '#ff6b81' : '#ffc107';
+      dot.style.boxShadow = `0 0 6px ${status === 'ok' ? '#00ff87' : status === 'error' ? '#ff6b81' : '#ffc107'}`;
+    }
+    if(el && msg) el.textContent = msg;
+  }
+
+  // Format time ago
+  function timeAgo(date){
+    const secs = Math.floor((Date.now() - date) / 1000);
+    if(secs < 60) return `${secs}s ago`;
+    if(secs < 3600) return `${Math.floor(secs/60)}m ago`;
+    return `${Math.floor(secs/3600)}h ago`;
+  }
+
+  // Main poll function
+  async function pollBackend(){
+    try {
+      const res = await fetch(SYNC_ENDPOINT, {
+        method: 'GET',
+        headers: { 'Accept': 'application/json', 'Cache-Control': 'no-cache' },
+        signal: AbortSignal.timeout(8000)
+      });
+
+      if(!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+
+      lastPollTime = new Date();
+      consecutiveErrors = 0;
+
+      // Process live orders if available
+      if(data && Array.isArray(data.orders) && data.orders.length > 0){
+        // Check for new orders vs current ORDERS array
+        const prevIds = new Set(ORDERS.map(o => o.ordNum || o.id || '').filter(Boolean));
+        const newOrders = data.orders.filter(o => {
+          const id = o.ordNum || o.id || '';
+          return id && !prevIds.has(id);
+        });
+
+        if(newOrders.length > 0){
+          // Inject new orders
+          newOrders.forEach(o => {
+            o.isNew = true;
+            ORDERS.unshift(o);
+          });
+          // Re-render delivery tab if active
+          if(typeof render === 'function') render();
+          // Play Apple alert sound + show notification
+          if(typeof playOrderAlertSound === 'function') playOrderAlertSound();
+          if(typeof showToast === 'function'){
+            showToast(`📦 ${newOrders.length} new order${newOrders.length>1?'s':''} received!`, 'neworder');
+          }
+          // Add to notifications
+          newOrders.forEach(o => {
+            if(typeof addNotification === 'function'){
+              addNotification(`New order: ${o.event || o.ordNum || 'Unknown'}`, 'order');
+            }
+          });
+        }
+
+        // Update sheet sync state
+        if(typeof sheetRows !== 'undefined'){
+          window.sheetRows = data.rows || data.orders || [];
+          window.sheetSyncTime = new Date();
+          window.sheetSyncStatus = 'ok';
+        }
+      }
+
+      setSyncStatus('ok', `Synced ${timeAgo(lastPollTime)}`);
+      console.log(`✅ Auto-refresh: ${data?.orders?.length || 0} orders | ${timeAgo(lastPollTime)}`);
+
+    } catch(err) {
+      consecutiveErrors++;
+      setSyncStatus('error', 'Server offline — retry soon');
+      console.warn(`⚠️ Auto-refresh failed (attempt ${consecutiveErrors}):`, err.message);
+    }
+
+    // Schedule next poll with exponential backoff on errors
+    const delay = consecutiveErrors > 0
+      ? Math.min(POLL_INTERVAL * Math.pow(1.5, consecutiveErrors - 1), MAX_BACKOFF)
+      : POLL_INTERVAL;
+
+    clearTimeout(pollTimer);
+    pollTimer = setTimeout(pollBackend, delay);
+
+    // Update countdown in header if element exists
+    let countdown = Math.ceil(delay / 1000);
+    const countdownEl = document.getElementById('refreshCountdown');
+    if(countdownEl){
+      clearInterval(window._countdownInterval);
+      window._countdownInterval = setInterval(() => {
+        countdown--;
+        if(countdown <= 0){ clearInterval(window._countdownInterval); return; }
+        countdownEl.textContent = `↻ ${countdown}s`;
+      }, 1000);
+    }
+  }
+
+  // Socket.io real-time push (already connected above, enhance here)
+  try {
+    if(typeof socket !== 'undefined'){
+      // Real-time new order event
+      socket.on('newOrder', (order) => {
+        console.log('🔔 Socket: newOrder received', order);
+        if(order && typeof ORDERS !== 'undefined'){
+          order.isNew = true;
+          ORDERS.unshift(order);
+          if(typeof render === 'function') render();
+          if(typeof playOrderAlertSound === 'function') playOrderAlertSound();
+          if(typeof showToast === 'function') showToast(`📦 Live: New order arrived!`, 'neworder');
+          setSyncStatus('ok', 'Live push received');
+        }
+      });
+
+      // Sheet data update event
+      socket.on('sheetUpdate', (data) => {
+        console.log('📊 Socket: sheetUpdate', data?.rows?.length, 'rows');
+        if(data?.rows){
+          window.sheetRows = data.rows;
+          window.sheetHeaders = data.headers || [];
+          window.sheetSyncTime = new Date();
+          window.sheetSyncStatus = 'ok';
+          if(typeof render === 'function') render();
+          setSyncStatus('ok', `Sheet: ${data.rows.length} rows synced`);
+        }
+      });
+
+      // Connection status
+      socket.on('connect', () => {
+        setSyncStatus('ok', 'Socket connected');
+        console.log('🟢 Socket.io connected');
+      });
+      socket.on('disconnect', () => {
+        setSyncStatus('error', 'Socket disconnected');
+        console.log('🔴 Socket.io disconnected');
+      });
+    }
+  } catch(e) { console.warn('Socket enhance error:', e); }
+
+  // Start polling after page loads (2s delay to let render finish)
+  setTimeout(() => {
+    pollBackend();
+    console.log(`🔄 Auto-refresh started — polling every ${POLL_INTERVAL/1000}s`);
+  }, 2000);
+
+  // Also poll when user returns to tab (visibility API)
+  document.addEventListener('visibilitychange', () => {
+    if(document.visibilityState === 'visible'){
+      const idleFor = lastPollTime ? Date.now() - lastPollTime : Infinity;
+      if(idleFor > 15000){ // If away for 15+ seconds, refresh immediately
+        clearTimeout(pollTimer);
+        pollBackend();
+        console.log('👁️ Tab focused — refreshing after', Math.round(idleFor/1000), 's idle');
+      }
+    }
+  });
+})();
+</script>
 <body>
 
 <!-- FLOATING PARTICLES -->
@@ -3799,24 +3975,61 @@ function toggleTheme(){
   if(t==='light'){document.body.classList.add('light-mode');const el=document.getElementById('themeLabel');if(el)el.textContent='Light';const ic=document.querySelector('.t-icon');if(ic)ic.textContent='☀️';}
 })();
 
-// ===== NOTIFICATION SOUND =====
+// ===== NOTIFICATION SOUND — Apple macOS Style =====
 function playNotifSound(){
   try{
-    const ctx=new(window.AudioContext||window.webkitAudioContext)();
-    // Ding-dong two-tone sound
-    function tone(freq,start,dur,vol){
-      const o=ctx.createOscillator();
-      const g=ctx.createGain();
-      o.connect(g);g.connect(ctx.destination);
-      o.type='sine';o.frequency.value=freq;
-      g.gain.setValueAtTime(0,ctx.currentTime+start);
-      g.gain.linearRampToValueAtTime(vol,ctx.currentTime+start+0.01);
-      g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+start+dur);
-      o.start(ctx.currentTime+start);
-      o.stop(ctx.currentTime+start+dur+0.05);
+    const ctx = new(window.AudioContext || window.webkitAudioContext)();
+
+    // Apple macOS "Tri-tone" style — 3 ascending pure sine tones
+    function appleNote(freq, startAt, duration, peakVol){
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      // Soft low-pass to round off harsh edges (like Apple's tuned speakers)
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.value = 6000;
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(ctx.destination);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, ctx.currentTime + startAt);
+      // Smooth attack + gentle decay — Apple's signature envelope
+      gain.gain.setValueAtTime(0, ctx.currentTime + startAt);
+      gain.gain.linearRampToValueAtTime(peakVol, ctx.currentTime + startAt + 0.015);
+      gain.gain.setValueAtTime(peakVol, ctx.currentTime + startAt + duration * 0.35);
+      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + startAt + duration);
+      osc.start(ctx.currentTime + startAt);
+      osc.stop(ctx.currentTime + startAt + duration + 0.05);
     }
-    tone(880,0,0.18,0.35);
-    tone(660,0.2,0.28,0.25);
+
+    // Exact tri-tone intervals: G5 → A5 → E6 (Apple style ascending chime)
+    appleNote(784.0, 0.00, 0.22, 0.38);  // G5
+    appleNote(880.0, 0.18, 0.22, 0.34);  // A5
+    appleNote(1318.5,0.36, 0.30, 0.28);  // E6 — the Apple finish note
+  }catch(e){}
+}
+
+// Apple "New Order" alert — deeper, richer double-chime (like macOS Mail)
+function playOrderAlertSound(){
+  try{
+    const ctx = new(window.AudioContext || window.webkitAudioContext)();
+    function note(freq, startAt, dur, vol){
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      const f = ctx.createBiquadFilter();
+      f.type = 'lowpass'; f.frequency.value = 5500;
+      o.connect(f); f.connect(g); g.connect(ctx.destination);
+      o.type = 'sine';
+      o.frequency.setValueAtTime(freq, ctx.currentTime + startAt);
+      g.gain.setValueAtTime(0, ctx.currentTime + startAt);
+      g.gain.linearRampToValueAtTime(vol, ctx.currentTime + startAt + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + startAt + dur);
+      o.start(ctx.currentTime + startAt);
+      o.stop(ctx.currentTime + startAt + dur + 0.05);
+    }
+    // macOS "Glass" notification — double ping
+    note(1046.5, 0.00, 0.35, 0.42); // C6
+    note(1318.5, 0.32, 0.40, 0.36); // E6
   }catch(e){}
 }
 
@@ -6466,18 +6679,61 @@ body.light-mode .match-card .team-name {
 
   // Unsplash fallback images (football themed, no API key needed)
   const FALLBACK_IMGS = [
-    'https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=800&q=80',
-    'https://images.unsplash.com/photo-1489944440615-453fc2b6a9a9?w=800&q=80',
-    'https://images.unsplash.com/photo-1551958219-acbc608c6377?w=800&q=80',
-    'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=800&q=80',
-    'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800&q=80',
-    'https://images.unsplash.com/photo-1565799585-3c2ef16f7f1f?w=800&q=80',
-    'https://images.unsplash.com/photo-1543326727-cf6c39e8f84c?w=800&q=80',
-    'https://images.unsplash.com/photo-1606925797300-0b35e9d1794e?w=800&q=80',
+    'https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=900&q=85&fit=crop',
+    'https://images.unsplash.com/photo-1489944440615-453fc2b6a9a9?w=900&q=85&fit=crop',
+    'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=900&q=85&fit=crop',
+    'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=900&q=85&fit=crop',
+    'https://images.unsplash.com/photo-1551958219-acbc608c6377?w=900&q=85&fit=crop',
+    'https://images.unsplash.com/photo-1606925797300-0b35e9d1794e?w=900&q=85&fit=crop',
+    'https://images.unsplash.com/photo-1543326727-cf6c39e8f84c?w=900&q=85&fit=crop',
+    'https://images.unsplash.com/photo-1587941168115-d16c4e1e7e26?w=900&q=85&fit=crop',
+    'https://images.unsplash.com/photo-1459865264687-595d652de67e?w=900&q=85&fit=crop',
+    'https://images.unsplash.com/photo-1529900748604-07564a03e7a6?w=900&q=85&fit=crop',
   ];
 
+  // DIRECT Unsplash stadium images per team (no API, always works)
+  const DIRECT_IMGS = {
+    'Arsenal FC':           'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=900&q=85&fit=crop',
+    'Arsenal':              'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=900&q=85&fit=crop',
+    'Manchester City':      'https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=900&q=85&fit=crop',
+    'Manchester United':    'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=900&q=85&fit=crop',
+    'Liverpool FC':         'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=900&q=85&fit=crop',
+    'Liverpool':            'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=900&q=85&fit=crop',
+    'Chelsea FC':           'https://images.unsplash.com/photo-1489944440615-453fc2b6a9a9?w=900&q=85&fit=crop',
+    'Chelsea':              'https://images.unsplash.com/photo-1489944440615-453fc2b6a9a9?w=900&q=85&fit=crop',
+    'Tottenham Hotspur':    'https://images.unsplash.com/photo-1551958219-acbc608c6377?w=900&q=85&fit=crop',
+    'Newcastle United':     'https://images.unsplash.com/photo-1587941168115-d16c4e1e7e26?w=900&q=85&fit=crop',
+    'Aston Villa':          'https://images.unsplash.com/photo-1606925797300-0b35e9d1794e?w=900&q=85&fit=crop',
+    'West Ham United':      'https://images.unsplash.com/photo-1459865264687-595d652de67e?w=900&q=85&fit=crop',
+    'Wolverhampton':        'https://images.unsplash.com/photo-1529900748604-07564a03e7a6?w=900&q=85&fit=crop',
+    'Wolverhampton Wanderers': 'https://images.unsplash.com/photo-1529900748604-07564a03e7a6?w=900&q=85&fit=crop',
+    'Brighton & Hove Albion': 'https://images.unsplash.com/photo-1543326727-cf6c39e8f84c?w=900&q=85&fit=crop',
+    'Brighton':             'https://images.unsplash.com/photo-1543326727-cf6c39e8f84c?w=900&q=85&fit=crop',
+    'Fulham FC':            'https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=900&q=85&fit=crop',
+    'Brentford FC':         'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=900&q=85&fit=crop',
+    'Crystal Palace':       'https://images.unsplash.com/photo-1489944440615-453fc2b6a9a9?w=900&q=85&fit=crop',
+    'Everton FC':           'https://images.unsplash.com/photo-1459865264687-595d652de67e?w=900&q=85&fit=crop',
+    'Nottingham Forest':    'https://images.unsplash.com/photo-1529900748604-07564a03e7a6?w=900&q=85&fit=crop',
+    'AFC Bournemouth':      'https://images.unsplash.com/photo-1606925797300-0b35e9d1794e?w=900&q=85&fit=crop',
+    'Sunderland AFC':       'https://images.unsplash.com/photo-1587941168115-d16c4e1e7e26?w=900&q=85&fit=crop',
+    'Burnley FC':           'https://images.unsplash.com/photo-1551958219-acbc608c6377?w=900&q=85&fit=crop',
+    'Leeds United':         'https://images.unsplash.com/photo-1543326727-cf6c39e8f84c?w=900&q=85&fit=crop',
+    'PSG':                  'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=900&q=85&fit=crop',
+    'Paris Saint-Germain':  'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=900&q=85&fit=crop',
+    'Bayern Munich':        'https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=900&q=85&fit=crop',
+    'Real Madrid':          'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=900&q=85&fit=crop',
+    'FC Barcelona':         'https://images.unsplash.com/photo-1551958219-acbc608c6377?w=900&q=85&fit=crop',
+    'Atletico Madrid':      'https://images.unsplash.com/photo-1459865264687-595d652de67e?w=900&q=85&fit=crop',
+    'Atalanta BC':          'https://images.unsplash.com/photo-1529900748604-07564a03e7a6?w=900&q=85&fit=crop',
+    'Inter Milan':          'https://images.unsplash.com/photo-1543326727-cf6c39e8f84c?w=900&q=85&fit=crop',
+    'AC Milan':             'https://images.unsplash.com/photo-1606925797300-0b35e9d1794e?w=900&q=85&fit=crop',
+    'Sporting CP':          'https://images.unsplash.com/photo-1587941168115-d16c4e1e7e26?w=900&q=85&fit=crop',
+  };
+
   function getFallback(teamName) {
-    // Pick a consistent fallback per team name (not random)
+    // Try direct Unsplash stadium map first
+    if(DIRECT_IMGS[teamName]) return DIRECT_IMGS[teamName];
+    // Consistent hash fallback
     let hash = 0;
     for(let c of (teamName||'')) hash += c.charCodeAt(0);
     return FALLBACK_IMGS[hash % FALLBACK_IMGS.length];
@@ -6486,8 +6742,8 @@ body.light-mode .match-card .team-name {
   async function fetchWikiImage(query) {
     if(IMG_CACHE[query]) return IMG_CACHE[query];
     try {
-      const url = `https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(query)}&prop=pageimages&format=json&pithumbsize=800&origin=*`;
-      const res = await fetch(url, { signal: AbortSignal.timeout(4000) });
+      const url = `https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(query)}&prop=pageimages&format=json&pithumbsize=900&origin=*`;
+      const res = await fetch(url, { signal: AbortSignal.timeout(3500) });
       const data = await res.json();
       const pages = data?.query?.pages || {};
       const page = Object.values(pages)[0];
@@ -6513,15 +6769,18 @@ body.light-mode .match-card .team-name {
     banner.appendChild(shimmer);
     cardEl.insertBefore(banner, cardEl.firstChild);
 
-    // Pick query — try home team stadium first, then away, then generic league
+    // 1. Try direct Unsplash first (instant, no latency)
+    let imgSrc = getFallback(homeTeam);
+
+    // 2. Try Wikipedia in background for a potentially better/more specific image
     const homeQuery = STADIUM_MAP[homeTeam] || (homeTeam + ' football stadium');
-    const awayQuery = STADIUM_MAP[awayTeam] || (awayTeam + ' football stadium');
-
-    let imgSrc = await fetchWikiImage(homeQuery);
-    if(!imgSrc) imgSrc = await fetchWikiImage(awayQuery);
-
-    // Use Unsplash fallback if Wikipedia gives nothing
-    if(!imgSrc) imgSrc = getFallback(homeTeam);
+    fetchWikiImage(homeQuery).then(wikiSrc => {
+      if(wikiSrc && !cardEl.dataset.wikiUpgraded) {
+        cardEl.dataset.wikiUpgraded = '1';
+        const existing = banner.querySelector('img');
+        if(existing) existing.src = wikiSrc;
+      }
+    }).catch(()=>{});
 
     if(imgSrc) {
       const img = new Image();
@@ -6530,8 +6789,10 @@ body.light-mode .match-card .team-name {
         shimmer.style.display = 'none';
       };
       img.onerror = () => {
-        // try unsplash fallback
-        img.src = getFallback(homeTeam);
+        // final fallback
+        let hash = 0;
+        for(let c of (homeTeam||'')) hash += c.charCodeAt(0);
+        img.src = FALLBACK_IMGS[hash % FALLBACK_IMGS.length];
       };
       img.src = imgSrc;
       img.alt = homeTeam + ' stadium';
