@@ -1370,7 +1370,227 @@ body.light-mode .order-table-wrap { box-shadow: 0 4px 20px rgba(0,0,0,.08) !impo
 }
 </style>
 <style>
-:root{--bg:#060710;--surface:#0e1020;--surface2:#161829;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.14);--text:#eef0ff;--muted:#6b7490;--dim:#2e3354;--epl:#38003c;--epl-acc:#00ff87;--ucl:#1a1464;--ucl-acc:#60b3ff;--fifa:#006633;--fifa-acc:#ffd700;--live:#ff3d5a;--upcoming:#00e676;--final:#747d8c;--accent:#7c6fff;--delivery-acc:#a78bfa;--shadow:rgba(0,0,0,0.5)}
+:root{
+  --bg:#04050f;
+  --surface:#0c0e1c;
+  --surface2:#131526;
+  --border:rgba(255,255,255,0.08);
+  --border2:rgba(255,255,255,0.16);
+  /* TEXT HIERARCHY */
+  --text:#f0f2ff;
+  --text-bright:#ffffff;
+  --text-secondary:#c8ccee;
+  --muted:#7c85b0;
+  --dim:#3a3f66;
+  /* LEAGUE */
+  --epl:#2a003a;--epl-acc:#00ff87;--epl-text:#00e67a;
+  --ucl:#0d0c50;--ucl-acc:#60b3ff;--ucl-text:#7dc4ff;
+  --fifa:#004d26;--fifa-acc:#ffd700;--fifa-text:#ffe033;
+  /* STATUS */
+  --live:#ff3d5a;--live-bright:#ff6b82;
+  --upcoming:#00e676;--upcoming-bright:#00ff87;
+  --final:#8892b0;--final-bright:#a8b2d8;
+  /* ACCENT */
+  --accent:#7c6fff;--accent-bright:#9d8fff;
+  --delivery-acc:#b09eff;
+  --shadow:rgba(0,0,0,0.6)
+}
+
+/* ╔══════════════════════════════════════════════════════════════╗
+   ║  ✦ MATCHDAY — MASTER TEXT COLOR SYSTEM v6 ULTRA            ║
+   ║  Every element. Every state. Sharp, luminous, cinematic.    ║
+   ╚══════════════════════════════════════════════════════════════╝ */
+
+/* ── BASE ── */
+body { color: var(--text) !important; }
+
+/* ── TEAM NAMES — boldest, brightest, white ── */
+.team-name,
+.home-name,
+.away-name,
+.team-block .team-name {
+  color: #ffffff !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.3px !important;
+}
+
+/* ── SCORES — vivid neon per league ── */
+.match-card.epl  .score-num { color: #00ff87 !important; filter: drop-shadow(0 0 12px rgba(0,255,135,.6)) !important; }
+.match-card.ucl  .score-num { color: #60b3ff !important; filter: drop-shadow(0 0 12px rgba(96,179,255,.6)) !important; }
+.match-card.fifa .score-num { color: #ffd700 !important; filter: drop-shadow(0 0 12px rgba(255,215,0,.5)) !important; }
+.match-card      .score-num { color: #c8ccee !important; }
+.score-sep { color: rgba(255,255,255,.18) !important; }
+
+/* ── KICKOFF TIME — vibrant lavender glow ── */
+.kickoff-time {
+  color: #b09eff !important;
+  filter: drop-shadow(0 0 14px rgba(176,158,255,.5)) !important;
+}
+
+/* ── STATUS BADGES — vivid, punchy ── */
+.badge-live, .status-badge.live {
+  color: #ff6b82 !important;
+  background: rgba(255,61,90,.18) !important;
+  border-color: rgba(255,61,90,.45) !important;
+  text-shadow: 0 0 10px rgba(255,61,90,.6) !important;
+}
+.badge-upcoming, .status-badge.upcoming {
+  color: #00ff87 !important;
+  background: rgba(0,255,135,.1) !important;
+  border-color: rgba(0,255,135,.35) !important;
+  text-shadow: 0 0 10px rgba(0,255,135,.4) !important;
+}
+.badge-final, .status-badge.final {
+  color: #a8b2d8 !important;
+  background: rgba(168,178,216,.08) !important;
+  border-color: rgba(168,178,216,.25) !important;
+}
+
+/* ── STAGE / MATCHDAY LABEL ── */
+.stage-label, .card-stage {
+  color: rgba(200,204,238,.5) !important;
+  font-size: 10px !important;
+  letter-spacing: .5px !important;
+}
+
+/* ── LEAGUE PILL ── */
+.pill-epl  { color: #00ff87 !important; background: rgba(0,255,135,.12) !important; border-color: rgba(0,255,135,.3) !important; }
+.pill-ucl  { color: #7dc4ff !important; background: rgba(96,179,255,.12) !important; border-color: rgba(96,179,255,.3) !important; }
+.pill-fifa { color: #ffe033 !important; background: rgba(255,215,0,.12) !important; border-color: rgba(255,215,0,.3) !important; }
+
+/* ── WIN PROBABILITY LABELS ── */
+.prob-label { color: rgba(200,204,238,.55) !important; font-size: 9px !important; letter-spacing: .5px !important; }
+.prob-val   { color: #c8ccee !important; font-weight: 700 !important; }
+
+/* ── CARD TIME (bottom-right IST time) ── */
+.card-time { color: rgba(124,133,176,.55) !important; }
+
+/* ── DAY HEADERS ── */
+.day-header { color: rgba(200,204,238,.7) !important; }
+.day-header.is-today  { color: #00ff87 !important; text-shadow: 0 0 16px rgba(0,255,135,.3) !important; }
+.day-header.is-tomorrow { color: #ffe033 !important; }
+.match-count { color: rgba(124,133,176,.6) !important; }
+
+/* ── FILTER BUTTONS ── */
+.filter-btn       { color: rgba(200,204,238,.7) !important; }
+.filter-btn.on    { color: #b09eff !important; }
+.filter-btn:hover { color: #ffffff !important; }
+
+/* ── LEAGUE TABS ── */
+.tab-name { color: rgba(240,242,255,.85) !important; }
+.tab-sub  { color: rgba(124,133,176,.75) !important; }
+.tab-count {
+  background: rgba(255,255,255,.08) !important;
+  color: rgba(200,204,238,.8) !important;
+}
+.league-tab.epl.active    .tab-name  { color: #00ff87 !important; text-shadow: 0 0 14px rgba(0,255,135,.4) !important; }
+.league-tab.ucl.active    .tab-name  { color: #7dc4ff !important; text-shadow: 0 0 14px rgba(96,179,255,.4) !important; }
+.league-tab.fifa.active   .tab-name  { color: #ffe033 !important; text-shadow: 0 0 14px rgba(255,215,0,.3) !important; }
+.league-tab.delivery.active .tab-name{ color: #b09eff !important; text-shadow: 0 0 14px rgba(176,158,255,.4) !important; }
+.league-tab.active .tab-sub   { color: rgba(200,204,238,.6) !important; }
+.league-tab.active .tab-count { background: rgba(255,255,255,.12) !important; color: #fff !important; }
+
+/* ── HEADER ── */
+.date-badge { color: rgba(200,204,238,.7) !important; }
+
+/* ── SIDEBAR WIDGETS ── */
+.widget-title { color: rgba(176,158,255,.8) !important; }
+.stat-label   { color: rgba(124,133,176,.8) !important; }
+.stat-val     { color: #f0f2ff !important; }
+.next-label   { color: rgba(176,158,255,.8) !important; }
+.next-teams   { color: #ffffff !important; }
+.next-time    { color: rgba(124,133,176,.7) !important; }
+
+/* ── DELIVERY TABLE ── */
+.order-table th { color: rgba(176,158,255,.7) !important; letter-spacing: 1.5px !important; }
+.order-table td { color: #c8ccee !important; }
+.order-table td strong { color: #ffffff !important; }
+
+/* Order status pills — vivid colors */
+.status-completed { color: #00ff87 !important; background: rgba(0,255,135,.1) !important; border-color: rgba(0,255,135,.3) !important; text-shadow: 0 0 8px rgba(0,255,135,.3) !important; }
+.status-pending   { color: #ff6b82 !important; background: rgba(255,61,90,.1)  !important; border-color: rgba(255,61,90,.3)  !important; }
+.status-qcpending { color: #ffd700 !important; background: rgba(255,215,0,.09) !important; border-color: rgba(255,215,0,.3)  !important; }
+
+/* QC pills */
+.qc-ok   { color: #00ff87 !important; background: rgba(0,255,135,.1)  !important; border-color: rgba(0,255,135,.35) !important; text-shadow: 0 0 8px rgba(0,255,135,.3) !important; }
+.qc-fail { color: #ff6b82 !important; background: rgba(255,61,90,.1)  !important; border-color: rgba(255,61,90,.35)  !important; }
+.qc-pending { color: #ffd700 !important; background: rgba(255,215,0,.08) !important; border-color: rgba(255,215,0,.25) !important; }
+
+/* ── DELIVERY STAT CARDS ── */
+.delivery-stat-num   { font-weight: 900 !important; letter-spacing: 2px !important; }
+.delivery-stat-label { color: rgba(124,133,176,.8) !important; font-weight: 700 !important; letter-spacing: 1px !important; }
+
+/* ── CLUB SELECTOR BUTTONS ── */
+.club-btn        { color: rgba(200,204,238,.7) !important; }
+.club-btn.active { color: #ffffff !important; }
+.club-btn:hover  { color: #ffffff !important; }
+
+/* ── LIVE TICKER ── */
+.ticker-inner, .ticker-item { color: rgba(200,204,238,.8) !important; }
+
+/* ── MODAL ── */
+.modal-title { color: #ffffff !important; }
+.form-label  { color: rgba(176,158,255,.75) !important; }
+.form-input, .form-select {
+  color: #f0f2ff !important;
+  background: rgba(255,255,255,.04) !important;
+}
+.form-input::placeholder { color: rgba(124,133,176,.5) !important; }
+
+/* ── TOAST ── */
+.toast { color: #f0f2ff !important; }
+.toast.success  { color: #00ff87 !important; }
+.toast.neworder { color: #ff8fa3 !important; }
+
+/* ── SYNC BAR ── */
+.sync-bar { color: rgba(200,204,238,.7) !important; }
+.sync-bar.error { color: #ff6b82 !important; }
+.sync-bar.syncing { color: #ffd700 !important; }
+
+/* ── GLOBE INSIGHTS BUTTON ── */
+.globe-btn { color: #7dc4ff !important; }
+.globe-btn:hover { color: #a8daff !important; }
+
+/* ── HISTORY PAGE ── */
+.history-section-title { color: rgba(176,158,255,.7) !important; }
+
+/* ── ADMIN LOGIN ── */
+.admin-logo { color: #ffffff !important; }
+.admin-label { color: rgba(200,204,238,.7) !important; }
+.admin-input { color: #f0f2ff !important; }
+.admin-input::placeholder { color: rgba(124,133,176,.5) !important; }
+
+/* ── EMPTY STATE ── */
+.empty-state p { color: rgba(124,133,176,.8) !important; }
+
+/* ── FIFA GROUP TABLE ── */
+.fifa-group-card .team-row td { color: #c8ccee !important; }
+.fifa-group-card th { color: rgba(176,158,255,.6) !important; }
+
+/* ── TOOLTIP / SOON BANNER ── */
+.soon-text { color: #ffe033 !important; }
+
+/* ── ANALYTICS ── */
+.chart-label { color: rgba(124,133,176,.75) !important; }
+.chart-val   { color: #f0f2ff !important; font-weight: 700 !important; }
+.bar-label   { color: rgba(200,204,238,.7) !important; }
+
+/* ── GLOBAL LINK/BUTTON TEXT ── */
+.btn-add-header { color: #c4b5fd !important; }
+.btn-history-header { color: rgba(200,204,238,.8) !important; }
+.theme-toggle  { color: rgba(200,204,238,.7) !important; }
+.view-toggle-btn { color: rgba(176,158,255,.85) !important; }
+
+/* ── CUSTOM LEAGUE PILL ── */
+.pill-custom { color: #b09eff !important; background: rgba(176,158,255,.1) !important; border-color: rgba(176,158,255,.3) !important; }
+
+/* ── SCORE SEPARATOR ── */
+.score-sep { color: rgba(255,255,255,.18) !important; font-weight: 200 !important; }
+
+/* ── UPCOMING MATCH: probability percents ── */
+.prob-home-pct { color: #00ff87 !important; font-weight: 700 !important; }
+.prob-draw-pct { color: rgba(200,204,238,.6) !important; }
+.prob-away-pct { color: #ff6b82 !important; font-weight: 700 !important; }
 /* ══════════════════════════════════════════════════════════════
    LIGHT MODE — VIBRANT PREMIUM THEME v3
    Inspired by the screenshot: delivery page needs color contrast
@@ -4434,17 +4654,133 @@ function fetchSheetData(clubKey){
     });
 }
 
-// ✅ Socket.IO se real-time updates — server jo club update kare, wahi refresh ho
-if(typeof io !== 'undefined'){
-  // socket already connected from top of file
+// ══════════════════════════════════════════════════════════════
+// 🔄 SILENT BACKGROUND SYNC — Zero DOM flash, zero blank screen
+// Data updates in background; DOM only touched on REAL changes
+// ══════════════════════════════════════════════════════════════
+
+// Deep-compare two order arrays — returns true if actually different
+function ordersChanged(prev, next) {
+  if(prev.length !== next.length) return true;
+  for(let i = 0; i < next.length; i++){
+    const a = prev[i], b = next[i];
+    if(!a || !b) return true;
+    if(a.qc !== b.qc || a.submitted !== b.submitted ||
+       a.ordNum !== b.ordNum || a.event !== b.event ||
+       a.block !== b.block || a.seats !== b.seats ||
+       a.rowColor !== b.rowColor) return true;
+  }
+  return false;
 }
 
-// ✅ Poller: current club ka data fetch karo
-function startPolling(){
+// Silent fetch — parses sheet, merges data, only re-renders if something changed
+function silentFetchSheetData(clubKey) {
+  const club = clubKey || currentClub || 'manutd';
+
+  fetch('/orders/' + club, { cache: 'no-store' })
+    .then(r => { if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(data => {
+      if(!Array.isArray(data) || data.length === 0) {
+        sheetSyncStatus = 'ok';
+        sheetSyncTime = new Date();
+        return;
+      }
+
+      const headers = data[0].map(h => (h||'').toString().trim());
+      const rows = data.slice(1).filter(r => r && r.some(c => c));
+
+      // Parse rows into order objects
+      const sheetOrders = rows.map((r, i) => {
+        const o = sheetRowToOrder(headers, r, i);
+        o.club = club;
+        return o;
+      });
+
+      // What we had before for this club
+      const prevClubOrders = ORDERS.filter(o => o.fromSheet && o.club === club);
+
+      // Detect genuinely NEW orders
+      const newOrders = sheetOrders.filter(o => {
+        const cKey = makeCompositeKey(o);
+        const prevByKey = [...prevOrderIds].some(k => k === cKey);
+        const prevByOrd = o.ordNum && !o.ordNum.startsWith('ROW-') && prevOrderIds.has('ord:' + o.ordNum);
+        return !prevByKey && !prevByOrd;
+      });
+
+      // Notify only for new orders
+      newOrders.forEach(o => {
+        addNotification(`New Order [${club}]: ${o.ordNum||makeCompositeKey(o)} — ${o.event||o.matchName||'Unknown Event'}`);
+      });
+
+      // Update prevOrderIds
+      prevOrderIds = new Set([
+        ...sheetOrders.map(o => makeCompositeKey(o)),
+        ...sheetOrders.filter(o => o.ordNum && !o.ordNum.startsWith('ROW-')).map(o => 'ord:' + o.ordNum)
+      ]);
+
+      // Merge silently — keep local + other clubs, replace this club's sheet orders
+      const localOnly = ORDERS.filter(o => !o.fromSheet);
+      const otherClubs = ORDERS.filter(o => o.fromSheet && o.club !== club);
+      const merged = [...otherClubs, ...sheetOrders, ...localOnly];
+
+      // ── KEY: Only update DOM if data actually changed ──
+      const changed = ordersChanged(prevClubOrders, sheetOrders) || newOrders.length > 0;
+
+      ORDERS = merged;
+      saveDelivery();
+      sheetHeaders = headers;
+      sheetRows = rows;
+      sheetSyncStatus = 'ok';
+      sheetSyncTime = new Date();
+
+      // Only re-render if: currently on delivery tab AND data genuinely changed
+      if(changed) {
+        updateCounts();
+        updateStats();
+        if(currentLeague === 'delivery') {
+          // Smart patch: only re-render the table body, not the entire page
+          renderDeliverySilent();
+        }
+      }
+    })
+    .catch(err => {
+      console.warn('Silent sync failed [' + club + ']:', err.message);
+      sheetSyncStatus = 'error';
+      // On error: do NOT touch the DOM at all
+    });
+}
+
+// Smart render — updates only the order table rows without clearing the whole page
+function renderDeliverySilent() {
+  // If user is mid-interaction (modal open, typing), skip
+  const modalOpen = document.getElementById('deliveryModal')?.style.display !== 'none' &&
+                    document.getElementById('deliveryModal')?.style.display !== '';
+  if(modalOpen) return;
+
+  // Full render but suppress the flash by pre-filling with current content
+  const el = document.getElementById('matchList');
+  if(!el) return;
+
+  // Save scroll position
+  const scrollY = window.scrollY;
+
+  // Do the render (existing function)
+  renderDelivery(el);
+
+  // Restore scroll position instantly
+  window.scrollTo(0, scrollY);
+}
+
+// Initial load — use full render first time
+function startPolling() {
   fetchSheetData(currentClub);
 }
 startPolling();
-setInterval(()=>fetchSheetData(currentClub),5000);
+
+// After first load, switch to silent polling (every 8 seconds — fast enough, no flash)
+setTimeout(() => {
+  setInterval(() => silentFetchSheetData(currentClub), 8000);
+}, 3000);
 
 // ===== AUTO HISTORY (match complete pe auto move) =====
 function checkAutoHistory(){
@@ -5940,9 +6276,60 @@ function renderGiInsights(container, data, tabLabel){
     return '';
   };
 
+  // Real Unsplash images per event category
+  const INSIGHTS_IMGS = {
+    'Football': [
+      'https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=800&q=90&fit=crop&crop=center',
+      'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=800&q=90&fit=crop&crop=top',
+      'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800&q=90&fit=crop',
+      'https://images.unsplash.com/photo-1551958219-acbc608c6377?w=800&q=90&fit=crop',
+      'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=800&q=90&fit=crop',
+      'https://images.unsplash.com/photo-1489944440615-453fc2b6a9a9?w=800&q=90&fit=crop',
+      'https://images.unsplash.com/photo-1459865264687-595d652de67e?w=800&q=90&fit=crop',
+      'https://images.unsplash.com/photo-1611472173362-3f53dbd65d80?w=800&q=90&fit=crop',
+    ],
+    'Music': [
+      'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800&q=90&fit=crop&crop=center',
+      'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=800&q=90&fit=crop',
+      'https://images.unsplash.com/photo-1501386761578-eaa54b36d4da?w=800&q=90&fit=crop',
+      'https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec?w=800&q=90&fit=crop',
+      'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&q=90&fit=crop',
+    ],
+    'Tennis': [
+      'https://images.unsplash.com/photo-1531315630201-bb15abeb1653?w=800&q=90&fit=crop&crop=center',
+      'https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=800&q=90&fit=crop',
+      'https://images.unsplash.com/photo-1599586120429-48281b6f0ece?w=800&q=90&fit=crop',
+    ],
+    'Motorsport': [
+      'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=90&fit=crop&crop=center',
+      'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=800&q=90&fit=crop',
+      'https://images.unsplash.com/photo-1597007066704-67bf2068d5b2?w=800&q=90&fit=crop',
+    ],
+    'Cricket': [
+      'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=800&q=90&fit=crop',
+      'https://images.unsplash.com/photo-1606925797300-0b35e9d1794e?w=800&q=90&fit=crop',
+    ],
+    'Theatre & Arts': [
+      'https://images.unsplash.com/photo-1507924538820-ede94a04019d?w=800&q=90&fit=crop&crop=center',
+      'https://images.unsplash.com/photo-1516307365426-bea591f05011?w=800&q=90&fit=crop',
+      'https://images.unsplash.com/photo-1598387993441-a364f854cfdc?w=800&q=90&fit=crop',
+    ],
+    'default': [
+      'https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=800&q=90&fit=crop',
+      'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800&q=90&fit=crop',
+      'https://images.unsplash.com/photo-1531315630201-bb15abeb1653?w=800&q=90&fit=crop',
+    ]
+  };
+
+  function getInsightImg(category, idx) {
+    const pool = INSIGHTS_IMGS[category] || INSIGHTS_IMGS['default'];
+    return pool[idx % pool.length];
+  }
+
   // Summary strip
   const summaryHtml = data.summary ? `
-    <div style="padding:12px 16px;background:rgba(96,179,255,.05);border:1px solid rgba(96,179,255,.15);border-radius:12px;font-size:12px;line-height:1.6;color:rgba(255,255,255,.75);margin-bottom:20px;">
+    <div style="padding:14px 18px;background:rgba(96,179,255,.05);border:1px solid rgba(96,179,255,.15);border-radius:14px;font-size:12px;line-height:1.65;color:rgba(255,255,255,.75);margin-bottom:22px;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#60b3ff,#00ff87,#7c6fff);"></div>
       <span style="font-weight:700;color:#60b3ff;margin-right:6px;">🔍 Market Overview</span>${data.summary}
       <span style="font-size:10px;color:var(--muted);margin-left:10px;font-family:'JetBrains Mono',monospace;">Updated: ${data.lastUpdated||'Just now'}</span>
     </div>` : '';
@@ -5953,10 +6340,10 @@ function renderGiInsights(container, data, tabLabel){
       <div class="gi-section-title">📈 Market Trends</div>
       <div style="display:flex;gap:10px;flex-wrap:wrap;">
         ${data.marketTrends.map(t=>`
-          <div style="display:flex;align-items:center;gap:8px;padding:9px 14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:10px;font-size:11px;">
-            <span style="font-size:18px;">${t.icon||'📊'}</span>
+          <div style="display:flex;align-items:center;gap:8px;padding:10px 15px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:12px;font-size:11px;transition:all .2s;" onmouseover="this.style.borderColor='rgba(0,255,135,.2)';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='rgba(255,255,255,.08)';this.style.transform=''">
+            <span style="font-size:20px;">${t.icon||'📊'}</span>
             <span style="color:var(--muted);">${t.label}</span>
-            <span style="font-weight:800;color:#00ff87;font-family:'JetBrains Mono',monospace;">${t.value||''}</span>
+            <span style="font-weight:800;color:#00ff87;font-family:'JetBrains Mono',monospace;font-size:13px;">${t.value||''}</span>
           </div>`).join('')}
       </div>
     </div>` : '';
@@ -5966,55 +6353,79 @@ function renderGiInsights(container, data, tabLabel){
     <div class="gi-section">
       <div class="gi-section-title">🔥 Hottest Categories</div>
       <div style="display:flex;flex-direction:column;gap:8px;">
-        ${data.hotCategories.map(c=>`
-          <div style="display:flex;align-items:center;gap:12px;padding:8px 0;">
-            <span style="font-size:12px;font-weight:700;color:var(--text);min-width:110px;">${c.name}</span>
-            <div style="flex:1;height:6px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden;">
-              <div style="height:100%;width:${c.demand||50}%;background:linear-gradient(90deg,#60b3ff,#00ff87);border-radius:3px;transition:width 1s ease;"></div>
+        ${data.hotCategories.map((c,ci)=>{
+          const colors = ['#60b3ff','#00ff87','#ffd700','#ff6b81','#c4b5fd','#f97316'];
+          const col = colors[ci % colors.length];
+          return `<div style="display:flex;align-items:center;gap:12px;padding:9px 0;">
+            <span style="font-size:12px;font-weight:700;color:var(--text);min-width:130px;">${c.name}</span>
+            <div style="flex:1;height:7px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden;">
+              <div style="height:100%;width:${c.demand||50}%;background:linear-gradient(90deg,${col},${col}88);border-radius:4px;transition:width 1.2s cubic-bezier(.22,1,.36,1);box-shadow:0 0 8px ${col}55;"></div>
             </div>
-            <span style="font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--muted);min-width:50px;text-align:right;">${c.events||0} events</span>
-            <span style="font-size:11px;font-weight:800;color:#60b3ff;min-width:30px;text-align:right;">${c.demand||0}%</span>
-          </div>`).join('')}
+            <span style="font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--muted);min-width:55px;text-align:right;">${c.events||0} events</span>
+            <span style="font-size:12px;font-weight:800;color:${col};min-width:38px;text-align:right;">${c.demand||0}%</span>
+          </div>`;
+        }).join('')}
       </div>
     </div>` : '';
 
-  // Event cards
+  // Event cards — NOW WITH REAL IMAGES!
   const eventsHtml = (data.topEvents && data.topEvents.length) ? `
     <div class="gi-section">
       <div class="gi-section-title">🎟️ Top Events — Demand Analysis</div>
       <div class="gi-results-grid">
         ${data.topEvents.map((ev,i)=>{
           const bc = badgeClass(ev.badge);
-          const accentColor = i%3===0?'linear-gradient(90deg,#60b3ff,#7c6fff)':i%3===1?'linear-gradient(90deg,#00ff87,#60b3ff)':'linear-gradient(90deg,#ffd700,#ff6b81)';
+          const accentColor = i%4===0?'linear-gradient(90deg,#60b3ff,#7c6fff)':i%4===1?'linear-gradient(90deg,#00ff87,#60b3ff)':i%4===2?'linear-gradient(90deg,#ffd700,#ff6b81)':'linear-gradient(90deg,#c4b5fd,#00ff87)';
           const trendUp = stat => stat.trend==='up'?' up':stat.trend==='down'?' down':'';
-          return `<div class="gi-card" style="--gi-accent:${accentColor}">
-            <div class="gi-card-header">
-              <div class="gi-card-icon">${ev.icon||'🎟️'}</div>
-              <div class="gi-card-meta">
-                <div class="gi-card-title">${ev.title||'—'}</div>
-                <div class="gi-card-sub">${ev.date||''} ${ev.venue?'• '+ev.venue:''}</div>
-                ${ev.category?`<div style="font-size:9px;color:var(--muted);margin-top:2px;">${ev.category}</div>`:''}
+          const eventImg = getInsightImg(ev.category, i);
+          const demandColor = (ev.demandScore||0) > 90 ? '#ff6b81' : (ev.demandScore||0) > 75 ? '#ffd700' : '#00ff87';
+          return `<div class="gi-card" style="--gi-accent:${accentColor};overflow:hidden;position:relative;padding:0;">
+            <!-- Real stadium/event image header -->
+            <div style="position:relative;height:110px;overflow:hidden;border-radius:14px 14px 0 0;">
+              <img src="${eventImg}" alt="${ev.category||'Event'}" style="width:100%;height:100%;object-fit:cover;object-position:center;filter:saturate(1.3) brightness(0.8);transition:transform .5s ease;" loading="lazy"
+                onmouseover="this.style.transform='scale(1.06)'" onmouseout="this.style.transform='scale(1)'"
+                onerror="this.parentElement.style.background='linear-gradient(135deg,rgba(96,179,255,.1),rgba(124,111,255,.1))'">
+              <!-- Gradient overlay on image -->
+              <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(4,4,18,.1) 0%,rgba(4,4,18,.85) 100%);"></div>
+              <!-- Category badge on image -->
+              <div style="position:absolute;top:10px;left:10px;padding:3px 10px;background:rgba(0,0,0,.6);backdrop-filter:blur(10px);border-radius:6px;font-size:9px;font-weight:700;letter-spacing:.8px;color:rgba(255,255,255,.8);text-transform:uppercase;">${ev.category||'Event'}</div>
+              <!-- Demand score on image -->
+              ${ev.demandScore !== undefined ? `
+              <div style="position:absolute;top:10px;right:10px;width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,.7);backdrop-filter:blur(10px);border:2px solid ${demandColor};display:flex;align-items:center;justify-content:center;flex-direction:column;">
+                <span style="font-size:10px;font-weight:900;color:${demandColor};line-height:1;">${ev.demandScore}</span>
+                <span style="font-size:7px;color:rgba(255,255,255,.5);line-height:1;">HPT</span>
+              </div>` : ''}
+              <!-- Event title at bottom of image -->
+              <div style="position:absolute;bottom:0;left:0;right:0;padding:8px 12px;">
+                <div style="font-size:13px;font-weight:800;color:#fff;text-shadow:0 1px 8px rgba(0,0,0,.9);line-height:1.3;margin-bottom:2px;">${ev.title||'—'}</div>
+                <div style="font-size:10px;color:rgba(255,255,255,.6);font-family:'JetBrains Mono',monospace;">${ev.date||''}</div>
               </div>
-              ${ev.badge?`<div class="gi-card-badge ${bc}">${ev.badge}</div>`:''}
             </div>
-            ${ev.demandScore !== undefined ? `
-              <div class="gi-card-demand">
-                <div class="gi-demand-label">
-                  <span>DEMAND</span>
-                  <span style="color:${ev.demandScore>80?'#ff6b81':ev.demandScore>60?'#ffd700':'#00ff87'};font-weight:800;">${ev.demandLabel||ev.demandScore+'%'}</span>
-                </div>
-                <div class="gi-demand-bar-track">
-                  <div class="gi-demand-bar-fill" style="width:${ev.demandScore}%"></div>
-                </div>
-              </div>` : ''}
-            ${ev.stats && ev.stats.length ? `
-              <div class="gi-card-stats">
-                ${ev.stats.map(s=>`<div class="gi-stat-chip${trendUp(s)}">
-                  ${s.trend==='up'?'↑':s.trend==='down'?'↓':''}
-                  ${s.label}: <strong>${s.value}</strong>
-                </div>`).join('')}
-              </div>` : ''}
-            ${ev.insight ? `<div style="font-size:10px;color:rgba(255,255,255,.45);margin-top:10px;line-height:1.5;border-top:1px solid rgba(255,255,255,.06);padding-top:8px;">${ev.insight}</div>` : ''}
+            <!-- Card body below image -->
+            <div style="padding:12px 14px 14px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+                <div style="font-size:10px;color:var(--muted);">${ev.venue||''}</div>
+                ${ev.badge?`<div class="gi-card-badge ${bc}">${ev.badge}</div>`:''}
+              </div>
+              ${ev.demandScore !== undefined ? `
+                <div class="gi-card-demand" style="margin-bottom:8px;">
+                  <div class="gi-demand-label">
+                    <span>DEMAND</span>
+                    <span style="color:${demandColor};font-weight:800;">${ev.demandLabel||ev.demandScore+'%'}</span>
+                  </div>
+                  <div class="gi-demand-bar-track">
+                    <div class="gi-demand-bar-fill" style="width:${ev.demandScore}%;background:linear-gradient(90deg,${demandColor}88,${demandColor});box-shadow:0 0 8px ${demandColor}55;"></div>
+                  </div>
+                </div>` : ''}
+              ${ev.stats && ev.stats.length ? `
+                <div class="gi-card-stats">
+                  ${ev.stats.map(s=>`<div class="gi-stat-chip${trendUp(s)}">
+                    ${s.trend==='up'?'↑':s.trend==='down'?'↓':''}
+                    ${s.label}: <strong>${s.value}</strong>
+                  </div>`).join('')}
+                </div>` : ''}
+              ${ev.insight ? `<div style="font-size:10px;color:rgba(255,255,255,.45);margin-top:10px;line-height:1.5;border-top:1px solid rgba(255,255,255,.06);padding-top:8px;font-style:italic;">"${ev.insight}"</div>` : ''}
+            </div>
           </div>`;
         }).join('')}
       </div>
@@ -6508,16 +6919,17 @@ Be concise (2-5 sentences), accurate, enthusiastic, and helpful. Use football em
 
 
 <style>
-/* ══════════════════════════════════════════════
-   MATCH CARD — TICKETMASTER STYLE IMAGE BANNER
-   ══════════════════════════════════════════════ */
+/* ╔══════════════════════════════════════════════════════════════╗
+   ║  MATCH CARD — CINEMATIC STADIUM IMAGERY  v5 ULTRA           ║
+   ║  Ken Burns zoom · multi-layer gradient · neon edge glow     ║
+   ╚══════════════════════════════════════════════════════════════╝ */
 
-/* Card gets relative positioning — already has it */
 .match-card {
   overflow: hidden !important;
+  isolation: isolate;
 }
 
-/* The image banner behind the card content */
+/* ── IMAGE CONTAINER ── */
 .card-img-banner {
   position: absolute;
   inset: 0;
@@ -6525,88 +6937,159 @@ Be concise (2-5 sentences), accurate, enthusiastic, and helpful. Use football em
   overflow: hidden;
   border-radius: inherit;
 }
+
+/* ── THE IMAGE ITSELF — cinematic rendering ── */
 .card-img-banner img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center top;
+  object-position: center 30%;
   opacity: 0;
-  transition: opacity 0.6s ease;
-  filter: saturate(1.1);
+  transition: opacity 0.9s cubic-bezier(0.4,0,0.2,1);
+  /* Cinematic color treatment */
+  filter:
+    saturate(1.35)
+    contrast(1.08)
+    brightness(0.92);
+  will-change: transform, opacity;
+  transform: scale(1.07);
 }
+
+/* Ken Burns slow zoom on load */
 .card-img-banner img.loaded {
   opacity: 1;
+  animation: kenBurns 18s ease-in-out infinite alternate;
 }
-/* Dark overlay so text stays readable */
+@keyframes kenBurns {
+  0%   { transform: scale(1.07) translate(0%, 0%); }
+  33%  { transform: scale(1.12) translate(-1.5%, 0.5%); }
+  66%  { transform: scale(1.10) translate(1%, -0.5%); }
+  100% { transform: scale(1.07) translate(0.5%, 1%); }
+}
+
+/* Hover: zoom + brighten */
+.match-card:hover .card-img-banner img {
+  filter: saturate(1.5) contrast(1.1) brightness(1.0);
+  transition: filter 0.4s ease, opacity 0.9s ease;
+}
+
+/* ── 4-LAYER GRADIENT OVERLAY — stadium depth feel ── */
+.card-img-banner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  /* Top edge: subtle darkness for badge area */
+  background: linear-gradient(
+    180deg,
+    rgba(4,4,18,0.55)  0%,
+    rgba(4,4,18,0.20)  22%,
+    rgba(4,4,18,0.08)  45%,
+    rgba(4,4,18,0.40)  70%,
+    rgba(4,4,18,0.85)  88%,
+    rgba(4,4,18,0.97) 100%
+  );
+}
+
+/* Left edge vignette for text legibility */
 .card-img-banner::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    180deg,
-    rgba(6,7,20,0.45) 0%,
-    rgba(6,7,20,0.72) 55%,
-    rgba(6,7,20,0.92) 100%
-  );
-  z-index: 1;
+  z-index: 2;
+  background:
+    linear-gradient(90deg, rgba(4,4,18,0.6) 0%, transparent 55%),
+    linear-gradient(270deg, rgba(4,4,18,0.3) 0%, transparent 40%);
 }
 
-/* Card content sits above the image */
-.card-content {
-  position: relative;
-  z-index: 2;
+/* ── NEON EDGE ACCENT — league-colour glow at bottom border ── */
+.match-card.epl .card-img-banner {
+  box-shadow: inset 0 -3px 0 0 rgba(0,255,135,0.55),
+              inset 0 0 60px rgba(0,255,135,0.04);
 }
-.card-actions {
-  position: relative;
-  z-index: 2;
+.match-card.ucl .card-img-banner {
+  box-shadow: inset 0 -3px 0 0 rgba(96,179,255,0.6),
+              inset 0 0 60px rgba(96,179,255,0.04);
+}
+.match-card.fifa .card-img-banner {
+  box-shadow: inset 0 -3px 0 0 rgba(255,215,0,0.55),
+              inset 0 0 60px rgba(255,215,0,0.04);
+}
+.match-card.custom-league .card-img-banner {
+  box-shadow: inset 0 -3px 0 0 rgba(167,139,250,0.55);
 }
 
-/* Shimmer placeholder while image loads */
+/* ── SHIMMER — elegant skeleton while loading ── */
 .card-img-shimmer {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    90deg,
-    rgba(255,255,255,.02) 0%,
-    rgba(255,255,255,.06) 50%,
-    rgba(255,255,255,.02) 100%
-  );
-  background-size: 400px 100%;
-  animation: cardImgShimmer 1.6s ease-in-out infinite;
   border-radius: inherit;
   z-index: 0;
+  background: linear-gradient(
+    110deg,
+    rgba(255,255,255,0.0)  0%,
+    rgba(255,255,255,0.0)  35%,
+    rgba(255,255,255,0.055) 50%,
+    rgba(255,255,255,0.0)  65%,
+    rgba(255,255,255,0.0)  100%
+  );
+  background-size: 500px 100%;
+  animation: shimmerSlide 1.8s ease-in-out infinite;
 }
-@keyframes cardImgShimmer {
-  0%   { background-position: -400px 0; }
-  100% { background-position: 400px 0; }
+@keyframes shimmerSlide {
+  0%   { background-position: -500px 0; }
+  100% { background-position: 500px 0; }
 }
 .card-img-banner img.loaded ~ .card-img-shimmer,
-.card-img-banner.no-img .card-img-shimmer {
-  display: none;
-}
+.card-img-banner.no-img .card-img-shimmer { display: none; }
 
-/* Make team names + score pop better with image bg */
+/* ── CONTENT LAYERS — float above image ── */
+.card-content { position: relative; z-index: 4; }
+.card-actions  { position: relative; z-index: 4; }
+
+/* ── TEXT RENDERING — cinematic contrast ── */
 .match-card .team-name {
-  text-shadow: 0 1px 8px rgba(0,0,0,.8) !important;
+  text-shadow:
+    0 1px 0  rgba(0,0,0,0.9),
+    0 2px 8px rgba(0,0,0,0.7),
+    0 4px 20px rgba(0,0,0,0.5) !important;
 }
 .match-card .score-num {
-  text-shadow: 0 2px 12px rgba(0,0,0,.9) !important;
+  text-shadow:
+    0 0 20px currentColor,
+    0 2px 4px rgba(0,0,0,1),
+    0 4px 16px rgba(0,0,0,0.8) !important;
 }
 .match-card .kickoff-time {
-  text-shadow: 0 2px 12px rgba(0,0,0,.9) !important;
+  text-shadow:
+    0 1px 4px rgba(0,0,0,0.9),
+    0 3px 16px rgba(0,0,0,0.6) !important;
+}
+.match-card .status-badge,
+.match-card .badge-live {
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
 }
 
-/* Light mode adjustments */
-body.light-mode .card-img-banner::after {
+/* ── LIGHT MODE ── */
+body.light-mode .card-img-banner::before {
   background: linear-gradient(
     180deg,
-    rgba(240,242,255,0.25) 0%,
-    rgba(240,242,255,0.60) 60%,
-    rgba(240,242,255,0.88) 100%
+    rgba(240,242,255,0.30) 0%,
+    rgba(240,242,255,0.10) 30%,
+    rgba(240,242,255,0.45) 65%,
+    rgba(240,242,255,0.90) 100%
   );
 }
+body.light-mode .card-img-banner::after {
+  background:
+    linear-gradient(90deg, rgba(240,242,255,0.55) 0%, transparent 55%);
+}
 body.light-mode .match-card .team-name {
-  text-shadow: 0 1px 4px rgba(0,0,0,.2) !important;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.3), 0 2px 14px rgba(0,0,0,0.15) !important;
+}
+body.light-mode .match-card .score-num {
+  text-shadow: 0 1px 6px rgba(0,0,0,0.3) !important;
 }
 </style>
 
@@ -6693,41 +7176,56 @@ body.light-mode .match-card .team-name {
 
   // DIRECT Unsplash stadium images per team (no API, always works)
   const DIRECT_IMGS = {
-    'Arsenal FC':           'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=900&q=85&fit=crop',
-    'Arsenal':              'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=900&q=85&fit=crop',
-    'Manchester City':      'https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=900&q=85&fit=crop',
-    'Manchester United':    'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=900&q=85&fit=crop',
-    'Liverpool FC':         'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=900&q=85&fit=crop',
-    'Liverpool':            'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=900&q=85&fit=crop',
-    'Chelsea FC':           'https://images.unsplash.com/photo-1489944440615-453fc2b6a9a9?w=900&q=85&fit=crop',
-    'Chelsea':              'https://images.unsplash.com/photo-1489944440615-453fc2b6a9a9?w=900&q=85&fit=crop',
-    'Tottenham Hotspur':    'https://images.unsplash.com/photo-1551958219-acbc608c6377?w=900&q=85&fit=crop',
-    'Newcastle United':     'https://images.unsplash.com/photo-1587941168115-d16c4e1e7e26?w=900&q=85&fit=crop',
-    'Aston Villa':          'https://images.unsplash.com/photo-1606925797300-0b35e9d1794e?w=900&q=85&fit=crop',
-    'West Ham United':      'https://images.unsplash.com/photo-1459865264687-595d652de67e?w=900&q=85&fit=crop',
-    'Wolverhampton':        'https://images.unsplash.com/photo-1529900748604-07564a03e7a6?w=900&q=85&fit=crop',
-    'Wolverhampton Wanderers': 'https://images.unsplash.com/photo-1529900748604-07564a03e7a6?w=900&q=85&fit=crop',
-    'Brighton & Hove Albion': 'https://images.unsplash.com/photo-1543326727-cf6c39e8f84c?w=900&q=85&fit=crop',
-    'Brighton':             'https://images.unsplash.com/photo-1543326727-cf6c39e8f84c?w=900&q=85&fit=crop',
-    'Fulham FC':            'https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=900&q=85&fit=crop',
-    'Brentford FC':         'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=900&q=85&fit=crop',
-    'Crystal Palace':       'https://images.unsplash.com/photo-1489944440615-453fc2b6a9a9?w=900&q=85&fit=crop',
-    'Everton FC':           'https://images.unsplash.com/photo-1459865264687-595d652de67e?w=900&q=85&fit=crop',
-    'Nottingham Forest':    'https://images.unsplash.com/photo-1529900748604-07564a03e7a6?w=900&q=85&fit=crop',
-    'AFC Bournemouth':      'https://images.unsplash.com/photo-1606925797300-0b35e9d1794e?w=900&q=85&fit=crop',
-    'Sunderland AFC':       'https://images.unsplash.com/photo-1587941168115-d16c4e1e7e26?w=900&q=85&fit=crop',
-    'Burnley FC':           'https://images.unsplash.com/photo-1551958219-acbc608c6377?w=900&q=85&fit=crop',
-    'Leeds United':         'https://images.unsplash.com/photo-1543326727-cf6c39e8f84c?w=900&q=85&fit=crop',
-    'PSG':                  'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=900&q=85&fit=crop',
-    'Paris Saint-Germain':  'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=900&q=85&fit=crop',
-    'Bayern Munich':        'https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=900&q=85&fit=crop',
-    'Real Madrid':          'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=900&q=85&fit=crop',
-    'FC Barcelona':         'https://images.unsplash.com/photo-1551958219-acbc608c6377?w=900&q=85&fit=crop',
-    'Atletico Madrid':      'https://images.unsplash.com/photo-1459865264687-595d652de67e?w=900&q=85&fit=crop',
-    'Atalanta BC':          'https://images.unsplash.com/photo-1529900748604-07564a03e7a6?w=900&q=85&fit=crop',
-    'Inter Milan':          'https://images.unsplash.com/photo-1543326727-cf6c39e8f84c?w=900&q=85&fit=crop',
-    'AC Milan':             'https://images.unsplash.com/photo-1606925797300-0b35e9d1794e?w=900&q=85&fit=crop',
-    'Sporting CP':          'https://images.unsplash.com/photo-1587941168115-d16c4e1e7e26?w=900&q=85&fit=crop',
+    // EPL — each team gets its own unique stadium shot
+    'Arsenal FC':              'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=1000&q=90&fit=crop&crop=center',
+    'Arsenal':                 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=1000&q=90&fit=crop&crop=center',
+    'Manchester City':         'https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=1000&q=90&fit=crop&crop=top',
+    'Manchester United':       'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=1000&q=90&fit=crop&crop=center',
+    'Liverpool FC':            'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=1000&q=90&fit=crop&crop=top',
+    'Liverpool':               'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=1000&q=90&fit=crop&crop=top',
+    'Chelsea FC':              'https://images.unsplash.com/photo-1489944440615-453fc2b6a9a9?w=1000&q=90&fit=crop&crop=center',
+    'Chelsea':                 'https://images.unsplash.com/photo-1489944440615-453fc2b6a9a9?w=1000&q=90&fit=crop&crop=center',
+    'Tottenham Hotspur':       'https://images.unsplash.com/photo-1551958219-acbc608c6377?w=1000&q=90&fit=crop&crop=top',
+    'Newcastle United':        'https://images.unsplash.com/photo-1587941168115-d16c4e1e7e26?w=1000&q=90&fit=crop&crop=center',
+    'Aston Villa':             'https://images.unsplash.com/photo-1606925797300-0b35e9d1794e?w=1000&q=90&fit=crop&crop=center',
+    'West Ham United':         'https://images.unsplash.com/photo-1459865264687-595d652de67e?w=1000&q=90&fit=crop&crop=center',
+    'Wolverhampton':           'https://images.unsplash.com/photo-1529900748604-07564a03e7a6?w=1000&q=90&fit=crop&crop=center',
+    'Wolverhampton Wanderers': 'https://images.unsplash.com/photo-1529900748604-07564a03e7a6?w=1000&q=90&fit=crop&crop=center',
+    'Brighton & Hove Albion':  'https://images.unsplash.com/photo-1543326727-cf6c39e8f84c?w=1000&q=90&fit=crop&crop=center',
+    'Brighton':                'https://images.unsplash.com/photo-1543326727-cf6c39e8f84c?w=1000&q=90&fit=crop&crop=center',
+    'Fulham FC':               'https://images.unsplash.com/photo-1565799585-3c2ef16f7f1f?w=1000&q=90&fit=crop&crop=top',
+    'Brentford FC':            'https://images.unsplash.com/photo-1474680289947-0313fa489b55?w=1000&q=90&fit=crop&crop=center',
+    'Crystal Palace':          'https://images.unsplash.com/photo-1489944440615-453fc2b6a9a9?w=1000&q=90&fit=crop&crop=entropy',
+    'Everton FC':              'https://images.unsplash.com/photo-1459865264687-595d652de67e?w=1000&q=90&fit=crop&crop=entropy',
+    'Nottingham Forest':       'https://images.unsplash.com/photo-1529900748604-07564a03e7a6?w=1000&q=90&fit=crop&crop=entropy',
+    'AFC Bournemouth':         'https://images.unsplash.com/photo-1611472173362-3f53dbd65d80?w=1000&q=90&fit=crop&crop=center',
+    'Sunderland AFC':          'https://images.unsplash.com/photo-1587941168115-d16c4e1e7e26?w=1000&q=90&fit=crop&crop=entropy',
+    'Burnley FC':              'https://images.unsplash.com/photo-1551958219-acbc608c6377?w=1000&q=90&fit=crop&crop=entropy',
+    'Leeds United':            'https://images.unsplash.com/photo-1543326727-cf6c39e8f84c?w=1000&q=90&fit=crop&crop=entropy',
+    // UCL
+    'PSG':                     'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1000&q=90&fit=crop&crop=center',
+    'Paris Saint-Germain':     'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1000&q=90&fit=crop&crop=center',
+    'Bayern Munich':           'https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=1000&q=90&fit=crop&crop=top',
+    'Real Madrid':             'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=1000&q=90&fit=crop&crop=top',
+    'FC Barcelona':            'https://images.unsplash.com/photo-1611472173362-3f53dbd65d80?w=1000&q=90&fit=crop&crop=center',
+    'Atletico Madrid':         'https://images.unsplash.com/photo-1459865264687-595d652de67e?w=1000&q=90&fit=crop&crop=entropy',
+    'Atalanta BC':             'https://images.unsplash.com/photo-1529900748604-07564a03e7a6?w=1000&q=90&fit=crop&crop=entropy',
+    'Inter Milan':             'https://images.unsplash.com/photo-1543326727-cf6c39e8f84c?w=1000&q=90&fit=crop&crop=entropy',
+    'AC Milan':                'https://images.unsplash.com/photo-1606925797300-0b35e9d1794e?w=1000&q=90&fit=crop&crop=entropy',
+    'Sporting CP':             'https://images.unsplash.com/photo-1587941168115-d16c4e1e7e26?w=1000&q=90&fit=crop&crop=entropy',
+    // National teams — FIFA WC
+    'England':                 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=1000&q=90&fit=crop&crop=top',
+    'France':                  'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1000&q=90&fit=crop&crop=top',
+    'Germany':                 'https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=1000&q=90&fit=crop&crop=entropy',
+    'Spain':                   'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=1000&q=90&fit=crop&crop=entropy',
+    'Brazil':                  'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=1000&q=90&fit=crop&crop=entropy',
+    'Argentina':               'https://images.unsplash.com/photo-1606925797300-0b35e9d1794e?w=1000&q=90&fit=crop&crop=entropy',
+    'Portugal':                'https://images.unsplash.com/photo-1587941168115-d16c4e1e7e26?w=1000&q=90&fit=crop&crop=entropy',
+    'Netherlands':             'https://images.unsplash.com/photo-1551958219-acbc608c6377?w=1000&q=90&fit=crop&crop=entropy',
+    'Italy':                   'https://images.unsplash.com/photo-1565799585-3c2ef16f7f1f?w=1000&q=90&fit=crop&crop=entropy',
+    'USA':                     'https://images.unsplash.com/photo-1489944440615-453fc2b6a9a9?w=1000&q=90&fit=crop&crop=entropy',
+    'Mexico':                  'https://images.unsplash.com/photo-1459865264687-595d652de67e?w=1000&q=90&fit=crop&crop=entropy',
+    'Canada':                  'https://images.unsplash.com/photo-1474680289947-0313fa489b55?w=1000&q=90&fit=crop&crop=entropy',
   };
 
   function getFallback(teamName) {
