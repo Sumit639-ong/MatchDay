@@ -4451,133 +4451,148 @@ setTimeout(() => {
 const _origAddNotification = typeof addNotification === 'function' ? addNotification : null;
 // (Will be patched after addNotification is defined — see below)
 
-// ── 6. BACKGROUND POLLING — all clubs, every 15s, regardless of tab ──
-// Yeh function silently sab clubs check karta hai aur browser notification bhejta hai
+// ── 6. BACKGROUND POLLING v3 — ALL clubs PARALLEL, every 15s ──
+// FIX: Round-robin hata diya — ab sab clubs ek saath check hote hain har 15s mein
 (function startGlobalBackgroundPoll(){
   const ALL_CLUBS = ['manutd','mancity','everton','astonvilla','wolves','tottenham',
                      'crystalpalace','newcastle','arsenal','brentford','fifa','music'];
-  
-  // Previous order IDs stored in localStorage (persists across page reloads)
-  function loadBgPrevIds(){
-    try { return new Set(JSON.parse(localStorage.getItem(BG_POLL_KEY)||'[]')); }
-    catch(e){ return new Set(); }
+
+  // Per-club order counts stored in localStorage
+  // Key format: matchday_club_snapshot_v3
+  const SNAP_KEY = 'matchday_club_snapshot_v3';
+
+  function loadSnapshot(){
+    try { return JSON.parse(localStorage.getItem(SNAP_KEY)||'{}'); }
+    catch(e){ return {}; }
   }
-  function saveBgPrevIds(ids){
-    try { localStorage.setItem(BG_POLL_KEY, JSON.stringify([...ids].slice(0,500))); }
+  function saveSnapshot(snap){
+    try { localStorage.setItem(SNAP_KEY, JSON.stringify(snap)); }
     catch(e){}
   }
 
-  let bgPrevIds = loadBgPrevIds();
-  let pollIndex = 0;
-  let bgPollStarted = false;
+  // Extract a stable unique key for each row
+  function getRowKey(club, headers, row){
+    const find = (...names) => {
+      for(const n of names){
+        const i = headers.findIndex(h => h.toLowerCase().replace(/[^a-z0-9]/g,'').includes(n.toLowerCase().replace(/[^a-z0-9]/g,'')));
+        if(i>=0 && row[i] && row[i].toString().trim()) return row[i].toString().trim();
+      }
+      return '';
+    };
+    const ordNum = find('ordnum','ordernum','orderno','order#','ordno');
+    if(ordNum) return `ord:${club}:${ordNum}`;
+    // Fallback: use row index + first non-empty cell
+    const firstVal = row.find(c => c && c.toString().trim());
+    return `row:${club}:${firstVal||''}:${row.length}`;
+  }
 
-  // Poll one club at a time (round-robin to avoid hammering server)
-  async function pollOneClub(){
-    if(!bgPollStarted) return;
-    const club = ALL_CLUBS[pollIndex % ALL_CLUBS.length];
-    pollIndex++;
+  function getEventName(headers, row){
+    const i = headers.findIndex(h => /event|match|fixture|game/i.test(h));
+    return i>=0 ? (row[i]||'').toString().trim() : '';
+  }
+  function getBlockName(headers, row){
+    const i = headers.findIndex(h => /block|section/i.test(h));
+    return i>=0 ? (row[i]||'').toString().trim() : '';
+  }
 
+  let snapshot = loadSnapshot(); // { clubName: Set of known row keys }
+  // Convert arrays back to Sets after JSON parse
+  Object.keys(snapshot).forEach(k => { snapshot[k] = new Set(snapshot[k]); });
+
+  let initialized = false;
+
+  // Poll ALL clubs in parallel
+  async function pollAllClubs(isInit){
+    const results = await Promise.allSettled(
+      ALL_CLUBS.map(club => pollClub(club, isInit))
+    );
+    if(isInit){
+      initialized = true;
+      const total = Object.values(snapshot).reduce((s,v)=>s+v.size,0);
+      console.log(`🔔 BG Poll v3: initialized — ${total} known order keys across ${ALL_CLUBS.length} clubs`);
+    }
+    // Save snapshot
+    const toSave = {};
+    Object.keys(snapshot).forEach(k => { toSave[k] = [...snapshot[k]]; });
+    saveSnapshot(toSave);
+  }
+
+  async function pollClub(club, isInit){
     try {
-      const r = await fetch('/orders/' + club, { cache: 'no-store', signal: AbortSignal.timeout(5000) });
+      const r = await fetch('/orders/' + club, { cache: 'no-store', signal: AbortSignal.timeout(6000) });
       if(!r.ok) return;
       const data = await r.json();
       if(!Array.isArray(data) || data.length < 2) return;
 
-      const headers = data[0].map(h => (h||'').toString().trim());
-      const rows = data.slice(1).filter(r => r && r.some(c => c));
+      const headers = data[0].map(h => (h||'').toString().trim().toLowerCase());
+      const rows = data.slice(1).filter(row => row && row.some(c => c && c.toString().trim()));
 
-      // Get order numbers from this sheet
-      const ordNumIdx = headers.findIndex(h => /order.?(num|no|#)/i.test(h) || /ord.?num/i.test(h));
-      const blockIdx  = headers.findIndex(h => /block|section/i.test(h));
-      const rowIdx    = headers.findIndex(h => /^row$|^rw$/i.test(h));
-      const seatsIdx  = headers.findIndex(h => /seat/i.test(h));
-      const eventIdx  = headers.findIndex(h => /event|match|fixture/i.test(h));
+      if(!snapshot[club]) snapshot[club] = new Set();
+      const knownKeys = snapshot[club];
+      const newRows = [];
 
-      const newOnes = [];
-      rows.forEach((row, i) => {
-        const ordNum = ordNumIdx >= 0 ? (row[ordNumIdx]||'').toString().trim() : '';
-        const block  = blockIdx  >= 0 ? (row[blockIdx]||'').toString().trim()  : '';
-        const rowVal = rowIdx    >= 0 ? (row[rowIdx]||'').toString().trim()     : '';
-        const seats  = seatsIdx  >= 0 ? (row[seatsIdx]||'').toString().trim()  : '';
-        const event  = eventIdx  >= 0 ? (row[eventIdx]||'').toString().trim()  : '';
-
-        // Composite key: ordNum or block+row+seats
-        const key = ordNum ? `ord:${club}:${ordNum}` : `pos:${club}:${block}|${rowVal}|${seats}`;
-        if(!key || key.endsWith(':')) return;
-
-        if(!bgPrevIds.has(key)){
-          // First time we see this — check if prevIds was populated (not first load)
-          if(bgPrevIds.size > 0){
-            newOnes.push({ club, ordNum, event, block, rowVal, seats, key });
+      rows.forEach(row => {
+        const key = getRowKey(club, headers, row);
+        if(!key) return;
+        if(!knownKeys.has(key)){
+          knownKeys.add(key);
+          if(!isInit){ // Only fire notification after init, not on first load
+            newRows.push({ key, event: getEventName(headers, row), block: getBlockName(headers, row), row });
           }
-          bgPrevIds.add(key);
         }
       });
 
-      if(newOnes.length > 0){
-        saveBgPrevIds(bgPrevIds);
-        newOnes.forEach(o => {
-          const clubName = club.replace(/([a-z])([A-Z])/g,'$1 $2');
-          const title    = `📦 New Order — ${clubName.toUpperCase()}`;
-          const bodyMsg  = o.ordNum
-            ? `Order #${o.ordNum}${o.event?' • '+o.event:''}`
-            : `${o.event||'New order'} — Block ${o.block} Row ${o.rowVal}`;
+      if(newRows.length > 0 && initialized){
+        newRows.forEach(o => {
+          const clubLabel = club === 'manutd' ? 'Man United'
+            : club === 'mancity' ? 'Man City'
+            : club === 'crystalpalace' ? 'Crystal Palace'
+            : club === 'astonvilla' ? 'Aston Villa'
+            : club.charAt(0).toUpperCase() + club.slice(1);
 
-          // Browser notification (works even if tab not focused)
+          const title   = `📦 New Order — ${clubLabel}`;
+          const bodyMsg = o.event
+            ? `${o.event}${o.block ? ' • Block ' + o.block : ''}`
+            : `New order added${o.block ? ' • Block ' + o.block : ''}`;
+
+          console.log(`🔔 NEW ORDER DETECTED: [${club}]`, bodyMsg);
+
+          // 1. Browser OS notification
           sendBrowserNotif(title, bodyMsg, '📦');
 
-          // In-app notification + toast
+          // 2. In-app notification list
           if(typeof addNotification === 'function'){
-            addNotification(`[${clubName}] ${o.ordNum ? '#'+o.ordNum : ''} ${o.event||'Unknown Event'} ${o.block?'• Block '+o.block:''}`, 'new-order');
+            addNotification(`[${clubLabel}] ${o.event || 'New Order'}${o.block ? ' • Block '+o.block : ''}`, 'new-order');
           }
         });
-      } else {
-        saveBgPrevIds(bgPrevIds);
       }
-    } catch(e) { /* silent fail */ }
-  }
-
-  // Initialize: first populate prevIds without firing notifications
-  async function initBgPrevIds(){
-    for(const club of ALL_CLUBS){
-      try {
-        const r = await fetch('/orders/' + club, { cache: 'no-store', signal: AbortSignal.timeout(4000) });
-        if(!r.ok) continue;
-        const data = await r.json();
-        if(!Array.isArray(data) || data.length < 2) continue;
-        const headers = data[0].map(h=>(h||'').toString().trim());
-        const rows = data.slice(1).filter(r=>r&&r.some(c=>c));
-        const ordNumIdx = headers.findIndex(h => /order.?(num|no|#)/i.test(h) || /ord.?num/i.test(h));
-        const blockIdx  = headers.findIndex(h => /block|section/i.test(h));
-        const rowIdx    = headers.findIndex(h => /^row$|^rw$/i.test(h));
-        const seatsIdx  = headers.findIndex(h => /seat/i.test(h));
-        rows.forEach((row) => {
-          const ordNum = ordNumIdx>=0?(row[ordNumIdx]||'').toString().trim():'';
-          const block  = blockIdx>=0?(row[blockIdx]||'').toString().trim():'';
-          const rowVal = rowIdx>=0?(row[rowIdx]||'').toString().trim():'';
-          const seats  = seatsIdx>=0?(row[seatsIdx]||'').toString().trim():'';
-          const key = ordNum?`ord:${club}:${ordNum}`:`pos:${club}:${block}|${rowVal}|${seats}`;
-          if(key && !key.endsWith(':')) bgPrevIds.add(key);
-        });
-      } catch(e){}
+    } catch(e){
+      // silent — network error etc
     }
-    saveBgPrevIds(bgPrevIds);
-    bgPollStarted = true;
-    console.log(`🔔 BG Notif: initialized with ${bgPrevIds.size} known orders`);
   }
 
-  // Start: init first, then poll every 12 seconds
-  setTimeout(() => {
-    if(bgPrevIds.size > 0){
-      // Already have cached IDs — start polling immediately
-      bgPollStarted = true;
-      console.log(`🔔 BG Notif: resumed with ${bgPrevIds.size} cached order IDs`);
+  // START: init immediately (no notification fire), then poll every 15s
+  setTimeout(async () => {
+    // Clear stale snapshot if clubs list changed
+    const savedClubs = Object.keys(snapshot);
+    const hasAll = ALL_CLUBS.every(c => savedClubs.includes(c));
+    if(!hasAll || savedClubs.length === 0){
+      snapshot = {};
+      ALL_CLUBS.forEach(c => { snapshot[c] = new Set(); });
+    }
+
+    if(Object.values(snapshot).some(s => s.size > 0)){
+      // Already have data from previous session — start polling directly
+      initialized = true;
+      console.log(`🔔 BG Poll v3: resumed from cache`);
     } else {
-      initBgPrevIds();
+      // First time — init without firing notifications
+      await pollAllClubs(true);
     }
-    // Poll one club every 12 seconds (round-robin across all clubs)
-    setInterval(pollOneClub, 12000);
-  }, 4000);
+
+    // Now poll ALL clubs every 15 seconds (parallel)
+    setInterval(() => pollAllClubs(false), 15000);
+  }, 3000);
 
 })();
 
