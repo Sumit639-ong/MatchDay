@@ -4339,6 +4339,260 @@ function playOrderAlertSound(){
   }catch(e){}
 }
 
+// ══════════════════════════════════════════════════════════════
+// 🔔 PERSISTENT BROWSER NOTIFICATIONS — v2
+//  • Ek baar permission lo → hamesha kaam kare
+//  • Delivery tab open ho ya na ho — notification aayega
+//  • Har club ke liye background polling
+//  • "Allow" button header mein dikhega jab permission nahi li
+// ══════════════════════════════════════════════════════════════
+
+const NOTIF_PERM_KEY = 'matchday_notif_perm_asked';
+const BG_POLL_KEY    = 'matchday_bg_prev_ids';
+
+// ── 1. Browser Notification Permission Request ──
+function requestBrowserNotifPermission(silent){
+  if(!('Notification' in window)){
+    if(!silent) showToast('❌ Browser does not support notifications','danger');
+    return;
+  }
+  if(Notification.permission === 'granted'){
+    if(!silent) showToast('✅ Notifications already enabled!','success');
+    hideBrowserNotifBanner();
+    return;
+  }
+  if(Notification.permission === 'denied'){
+    if(!silent) showToast('🚫 Notifications blocked — please allow in browser settings','danger');
+    return;
+  }
+  Notification.requestPermission().then(perm => {
+    localStorage.setItem(NOTIF_PERM_KEY, '1');
+    if(perm === 'granted'){
+      showToast('🔔 Notifications enabled! Aab new orders par alert aayega.','success');
+      hideBrowserNotifBanner();
+      // Test notification
+      setTimeout(() => {
+        sendBrowserNotif('🎉 MatchDay Notifications Active', 'Aab new order aane par aapko alert milega — chahe koi bhi tab open ho!', '📦');
+      }, 800);
+    } else {
+      showToast('⚠️ Notifications denied. Settings se allow karo.','danger');
+    }
+  });
+}
+
+// ── 2. Send actual browser notification ──
+function sendBrowserNotif(title, body, icon){
+  if(!('Notification' in window) || Notification.permission !== 'granted') return;
+  try {
+    const n = new Notification(title, {
+      body: body,
+      icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23060710'/><text y='.9em' font-size='80'>" + (icon||'📦') + "</text></svg>",
+      badge: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%237c6fff'/><text y='.9em' font-size='80'>📦</text></svg>",
+      tag: 'matchday-order-' + Date.now(),
+      requireInteraction: false,
+      silent: false
+    });
+    n.onclick = () => { window.focus(); n.close(); };
+    setTimeout(() => n.close(), 8000);
+  } catch(e) {}
+}
+
+// ── 3. Show "Enable Notifications" banner in header (ek baar) ──
+function showBrowserNotifBanner(){
+  if(document.getElementById('notifPermBanner')) return;
+  if(localStorage.getItem(NOTIF_PERM_KEY)) return;
+  if(!('Notification' in window)) return;
+  if(Notification.permission === 'granted' || Notification.permission === 'denied') return;
+
+  const banner = document.createElement('div');
+  banner.id = 'notifPermBanner';
+  banner.style.cssText = `
+    position:fixed;bottom:80px;right:24px;z-index:9999;
+    background:linear-gradient(135deg,rgba(124,111,255,.95),rgba(167,139,250,.95));
+    border:1px solid rgba(196,181,253,.5);border-radius:16px;
+    padding:14px 18px;max-width:300px;
+    box-shadow:0 8px 32px rgba(124,111,255,.4),0 0 0 1px rgba(255,255,255,.08);
+    animation:toastIn .4s cubic-bezier(.34,1.56,.64,1);
+    font-family:'Inter',sans-serif;
+  `;
+  banner.innerHTML = `
+    <div style="display:flex;align-items:flex-start;gap:10px">
+      <span style="font-size:22px;flex-shrink:0">🔔</span>
+      <div style="flex:1">
+        <div style="font-weight:800;color:#fff;font-size:13px;margin-bottom:4px">New Order Alerts On Karo</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.75);line-height:1.5;margin-bottom:10px">
+          Ek baar allow karo — delivery tab open ho ya na ho, new order aane par notification milega.
+        </div>
+        <div style="display:flex;gap:8px">
+          <button onclick="requestBrowserNotifPermission(false)" style="
+            flex:1;padding:8px 12px;border-radius:9px;border:none;
+            background:#fff;color:#7c6fff;font-size:12px;font-weight:800;
+            cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;
+          " onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform=''">
+            ✅ Allow Notifications
+          </button>
+          <button onclick="dismissNotifBanner()" style="
+            padding:8px 10px;border-radius:9px;border:1px solid rgba(255,255,255,.3);
+            background:transparent;color:rgba(255,255,255,.7);font-size:11px;
+            cursor:pointer;font-family:'Inter',sans-serif;
+          ">Later</button>
+        </div>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(banner);
+}
+
+function hideBrowserNotifBanner(){
+  const b = document.getElementById('notifPermBanner');
+  if(b){ b.style.opacity='0'; b.style.transform='translateX(40px)'; setTimeout(()=>b.remove(),300); }
+}
+function dismissNotifBanner(){
+  localStorage.setItem(NOTIF_PERM_KEY, 'dismissed');
+  hideBrowserNotifBanner();
+}
+
+// ── 4. Auto-show banner after 2s on first visit ──
+setTimeout(() => {
+  if(Notification.permission !== 'granted' && !localStorage.getItem(NOTIF_PERM_KEY)){
+    showBrowserNotifBanner();
+  }
+}, 2000);
+
+// ── 5. Patch addNotification to also fire browser notification ──
+const _origAddNotification = typeof addNotification === 'function' ? addNotification : null;
+// (Will be patched after addNotification is defined — see below)
+
+// ── 6. BACKGROUND POLLING — all clubs, every 15s, regardless of tab ──
+// Yeh function silently sab clubs check karta hai aur browser notification bhejta hai
+(function startGlobalBackgroundPoll(){
+  const ALL_CLUBS = ['manutd','mancity','everton','astonvilla','wolves','tottenham',
+                     'crystalpalace','newcastle','arsenal','brentford','fifa','music'];
+  
+  // Previous order IDs stored in localStorage (persists across page reloads)
+  function loadBgPrevIds(){
+    try { return new Set(JSON.parse(localStorage.getItem(BG_POLL_KEY)||'[]')); }
+    catch(e){ return new Set(); }
+  }
+  function saveBgPrevIds(ids){
+    try { localStorage.setItem(BG_POLL_KEY, JSON.stringify([...ids].slice(0,500))); }
+    catch(e){}
+  }
+
+  let bgPrevIds = loadBgPrevIds();
+  let pollIndex = 0;
+  let bgPollStarted = false;
+
+  // Poll one club at a time (round-robin to avoid hammering server)
+  async function pollOneClub(){
+    if(!bgPollStarted) return;
+    const club = ALL_CLUBS[pollIndex % ALL_CLUBS.length];
+    pollIndex++;
+
+    try {
+      const r = await fetch('/orders/' + club, { cache: 'no-store', signal: AbortSignal.timeout(5000) });
+      if(!r.ok) return;
+      const data = await r.json();
+      if(!Array.isArray(data) || data.length < 2) return;
+
+      const headers = data[0].map(h => (h||'').toString().trim());
+      const rows = data.slice(1).filter(r => r && r.some(c => c));
+
+      // Get order numbers from this sheet
+      const ordNumIdx = headers.findIndex(h => /order.?(num|no|#)/i.test(h) || /ord.?num/i.test(h));
+      const blockIdx  = headers.findIndex(h => /block|section/i.test(h));
+      const rowIdx    = headers.findIndex(h => /^row$|^rw$/i.test(h));
+      const seatsIdx  = headers.findIndex(h => /seat/i.test(h));
+      const eventIdx  = headers.findIndex(h => /event|match|fixture/i.test(h));
+
+      const newOnes = [];
+      rows.forEach((row, i) => {
+        const ordNum = ordNumIdx >= 0 ? (row[ordNumIdx]||'').toString().trim() : '';
+        const block  = blockIdx  >= 0 ? (row[blockIdx]||'').toString().trim()  : '';
+        const rowVal = rowIdx    >= 0 ? (row[rowIdx]||'').toString().trim()     : '';
+        const seats  = seatsIdx  >= 0 ? (row[seatsIdx]||'').toString().trim()  : '';
+        const event  = eventIdx  >= 0 ? (row[eventIdx]||'').toString().trim()  : '';
+
+        // Composite key: ordNum or block+row+seats
+        const key = ordNum ? `ord:${club}:${ordNum}` : `pos:${club}:${block}|${rowVal}|${seats}`;
+        if(!key || key.endsWith(':')) return;
+
+        if(!bgPrevIds.has(key)){
+          // First time we see this — check if prevIds was populated (not first load)
+          if(bgPrevIds.size > 0){
+            newOnes.push({ club, ordNum, event, block, rowVal, seats, key });
+          }
+          bgPrevIds.add(key);
+        }
+      });
+
+      if(newOnes.length > 0){
+        saveBgPrevIds(bgPrevIds);
+        newOnes.forEach(o => {
+          const clubName = club.replace(/([a-z])([A-Z])/g,'$1 $2');
+          const title    = `📦 New Order — ${clubName.toUpperCase()}`;
+          const bodyMsg  = o.ordNum
+            ? `Order #${o.ordNum}${o.event?' • '+o.event:''}`
+            : `${o.event||'New order'} — Block ${o.block} Row ${o.rowVal}`;
+
+          // Browser notification (works even if tab not focused)
+          sendBrowserNotif(title, bodyMsg, '📦');
+
+          // In-app notification + toast
+          if(typeof addNotification === 'function'){
+            addNotification(`[${clubName}] ${o.ordNum ? '#'+o.ordNum : ''} ${o.event||'Unknown Event'} ${o.block?'• Block '+o.block:''}`, 'new-order');
+          }
+        });
+      } else {
+        saveBgPrevIds(bgPrevIds);
+      }
+    } catch(e) { /* silent fail */ }
+  }
+
+  // Initialize: first populate prevIds without firing notifications
+  async function initBgPrevIds(){
+    for(const club of ALL_CLUBS){
+      try {
+        const r = await fetch('/orders/' + club, { cache: 'no-store', signal: AbortSignal.timeout(4000) });
+        if(!r.ok) continue;
+        const data = await r.json();
+        if(!Array.isArray(data) || data.length < 2) continue;
+        const headers = data[0].map(h=>(h||'').toString().trim());
+        const rows = data.slice(1).filter(r=>r&&r.some(c=>c));
+        const ordNumIdx = headers.findIndex(h => /order.?(num|no|#)/i.test(h) || /ord.?num/i.test(h));
+        const blockIdx  = headers.findIndex(h => /block|section/i.test(h));
+        const rowIdx    = headers.findIndex(h => /^row$|^rw$/i.test(h));
+        const seatsIdx  = headers.findIndex(h => /seat/i.test(h));
+        rows.forEach((row) => {
+          const ordNum = ordNumIdx>=0?(row[ordNumIdx]||'').toString().trim():'';
+          const block  = blockIdx>=0?(row[blockIdx]||'').toString().trim():'';
+          const rowVal = rowIdx>=0?(row[rowIdx]||'').toString().trim():'';
+          const seats  = seatsIdx>=0?(row[seatsIdx]||'').toString().trim():'';
+          const key = ordNum?`ord:${club}:${ordNum}`:`pos:${club}:${block}|${rowVal}|${seats}`;
+          if(key && !key.endsWith(':')) bgPrevIds.add(key);
+        });
+      } catch(e){}
+    }
+    saveBgPrevIds(bgPrevIds);
+    bgPollStarted = true;
+    console.log(`🔔 BG Notif: initialized with ${bgPrevIds.size} known orders`);
+  }
+
+  // Start: init first, then poll every 12 seconds
+  setTimeout(() => {
+    if(bgPrevIds.size > 0){
+      // Already have cached IDs — start polling immediately
+      bgPollStarted = true;
+      console.log(`🔔 BG Notif: resumed with ${bgPrevIds.size} cached order IDs`);
+    } else {
+      initBgPrevIds();
+    }
+    // Poll one club every 12 seconds (round-robin across all clubs)
+    setInterval(pollOneClub, 12000);
+  }, 4000);
+
+})();
+
 // ===== ADMIN LOGIN =====
 const ADMIN_CREDS={username:'Sumit',password:'Sumit1234'};
 const ADMIN_KEY='matchday_admin_v1';
