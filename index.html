@@ -3988,6 +3988,11 @@ setTimeout(() => { animateLiveScores(); highlightTodayCards(); }, 200);
         <div class="tab-info"><div class="tab-name">Delivery</div><div class="tab-sub">Orders & QC Tracker</div></div>
         <span class="tab-count" id="cnt-delivery">0</span>
       </div>
+      <div class="league-tab ticket-sales" onclick="switchLeague('ticketsales')" id="tab-ticketsales">
+        <span class="tab-icon">🎟️</span>
+        <div class="tab-info"><div class="tab-name">All League Sales</div><div class="tab-sub">Ticket Sale Dates & Links</div></div>
+        <span class="tab-count" id="cnt-ticketsales">0</span>
+      </div>
       <span id="cnt-history" style="display:none">0</span>
     </div>
   </div>
@@ -5220,7 +5225,7 @@ function switchLeague(l){
   document.querySelectorAll('.filter-btn').forEach((b,i)=>b.classList.toggle('on',i===1));
   const showFilter=l==='epl'||l==='ucl';
   document.getElementById('filterBar').style.display=showFilter?'flex':'none';
-  document.getElementById('addBtnLabel').textContent=l==='delivery'?'Add Order':'Add Match';
+  document.getElementById('addBtnLabel').textContent=l==='delivery'?'Add Order':l==='ticketsales'?'Add Sale':'Add Match';
   render();
 }
 function setFilter(f,btn){currentFilter=f;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('on'));if(btn)btn.classList.add('on');render();}
@@ -5232,6 +5237,7 @@ function render(){
   if(currentLeague==='delivery'){renderDelivery(el);updateSidebar([]);document.getElementById('resCount').textContent='';return;}
   if(currentLeague==='fifa'){renderFIFA(el);updateSidebar([]);document.getElementById('resCount').textContent='64 matches scheduled';return;}
   if(currentLeague==='history'){renderHistory(el);updateSidebar([]);document.getElementById('resCount').textContent='';return;}
+  if(currentLeague==='ticketsales'){if(typeof renderTicketSales==='function')renderTicketSales(el);updateSidebar([]);document.getElementById('resCount').textContent='';return;}
   const league=DATA[currentLeague];
   if(!league){el.innerHTML=`<div class="empty-state"><div class="big">🤔</div><p>League not found.</p></div>`;return;}
   let matches=[...league.matches];
@@ -7437,6 +7443,90 @@ body.light-mode .match-card .score-num {
 </style>
 
 <style>
+/* ══════════════════════════════════════════════
+   🎟️ ALL LEAGUE SALES — TICKET TRACKER UI
+   ══════════════════════════════════════════════ */
+.league-tab.ticket-sales::before{background:linear-gradient(135deg,rgba(255,120,40,.15),rgba(255,200,0,.08))}
+.league-tab.ticket-sales.active{background:linear-gradient(135deg,rgba(255,140,0,.12),rgba(255,200,0,.06)) !important;box-shadow:0 0 0 1px rgba(255,165,0,.28),0 8px 32px rgba(255,140,0,.15),0 0 60px rgba(255,165,0,.06) !important;}
+.league-tab.ticket-sales.active .tab-name{color:#ffb347 !important;text-shadow:0 0 14px rgba(255,165,0,.5) !important;}
+.league-tab.ticket-sales.active .tab-count{background:rgba(255,165,0,.18) !important;color:#ffd700 !important;}
+
+.ts-page{font-family:'Space Grotesk','Inter',sans-serif}
+.ts-header{background:linear-gradient(135deg,rgba(255,140,0,.10),rgba(255,200,0,.06));border:1px solid rgba(255,165,0,.22);border-radius:20px;padding:22px 24px;margin-bottom:20px;display:flex;align-items:center;gap:18px;position:relative;overflow:hidden}
+.ts-header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 90% 50%,rgba(255,200,0,.07),transparent);pointer-events:none}
+.ts-header-icon{font-size:44px;flex-shrink:0;line-height:1;filter:drop-shadow(0 0 16px rgba(255,165,0,.5));animation:trophyBounce 3s ease-in-out infinite}
+@keyframes trophyBounce{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-5px) scale(1.04)}}
+.ts-header-text h2{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:3px;background:linear-gradient(120deg,#ffb347 0%,#ffd700 55%,#ff8c00 100%);background-clip:text;-webkit-background-clip:text;color:transparent;margin:0 0 3px;line-height:1}
+.ts-header-text p{font-size:11px;color:rgba(255,255,255,.45);margin:0;letter-spacing:.5px}
+.ts-header-stats{margin-left:auto;display:flex;gap:10px;flex-wrap:wrap}
+.ts-header-stat{text-align:center;background:rgba(255,165,0,.08);border:1px solid rgba(255,165,0,.2);border-radius:12px;padding:8px 14px;min-width:64px}
+.ts-header-stat .val{font-family:'Bebas Neue',sans-serif;font-size:22px;color:#ffb347;line-height:1}
+.ts-header-stat .lbl{font-size:9px;color:rgba(255,255,255,.35);letter-spacing:1px;text-transform:uppercase;margin-top:2px}
+.ts-toolbar{display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.ts-search{flex:1;min-width:140px;background:var(--surface2);border:1px solid var(--border2);border-radius:10px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:12px;padding:8px 14px;outline:none;transition:border-color .2s}
+.ts-search:focus{border-color:rgba(255,165,0,.5);box-shadow:0 0 0 3px rgba(255,165,0,.08)}
+.ts-filter-btn{padding:7px 14px;border-radius:20px;border:1px solid var(--border2);font-size:11px;font-weight:700;cursor:pointer;background:transparent;color:var(--muted);font-family:'Inter',sans-serif;transition:all .2s;white-space:nowrap}
+.ts-filter-btn:hover{color:var(--text)}
+.ts-filter-btn.on{background:rgba(255,165,0,.12);color:#ffb347;border-color:rgba(255,165,0,.45);box-shadow:0 0 14px rgba(255,165,0,.12)}
+.ts-add-btn{display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:10px;border:1px solid rgba(255,165,0,.4);background:rgba(255,165,0,.1);color:#ffd700;font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;white-space:nowrap}
+.ts-add-btn:hover{background:rgba(255,165,0,.22);transform:translateY(-2px);box-shadow:0 4px 16px rgba(255,140,0,.2)}
+.ts-league-header{display:flex;align-items:center;gap:12px;padding:8px 14px;border-radius:8px;margin-bottom:10px;font-size:10px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.4);border-left:3px solid transparent;background:rgba(255,165,0,.04)}
+.ts-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;margin-bottom:10px;display:flex;align-items:stretch;overflow:hidden;transition:all .28s cubic-bezier(.34,1.56,.64,1);position:relative;animation:cardEntrance .4s cubic-bezier(.34,1.56,.64,1) both}
+.ts-card:hover{transform:translateY(-3px) translateX(2px);border-color:rgba(255,165,0,.25);box-shadow:0 12px 36px rgba(0,0,0,.45)}
+.ts-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px}
+.ts-card.ts-epl::before{background:#00ff87}.ts-card.ts-ucl::before{background:#60b3ff}.ts-card.ts-fifa::before{background:#ffd700}.ts-card.ts-facup::before{background:#ff6b6b}.ts-card.ts-laliga::before{background:#ff4500}.ts-card.ts-bundesliga::before{background:#e8192c}.ts-card.ts-seriea::before{background:#a0c4ff}.ts-card.ts-ligue1::before{background:#c084fc}.ts-card.ts-other::before{background:#a78bfa}
+.ts-card-body{flex:1;padding:14px 16px}
+.ts-card-top{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.ts-league-pill{font-size:8px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;padding:3px 9px;border-radius:20px;font-family:'Space Grotesk',sans-serif}
+.ts-pill-epl{background:rgba(0,180,80,.12);color:#00e676;border:1px solid rgba(0,255,135,.2)}.ts-pill-ucl{background:rgba(96,179,255,.12);color:#60b3ff;border:1px solid rgba(96,179,255,.2)}.ts-pill-fifa{background:rgba(255,215,0,.1);color:#ffd700;border:1px solid rgba(255,215,0,.2)}.ts-pill-facup{background:rgba(255,107,107,.12);color:#ff6b6b;border:1px solid rgba(255,107,107,.2)}.ts-pill-laliga{background:rgba(255,69,0,.1);color:#ff6347;border:1px solid rgba(255,69,0,.18)}.ts-pill-bundesliga{background:rgba(232,25,44,.1);color:#ff4455;border:1px solid rgba(232,25,44,.18)}.ts-pill-seriea{background:rgba(160,196,255,.1);color:#a0c4ff;border:1px solid rgba(160,196,255,.2)}.ts-pill-ligue1{background:rgba(192,132,252,.1);color:#c084fc;border:1px solid rgba(192,132,252,.2)}.ts-pill-other{background:rgba(167,139,250,.1);color:#a78bfa;border:1px solid rgba(167,139,250,.2)}
+.ts-matchup{font-size:15px;font-weight:800;color:var(--text);font-family:'Space Grotesk',sans-serif;flex:1;line-height:1.3}
+.ts-stage{font-size:10px;color:var(--muted);font-weight:600;letter-spacing:.3px}
+.ts-sale-info{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:8px}
+.ts-sale-when{display:flex;align-items:center;gap:8px}
+.ts-sale-date{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;color:#ffb347;filter:drop-shadow(0 0 6px rgba(255,165,0,.3))}
+.ts-sale-time{font-size:11px;color:rgba(255,255,255,.5);font-family:'JetBrains Mono',monospace;margin-top:1px}
+.ts-countdown{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;background:rgba(255,165,0,.08);border:1px solid rgba(255,165,0,.22);color:#ffd700}
+.ts-countdown.urgent{background:rgba(255,61,90,.1);border-color:rgba(255,61,90,.35);color:#ff6b81;animation:heartbeatGlow 1.5s ease-in-out infinite}
+.ts-countdown.open{background:rgba(0,230,118,.08);border-color:rgba(0,230,118,.25);color:#00e676}
+.ts-status{font-size:9px;font-weight:900;letter-spacing:1.2px;text-transform:uppercase;padding:3px 9px;border-radius:8px;font-family:'Space Grotesk',sans-serif}
+.ts-status-upcoming{background:rgba(255,165,0,.1);color:#ffb347;border:1px solid rgba(255,165,0,.25)}
+.ts-status-open{background:rgba(0,230,118,.1);color:#00e676;border:1px solid rgba(0,230,118,.25);animation:pulseLive 2s infinite}
+.ts-status-soldout{background:rgba(255,61,90,.1);color:#ff6b81;border:1px solid rgba(255,61,90,.25)}
+.ts-ticket-link{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;border:1px solid rgba(255,165,0,.35);background:rgba(255,165,0,.08);color:#ffd700;font-size:11px;font-weight:700;text-decoration:none;font-family:'Inter',sans-serif;transition:all .2s;white-space:nowrap}
+.ts-ticket-link:hover{background:rgba(255,165,0,.22);border-color:rgba(255,165,0,.65);transform:translateY(-2px);box-shadow:0 4px 16px rgba(255,140,0,.2);color:#ffe55a}
+.ts-card-actions{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:10px 8px;border-left:1px solid var(--border);background:rgba(0,0,0,.1);opacity:0;transition:opacity .2s;min-width:44px}
+.ts-card:hover .ts-card-actions{opacity:1}
+.ts-card-btn{width:30px;height:30px;border-radius:8px;border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;background:var(--surface2);font-size:14px}
+.ts-card-btn:hover{transform:scale(1.12)}
+.ts-card-btn.edit{color:#60b3ff;border-color:rgba(96,179,255,.3);background:rgba(96,179,255,.08)}.ts-card-btn.edit:hover{background:rgba(96,179,255,.22)}
+.ts-card-btn.del{color:#ff6b81;border-color:rgba(255,61,90,.3);background:rgba(255,61,90,.08)}.ts-card-btn.del:hover{background:rgba(255,61,90,.22)}
+.ts-hot-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;font-size:8px;font-weight:900;letter-spacing:.8px;background:linear-gradient(135deg,rgba(255,61,90,.2),rgba(255,140,0,.1));border:1px solid rgba(255,100,60,.3);color:#ff8a65;text-transform:uppercase;font-family:'Space Grotesk',sans-serif}
+.ts-notify-btn{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:20px;border:1px solid rgba(167,139,250,.3);background:rgba(167,139,250,.07);color:#a78bfa;font-size:10px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s}
+.ts-notify-btn:hover{background:rgba(167,139,250,.18);border-color:rgba(167,139,250,.6)}
+.ts-notify-btn.active{background:rgba(0,230,118,.1);border-color:rgba(0,230,118,.35);color:#00e676}
+.ts-empty{text-align:center;padding:60px 20px;color:var(--muted)}.ts-empty .big{font-size:52px;margin-bottom:12px;opacity:.4}.ts-empty p{font-size:13px}
+#tsModal{position:fixed;inset:0;z-index:3000;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);display:none;align-items:flex-start;justify-content:center;padding-top:60px;overflow-y:auto}
+#tsModal.open{display:flex}
+#tsModalBox{background:linear-gradient(160deg,rgba(14,16,36,.98),rgba(22,24,52,.97));border:1px solid rgba(255,165,0,.25);border-radius:22px;width:min(560px,94vw);padding:28px 28px 24px;box-shadow:0 40px 100px rgba(0,0,0,.8),0 0 0 1px rgba(255,165,0,.1);animation:modalDrop .35s cubic-bezier(.34,1.56,.64,1)}
+.ts-modal-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:#ffb347;margin:0 0 4px}
+.ts-modal-sub{font-size:11px;color:var(--muted);margin-bottom:22px}
+.ts-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ts-form-group{display:flex;flex-direction:column;gap:5px}.ts-form-group.full{grid-column:1/-1}
+.ts-form-label{font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.4)}
+.ts-form-input,.ts-form-select{background:var(--surface);border:1.5px solid var(--border2);border-radius:10px;color:var(--text);font-family:'Space Grotesk','Inter',sans-serif;font-size:13px;padding:9px 12px;outline:none;transition:all .2s;width:100%;box-sizing:border-box}
+.ts-form-input:focus,.ts-form-select:focus{border-color:rgba(255,165,0,.6);box-shadow:0 0 0 3px rgba(255,165,0,.1)}
+.ts-form-input::placeholder{color:var(--muted)}
+.ts-form-select{cursor:pointer}.ts-form-select option{background:#0e1024;color:#fff}
+.ts-modal-footer{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)}
+.ts-modal-cancel{padding:9px 20px;border-radius:10px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-size:13px;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s}
+.ts-modal-cancel:hover{background:var(--surface2);color:var(--text)}
+.ts-modal-save{padding:9px 22px;border-radius:10px;border:none;background:linear-gradient(135deg,#ff8c00,#ffd700);color:#1a1000;font-size:13px;font-weight:800;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;box-shadow:0 4px 16px rgba(255,140,0,.25)}
+.ts-modal-save:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(255,140,0,.4)}
+body.light-mode .ts-header{background:rgba(255,165,0,.06)}
+body.light-mode .ts-card{background:#fff}
+</style>
+
+<style>
 /* ── Settings dropdown open state ── */
 .hdr-dropdown { display: none !important; }
 .hdr-dropdown.hsd-open { display: block !important; }
@@ -7883,7 +7973,6 @@ body.light-mode #hdrSettingsBtn {
   setTimeout(updateEnableBtn, 500);
 })();
 </script>
-
 <script>
 /* ── Settings dropdown: close on outside click / ESC ── */
 window.hdrSdClose = function(){
@@ -7930,6 +8019,346 @@ setInterval(function(){
     /* No live scores engine — keep button but don't show count */
     pill.title = 'Live Scores (coming soon)';
   }
+})();
+</script>
+
+<!-- ═══════════════════════════════════════════════════
+     🎟️ ALL LEAGUE SALES — TICKET TRACKER MODAL
+     ═══════════════════════════════════════════════════ -->
+<div id="tsModal" style="position:fixed;inset:0;z-index:3000;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);display:none;align-items:flex-start;justify-content:center;padding:60px 16px 40px;overflow-y:auto">
+  <div id="tsModalBox" style="background:linear-gradient(160deg,rgba(14,16,36,.98),rgba(22,24,52,.97));border:1px solid rgba(255,165,0,.25);border-radius:22px;width:min(560px,94vw);padding:28px 28px 24px;box-shadow:0 40px 100px rgba(0,0,0,.8);animation:modalDrop .35s cubic-bezier(.34,1.56,.64,1);margin:auto">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:#ffb347;margin:0 0 4px" id="tsModalTitle">ADD TICKET SALE</div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:22px" id="tsModalSub">Add a new ticket sale event to the tracker</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div style="display:flex;flex-direction:column;gap:5px;grid-column:1/-1">
+        <label style="font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.4)">Match / Event Name *</label>
+        <input id="ts-f-match" placeholder="e.g. Manchester United vs Chelsea" style="background:var(--surface);border:1.5px solid var(--border2);border-radius:10px;color:var(--text);font-family:'Space Grotesk','Inter',sans-serif;font-size:13px;padding:9px 12px;outline:none;width:100%;box-sizing:border-box;transition:border-color .2s" onfocus="this.style.borderColor='rgba(255,165,0,.6)'" onblur="this.style.borderColor=''" />
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px">
+        <label style="font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.4)">League *</label>
+        <select id="ts-f-league" style="background:var(--surface);border:1.5px solid var(--border2);border-radius:10px;color:var(--text);font-family:'Space Grotesk','Inter',sans-serif;font-size:13px;padding:9px 12px;outline:none;width:100%;box-sizing:border-box;cursor:pointer">
+          <option value="epl">🏴󠁧󠁢󠁥󠁮󠁧󠁿 Premier League</option>
+          <option value="ucl">⭐ Champions League</option>
+          <option value="fifa">🌍 FIFA World Cup</option>
+          <option value="facup">🏆 FA Cup</option>
+          <option value="laliga">🇪🇸 La Liga</option>
+          <option value="bundesliga">🇩🇪 Bundesliga</option>
+          <option value="seriea">🇮🇹 Serie A</option>
+          <option value="ligue1">🇫🇷 Ligue 1</option>
+          <option value="other">🌐 Other</option>
+        </select>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px">
+        <label style="font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.4)">Stage / Round</label>
+        <input id="ts-f-stage" placeholder="e.g. Matchday 38, Final" style="background:var(--surface);border:1.5px solid var(--border2);border-radius:10px;color:var(--text);font-family:'Space Grotesk','Inter',sans-serif;font-size:13px;padding:9px 12px;outline:none;width:100%;box-sizing:border-box" />
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px">
+        <label style="font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.4)">Sale Opens — Date *</label>
+        <input id="ts-f-saledate" type="date" style="background:var(--surface);border:1.5px solid var(--border2);border-radius:10px;color:var(--text);font-family:'Space Grotesk','Inter',sans-serif;font-size:13px;padding:9px 12px;outline:none;width:100%;box-sizing:border-box" />
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px">
+        <label style="font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.4)">Sale Opens — Time *</label>
+        <input id="ts-f-saletime" type="time" value="10:00" style="background:var(--surface);border:1.5px solid var(--border2);border-radius:10px;color:var(--text);font-family:'Space Grotesk','Inter',sans-serif;font-size:13px;padding:9px 12px;outline:none;width:100%;box-sizing:border-box" />
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px">
+        <label style="font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.4)">Match Date</label>
+        <input id="ts-f-matchdate" type="date" style="background:var(--surface);border:1.5px solid var(--border2);border-radius:10px;color:var(--text);font-family:'Space Grotesk','Inter',sans-serif;font-size:13px;padding:9px 12px;outline:none;width:100%;box-sizing:border-box" />
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px">
+        <label style="font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.4)">Venue</label>
+        <input id="ts-f-venue" placeholder="e.g. Old Trafford, Manchester" style="background:var(--surface);border:1.5px solid var(--border2);border-radius:10px;color:var(--text);font-family:'Space Grotesk','Inter',sans-serif;font-size:13px;padding:9px 12px;outline:none;width:100%;box-sizing:border-box" />
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px;grid-column:1/-1">
+        <label style="font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.4)">Official Ticket Link</label>
+        <input id="ts-f-link" type="url" placeholder="https://tickets.premierleague.com/..." style="background:var(--surface);border:1.5px solid var(--border2);border-radius:10px;color:var(--text);font-family:'Space Grotesk','Inter',sans-serif;font-size:13px;padding:9px 12px;outline:none;width:100%;box-sizing:border-box" />
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px">
+        <label style="font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.4)">Status</label>
+        <select id="ts-f-status" style="background:var(--surface);border:1.5px solid var(--border2);border-radius:10px;color:var(--text);font-family:'Space Grotesk','Inter',sans-serif;font-size:13px;padding:9px 12px;outline:none;width:100%;box-sizing:border-box;cursor:pointer">
+          <option value="upcoming">🟡 Upcoming</option>
+          <option value="open">🟢 Sale Open</option>
+          <option value="soldout">🔴 Sold Out</option>
+        </select>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px">
+        <label style="font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.4)">Hot Match?</label>
+        <select id="ts-f-hot" style="background:var(--surface);border:1.5px solid var(--border2);border-radius:10px;color:var(--text);font-family:'Space Grotesk','Inter',sans-serif;font-size:13px;padding:9px 12px;outline:none;width:100%;box-sizing:border-box;cursor:pointer">
+          <option value="">No</option>
+          <option value="1">🔥 Yes — Mark as Hot</option>
+        </select>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
+      <button onclick="closeTsModal()" style="padding:9px 20px;border-radius:10px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-size:13px;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s">Cancel</button>
+      <button onclick="saveTsEntry()" style="padding:9px 22px;border-radius:10px;border:none;background:linear-gradient(135deg,#ff8c00,#ffd700);color:#1a1000;font-size:13px;font-weight:800;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;box-shadow:0 4px 16px rgba(255,140,0,.25)">✓ Save Sale</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════
+// 🎟️ ALL LEAGUE SALES — TICKET TRACKER ENGINE
+// ══════════════════════════════════════════════════════════
+(function(){
+
+const TS_KEY = 'matchday_ticketsales_v1';
+
+const TS_LEAGUES = {
+  epl:        { name:'Premier League',    icon:'🏴󠁧󠁢󠁥󠁮󠁧󠁿', pillCls:'ts-pill-epl',    cardCls:'ts-epl',    accent:'rgba(0,255,135,.3)' },
+  ucl:        { name:'Champions League',  icon:'⭐',           pillCls:'ts-pill-ucl',    cardCls:'ts-ucl',    accent:'rgba(96,179,255,.3)' },
+  fifa:       { name:'FIFA World Cup',    icon:'🌍',           pillCls:'ts-pill-fifa',   cardCls:'ts-fifa',   accent:'rgba(255,215,0,.3)' },
+  facup:      { name:'FA Cup',            icon:'🏆',           pillCls:'ts-pill-facup',  cardCls:'ts-facup',  accent:'rgba(255,107,107,.3)' },
+  laliga:     { name:'La Liga',           icon:'🇪🇸',           pillCls:'ts-pill-laliga', cardCls:'ts-laliga', accent:'rgba(255,69,0,.3)' },
+  bundesliga: { name:'Bundesliga',        icon:'🇩🇪',           pillCls:'ts-pill-bundesliga', cardCls:'ts-bundesliga', accent:'rgba(232,25,44,.3)' },
+  seriea:     { name:'Serie A',           icon:'🇮🇹',           pillCls:'ts-pill-seriea', cardCls:'ts-seriea', accent:'rgba(160,196,255,.3)' },
+  ligue1:     { name:'Ligue 1',           icon:'🇫🇷',           pillCls:'ts-pill-ligue1', cardCls:'ts-ligue1', accent:'rgba(192,132,252,.3)' },
+  other:      { name:'Other',             icon:'🌐',           pillCls:'ts-pill-other',  cardCls:'ts-other',  accent:'rgba(167,139,250,.3)' },
+};
+
+const DEFAULT_SALES = [
+  {id:1,  match:'Manchester United vs Arsenal',             league:'epl',        stage:'Matchday 38',       saleDate:'2026-06-06', saleTime:'10:00', matchDate:'2026-06-14', venue:'Old Trafford, Manchester',        link:'https://www.manutd.com/en/tickets', status:'upcoming', hot:true},
+  {id:2,  match:'Arsenal vs Chelsea',                       league:'epl',        stage:'Matchday 38',       saleDate:'2026-06-06', saleTime:'10:00', matchDate:'2026-06-14', venue:'Emirates Stadium, London',         link:'https://www.arsenal.com/tickets',   status:'upcoming', hot:true},
+  {id:3,  match:'PSG vs Arsenal — UCL Final',               league:'ucl',        stage:'Grand Final 🏆',    saleDate:'2026-05-02', saleTime:'09:00', matchDate:'2026-05-30', venue:'Allianz Arena, Munich',            link:'https://www.uefa.com/tickets',      status:'open',     hot:true},
+  {id:4,  match:'England vs USA — Group Stage',             league:'fifa',       stage:'Group C',           saleDate:'2026-05-20', saleTime:'12:00', matchDate:'2026-06-18', venue:'MetLife Stadium, NJ',              link:'https://www.fifa.com/tickets',      status:'upcoming', hot:false},
+  {id:5,  match:'France vs Brazil — Quarter Final',         league:'fifa',       stage:'Quarter Final',     saleDate:'2026-06-01', saleTime:'10:00', matchDate:'2026-07-10', venue:'Rose Bowl, Los Angeles',           link:'https://www.fifa.com/tickets',      status:'upcoming', hot:true},
+  {id:6,  match:'Manchester City vs Liverpool',             league:'epl',        stage:'Matchday 37',       saleDate:'2026-05-10', saleTime:'09:00', matchDate:'2026-05-24', venue:'Etihad Stadium, Manchester',       link:'https://www.mancity.com/tickets',   status:'soldout',  hot:false},
+  {id:7,  match:'Arsenal vs Tottenham — FA Cup Final',      league:'facup',      stage:'Final',             saleDate:'2026-05-15', saleTime:'09:00', matchDate:'2026-05-31', venue:'Wembley Stadium, London',          link:'https://www.thefa.com/tickets',     status:'open',     hot:true},
+  {id:8,  match:'Real Madrid vs Barcelona — El Clásico',    league:'laliga',     stage:'Matchday 35',       saleDate:'2026-05-25', saleTime:'11:00', matchDate:'2026-06-07', venue:'Santiago Bernabéu, Madrid',        link:'https://www.realmadrid.com/tickets',status:'upcoming', hot:true},
+  {id:9,  match:'Bayern Munich vs Dortmund — Der Klassiker',league:'bundesliga', stage:'Matchday 33',       saleDate:'2026-06-01', saleTime:'10:00', matchDate:'2026-06-13', venue:'Allianz Arena, Munich',            link:'https://www.fcbayern.com/tickets',  status:'upcoming', hot:false},
+  {id:10, match:'Inter Milan vs AC Milan — Derby',          league:'seriea',     stage:'Matchday 36',       saleDate:'2026-06-03', saleTime:'12:00', matchDate:'2026-06-15', venue:'San Siro, Milan',                  link:'https://www.inter.it/tickets',      status:'upcoming', hot:true},
+  {id:11, match:'PSG vs Marseille — Le Classique',          league:'ligue1',     stage:'Matchday 36',       saleDate:'2026-06-05', saleTime:'10:00', matchDate:'2026-06-16', venue:'Parc des Princes, Paris',          link:'https://www.psg.fr/tickets',        status:'upcoming', hot:false},
+  {id:12, match:'Germany vs Netherlands — Group Stage',     league:'fifa',       stage:'Group C',           saleDate:'2026-05-22', saleTime:'14:00', matchDate:'2026-06-20', venue:'AT&T Stadium, Dallas',             link:'https://www.fifa.com/tickets',      status:'upcoming', hot:false},
+];
+
+let TS_DATA = [];
+let tsFilter = 'all';
+let tsSearch = '';
+let tsEditId = null;
+let tsNotified = new Set(JSON.parse(localStorage.getItem('ts_notified')||'[]'));
+
+function loadTsData(){
+  try{const r=localStorage.getItem(TS_KEY);if(r){TS_DATA=JSON.parse(r);return;}}catch(e){}
+  TS_DATA=JSON.parse(JSON.stringify(DEFAULT_SALES));
+  saveTsData();
+}
+function saveTsData(){try{localStorage.setItem(TS_KEY,JSON.stringify(TS_DATA));}catch(e){}}
+function saveNotified(){localStorage.setItem('ts_notified',JSON.stringify([...tsNotified]));}
+loadTsData();
+
+function getSaleCountdown(saleDate,saleTime){
+  const dt=new Date(saleDate+'T'+(saleTime||'10:00')+':00');
+  const diff=dt-Date.now();
+  if(diff<=0)return null;
+  const days=Math.floor(diff/86400000);
+  const hrs=Math.floor((diff%86400000)/3600000);
+  const mins=Math.floor((diff%3600000)/60000);
+  if(days>0)return{label:days+'d '+hrs+'h',urgent:days<=2};
+  if(hrs>0)return{label:hrs+'h '+mins+'m',urgent:true};
+  return{label:mins+'m',urgent:true};
+}
+
+function fmtDate(ds){
+  if(!ds)return'';
+  const d=new Date(ds+'T12:00:00');
+  return d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+}
+function fmtTime(t){
+  if(!t)return'';
+  const[h,m]=t.split(':');
+  const h24=parseInt(h);
+  return(h24%12||12)+':'+m+(h24>=12?' PM':' AM');
+}
+
+function tsCardHtml(e){
+  const lg=TS_LEAGUES[e.league]||TS_LEAGUES.other;
+  const cd=getSaleCountdown(e.saleDate,e.saleTime);
+  const isOpen=e.status==='open';
+  const isSoldOut=e.status==='soldout';
+  const notified=tsNotified.has(e.id);
+  let statusBadge=isSoldOut?'<span class="ts-status ts-status-soldout">🔴 Sold Out</span>':isOpen?'<span class="ts-status ts-status-open">🟢 Sale Open</span>':'<span class="ts-status ts-status-upcoming">🟡 Upcoming</span>';
+  let cdHtml='';
+  if(!isOpen&&!isSoldOut){
+    if(cd){const cls=cd.urgent?'urgent':'';cdHtml=`<span class="ts-countdown ${cls}"><span style="width:6px;height:6px;border-radius:50%;background:currentColor;display:inline-block;animation:syncPulse 2s infinite;flex-shrink:0"></span>${cd.label} to sale</span>`;}
+    else{cdHtml='<span class="ts-countdown open"><span style="width:6px;height:6px;border-radius:50%;background:currentColor;display:inline-block;animation:syncPulse 2s infinite;flex-shrink:0"></span>On Sale Now</span>';}
+  }
+  const hotBadge=e.hot?'<span class="ts-hot-badge">🔥 Hot</span>':'';
+  const ticketBtn=e.link?`<a href="${e.link}" target="_blank" rel="noopener" class="ts-ticket-link">🎟️ Buy Tickets ↗</a>`:'';
+  const notifyBtn=!isSoldOut&&!isOpen?`<button class="ts-notify-btn ${notified?'active':''}" onclick="tsTogNotify(${e.id},this)">${notified?'🔔 Notified':'🔕 Notify Me'}</button>`:'';
+  const isAdm=typeof isAdminLoggedIn!=='undefined'&&isAdminLoggedIn;
+  const adminActions=isAdm?`<div class="ts-card-actions"><div class="ts-card-btn edit" onclick="openTsEditModal(${e.id})" title="Edit">✏️</div><div class="ts-card-btn del" onclick="deleteTsEntry(${e.id})" title="Delete">🗑️</div></div>`:'';
+  return`<div class="ts-card ${lg.cardCls}">
+    <div class="ts-card-body">
+      <div class="ts-card-top">
+        <span class="ts-league-pill ${lg.pillCls}">${lg.icon} ${lg.name}</span>
+        ${hotBadge}
+        <span class="ts-stage">${e.stage||''}</span>
+        ${statusBadge}
+      </div>
+      <div class="ts-matchup">${e.match}</div>
+      ${e.venue?`<div style="font-size:11px;color:var(--muted);margin-top:4px;font-family:'JetBrains Mono',monospace">📍 ${e.venue}</div>`:''}
+      <div class="ts-sale-info">
+        <div class="ts-sale-when">
+          <span style="font-size:16px">🗓️</span>
+          <div>
+            <div class="ts-sale-date">${fmtDate(e.saleDate)}</div>
+            <div class="ts-sale-time">Sale opens ${fmtTime(e.saleTime)}</div>
+          </div>
+        </div>
+        ${cdHtml}
+        ${e.matchDate?`<div style="font-size:10px;color:rgba(255,255,255,.35);font-family:'JetBrains Mono',monospace">Match: ${fmtDate(e.matchDate)}</div>`:''}
+        <div style="margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          ${notifyBtn}
+          ${ticketBtn}
+        </div>
+      </div>
+    </div>
+    ${adminActions}
+  </div>`;
+}
+
+window.renderTicketSales = function(el){
+  const cntEl=document.getElementById('cnt-ticketsales');
+  if(cntEl)cntEl.textContent=TS_DATA.length;
+  let items=TS_DATA.filter(e=>{
+    if(tsFilter==='open'&&e.status!=='open')return false;
+    if(tsFilter==='upcoming'&&e.status!=='upcoming')return false;
+    if(tsFilter==='soldout'&&e.status!=='soldout')return false;
+    if(tsFilter==='hot'&&!e.hot)return false;
+    if(tsSearch){const q=tsSearch.toLowerCase();return(e.match||'').toLowerCase().includes(q)||(e.venue||'').toLowerCase().includes(q)||(TS_LEAGUES[e.league]?.name||'').toLowerCase().includes(q)||(e.stage||'').toLowerCase().includes(q);}
+    return true;
+  });
+  const statusOrder={open:0,upcoming:1,soldout:2};
+  items.sort((a,b)=>{const so=(statusOrder[a.status]||1)-(statusOrder[b.status]||1);if(so!==0)return so;return new Date(a.saleDate)-new Date(b.saleDate);});
+  const total=TS_DATA.length;
+  const openC=TS_DATA.filter(e=>e.status==='open').length;
+  const upcomC=TS_DATA.filter(e=>e.status==='upcoming').length;
+  const hotC=TS_DATA.filter(e=>e.hot).length;
+  const isAdm=typeof isAdminLoggedIn!=='undefined'&&isAdminLoggedIn;
+  const addBtn=isAdm?`<button onclick="openTsAddModal()" style="display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:10px;border:1px solid rgba(255,165,0,.4);background:rgba(255,165,0,.1);color:#ffd700;font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;white-space:nowrap">+ Add Sale</button>`:'';
+  const filterDefs=[{k:'all',l:'All'},{k:'open',l:'🟢 On Sale'},{k:'upcoming',l:'🟡 Upcoming'},{k:'hot',l:'🔥 Hot'},{k:'soldout',l:'🔴 Sold Out'}];
+  const filterBtns=filterDefs.map(f=>`<button class="ts-filter-btn ${tsFilter===f.k?'on':''}" onclick="setTsFilter('${f.k}')">${f.l}</button>`).join('');
+  const byLeague={};
+  items.forEach(e=>{const l=e.league||'other';if(!byLeague[l])byLeague[l]=[];byLeague[l].push(e);});
+  const leagueOrder=['epl','ucl','fifa','facup','laliga','bundesliga','seriea','ligue1','other'];
+  const sections=leagueOrder.filter(k=>byLeague[k]).map(k=>{
+    const lg=TS_LEAGUES[k];
+    return`<div style="margin-bottom:20px">
+      <div class="ts-league-header" style="border-left-color:${lg.accent||'rgba(255,165,0,.3)'}">
+        ${lg.icon} ${lg.name}
+        <span style="margin-left:6px;background:var(--surface2);border:1px solid var(--border);padding:2px 8px;border-radius:20px;font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--muted)">${byLeague[k].length}</span>
+      </div>
+      ${byLeague[k].map(tsCardHtml).join('')}
+    </div>`;
+  }).join('');
+  const empty=items.length===0?'<div class="ts-empty"><div class="big">🎟️</div><p>No ticket sales match your filters.</p></div>':'';
+  el.innerHTML=`<div>
+    <div style="background:linear-gradient(135deg,rgba(255,140,0,.10),rgba(255,200,0,.06));border:1px solid rgba(255,165,0,.22);border-radius:20px;padding:22px 24px;margin-bottom:20px;display:flex;align-items:center;gap:18px;position:relative;overflow:hidden">
+      <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 90% 50%,rgba(255,200,0,.07),transparent);pointer-events:none"></div>
+      <div style="font-size:44px;flex-shrink:0;line-height:1;filter:drop-shadow(0 0 16px rgba(255,165,0,.5));animation:trophyBounce 3s ease-in-out infinite">🎟️</div>
+      <div style="position:relative;z-index:1">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:3px;background:linear-gradient(120deg,#ffb347 0%,#ffd700 55%,#ff8c00 100%);background-clip:text;-webkit-background-clip:text;color:transparent;line-height:1;margin-bottom:3px">All League Sales</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.45);letter-spacing:.5px">Ticket sale dates &amp; official links across all major leagues</div>
+      </div>
+      <div style="margin-left:auto;display:flex;gap:10px;flex-wrap:wrap;position:relative;z-index:1">
+        <div style="text-align:center;background:rgba(255,165,0,.08);border:1px solid rgba(255,165,0,.2);border-radius:12px;padding:8px 14px;min-width:64px"><div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:#ffb347;line-height:1">${total}</div><div style="font-size:9px;color:rgba(255,255,255,.35);letter-spacing:1px;text-transform:uppercase;margin-top:2px">Total</div></div>
+        <div style="text-align:center;background:rgba(255,165,0,.08);border:1px solid rgba(255,165,0,.2);border-radius:12px;padding:8px 14px;min-width:64px"><div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:#00e676;line-height:1">${openC}</div><div style="font-size:9px;color:rgba(255,255,255,.35);letter-spacing:1px;text-transform:uppercase;margin-top:2px">On Sale</div></div>
+        <div style="text-align:center;background:rgba(255,165,0,.08);border:1px solid rgba(255,165,0,.2);border-radius:12px;padding:8px 14px;min-width:64px"><div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:#ffb347;line-height:1">${upcomC}</div><div style="font-size:9px;color:rgba(255,255,255,.35);letter-spacing:1px;text-transform:uppercase;margin-top:2px">Upcoming</div></div>
+        <div style="text-align:center;background:rgba(255,165,0,.08);border:1px solid rgba(255,165,0,.2);border-radius:12px;padding:8px 14px;min-width:64px"><div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:#ff8a65;line-height:1">${hotC}</div><div style="font-size:9px;color:rgba(255,255,255,.35);letter-spacing:1px;text-transform:uppercase;margin-top:2px">Hot</div></div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+      <input class="ts-search" placeholder="🔍 Search match, venue, league..." value="${tsSearch.replace(/"/g,'&quot;')}" oninput="setTsSearch(this.value)" />
+      ${filterBtns}
+      ${addBtn}
+    </div>
+    ${sections||empty}
+  </div>`;
+};
+
+window.setTsFilter=function(f){tsFilter=f;if(window.currentLeague==='ticketsales'){const el=document.getElementById('matchList');if(el)window.renderTicketSales(el);}};
+window.setTsSearch=function(v){tsSearch=v;if(window.currentLeague==='ticketsales'){const el=document.getElementById('matchList');if(el)window.renderTicketSales(el);}};
+
+window.tsTogNotify=function(id,btn){
+  if(tsNotified.has(id)){tsNotified.delete(id);btn.textContent='🔕 Notify Me';btn.classList.remove('active');typeof showToast!=='undefined'&&showToast('Notification removed','info');}
+  else{tsNotified.add(id);btn.textContent='🔔 Notified';btn.classList.add('active');typeof showToast!=='undefined'&&showToast('🔔 You\'ll be reminded when sale opens!','success');}
+  saveNotified();
+};
+
+window.openTsAddModal=function(){
+  tsEditId=null;
+  document.getElementById('tsModalTitle').textContent='ADD TICKET SALE';
+  document.getElementById('tsModalSub').textContent='Add a new ticket sale event to the tracker';
+  ['ts-f-match','ts-f-stage','ts-f-venue','ts-f-link'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('ts-f-league').value='epl';
+  document.getElementById('ts-f-status').value='upcoming';
+  document.getElementById('ts-f-hot').value='';
+  const now=new Date();
+  document.getElementById('ts-f-saledate').value=now.toISOString().slice(0,10);
+  document.getElementById('ts-f-saletime').value='10:00';
+  document.getElementById('ts-f-matchdate').value='';
+  document.getElementById('tsModal').style.display='flex';
+};
+
+window.openTsEditModal=function(id){
+  const e=TS_DATA.find(x=>x.id===id);if(!e)return;
+  tsEditId=id;
+  document.getElementById('tsModalTitle').textContent='EDIT TICKET SALE';
+  document.getElementById('tsModalSub').textContent='Update the ticket sale details';
+  document.getElementById('ts-f-match').value=e.match||'';
+  document.getElementById('ts-f-stage').value=e.stage||'';
+  document.getElementById('ts-f-venue').value=e.venue||'';
+  document.getElementById('ts-f-link').value=e.link||'';
+  document.getElementById('ts-f-league').value=e.league||'epl';
+  document.getElementById('ts-f-saledate').value=e.saleDate||'';
+  document.getElementById('ts-f-saletime').value=e.saleTime||'10:00';
+  document.getElementById('ts-f-matchdate').value=e.matchDate||'';
+  document.getElementById('ts-f-status').value=e.status||'upcoming';
+  document.getElementById('ts-f-hot').value=e.hot?'1':'';
+  document.getElementById('tsModal').style.display='flex';
+};
+
+window.closeTsModal=function(){document.getElementById('tsModal').style.display='none';tsEditId=null;};
+document.getElementById('tsModal').addEventListener('click',function(ev){if(ev.target===this)window.closeTsModal();});
+
+window.saveTsEntry=function(){
+  const match=document.getElementById('ts-f-match').value.trim();
+  const saleDate=document.getElementById('ts-f-saledate').value;
+  const saleTime=document.getElementById('ts-f-saletime').value;
+  if(!match||!saleDate||!saleTime){typeof showToast!=='undefined'&&showToast('⚠️ Match name, sale date & time are required','danger');return;}
+  const entry={
+    id:tsEditId||Date.now(),match,
+    league:document.getElementById('ts-f-league').value,
+    stage:document.getElementById('ts-f-stage').value.trim(),
+    saleDate,saleTime,
+    matchDate:document.getElementById('ts-f-matchdate').value||'',
+    venue:document.getElementById('ts-f-venue').value.trim(),
+    link:document.getElementById('ts-f-link').value.trim(),
+    status:document.getElementById('ts-f-status').value,
+    hot:!!document.getElementById('ts-f-hot').value,
+  };
+  if(tsEditId!==null){const idx=TS_DATA.findIndex(e=>e.id===tsEditId);if(idx>=0)TS_DATA[idx]=entry;typeof showToast!=='undefined'&&showToast('✓ Sale updated!','success');}
+  else{TS_DATA.unshift(entry);typeof showToast!=='undefined'&&showToast('🎟️ Ticket sale added!','success');}
+  saveTsData();
+  window.closeTsModal();
+  const cntEl=document.getElementById('cnt-ticketsales');if(cntEl)cntEl.textContent=TS_DATA.length;
+  if(window.currentLeague==='ticketsales'){const el=document.getElementById('matchList');if(el)window.renderTicketSales(el);}
+};
+
+window.deleteTsEntry=function(id){
+  if(!confirm('Delete this ticket sale entry?'))return;
+  TS_DATA=TS_DATA.filter(e=>e.id!==id);
+  saveTsData();
+  const cntEl=document.getElementById('cnt-ticketsales');if(cntEl)cntEl.textContent=TS_DATA.length;
+  typeof showToast!=='undefined'&&showToast('Sale deleted 🗑️','danger');
+  if(window.currentLeague==='ticketsales'){const el=document.getElementById('matchList');if(el)window.renderTicketSales(el);}
+};
+
+// Init count
+(function(){const cntEl=document.getElementById('cnt-ticketsales');if(cntEl)cntEl.textContent=TS_DATA.length;})();
+
+// Auto-refresh countdowns every 60s
+setInterval(function(){if(window.currentLeague==='ticketsales'){const el=document.getElementById('matchList');if(el)window.renderTicketSales(el);}},60000);
+
 })();
 </script>
 
