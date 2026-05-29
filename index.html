@@ -10008,7 +10008,7 @@ setInterval(function(){
 // ══════════════════════════════════════════════════════════
 (function(){
 
-const TS_KEY = 'matchday_ticketsales_v2';
+const TS_KEY = 'matchday_ticketsales_v5'; // v5 = force fresh data with auto-status
 
 const TS_LEAGUES = {
   epl:        { name:'Premier League',    icon:'🏴󠁧󠁢󠁥󠁮󠁧󠁿', pillCls:'ts-pill-epl',    cardCls:'ts-epl',    accent:'rgba(0,255,135,.3)' },
@@ -10022,36 +10022,70 @@ const TS_LEAGUES = {
   other:      { name:'Other',             icon:'🌐',           pillCls:'ts-pill-other',  cardCls:'ts-other',  accent:'rgba(167,139,250,.3)' },
 };
 
-const DEFAULT_SALES = [
-  // ── PREMIER LEAGUE — Final Day MW38 (24 May 2026, all 5pm BST) ──
-  {id:1,  match:'Crystal Palace vs Arsenal',                   league:'epl',        stage:'Matchday 38 — Final Day',  saleDate:'2026-03-15', saleTime:'10:00', matchDate:'2026-05-24', matchTime:'17:00 BST', venue:'Selhurst Park, London',            link:'https://www.cpfc.co.uk/tickets', status:'soldout', hot:true,  priceFrom:'£40', priceNote:'SOLD OUT — Members only'},
-  {id:2,  match:'Brighton vs Manchester United',               league:'epl',        stage:'Matchday 38 — Final Day',  saleDate:'2026-04-01', saleTime:'10:00', matchDate:'2026-05-24', matchTime:'17:00 BST', venue:'Amex Stadium, Brighton',           link:'https://www.brightonandhovealbion.com/tickets', status:'soldout', hot:false, priceFrom:'£35'},
-  {id:3,  match:'Liverpool vs Brentford',                      league:'epl',        stage:'Matchday 38 — Final Day',  saleDate:'2026-04-01', saleTime:'10:00', matchDate:'2026-05-24', matchTime:'17:00 BST', venue:'Anfield, Liverpool',               link:'https://www.liverpoolfc.com/tickets', status:'soldout', hot:false, priceFrom:'£45'},
-  {id:4,  match:'Manchester City vs Aston Villa',              league:'epl',        stage:'Matchday 38 — Final Day',  saleDate:'2026-04-01', saleTime:'09:00', matchDate:'2026-05-24', matchTime:'17:00 BST', venue:'Etihad Stadium, Manchester',       link:'https://www.mancity.com/tickets', status:'soldout', hot:false, priceFrom:'£40'},
-  {id:5,  match:'Sunderland vs Chelsea',                       league:'epl',        stage:'Matchday 38 — Final Day',  saleDate:'2026-04-01', saleTime:'10:00', matchDate:'2026-05-24', matchTime:'17:00 BST', venue:'Stadium of Light, Sunderland',     link:'https://www.safc.com/tickets', status:'soldout', hot:false, priceFrom:'£30'},
-  {id:6,  match:'Tottenham vs Everton',                        league:'epl',        stage:'Matchday 38 — Final Day',  saleDate:'2026-03-20', saleTime:'10:00', matchDate:'2026-05-24', matchTime:'17:00 BST', venue:'Tottenham Hotspur Stadium',        link:'https://www.tottenhamhotspur.com/tickets', status:'soldout', hot:false, priceFrom:'£45'},
-  {id:7,  match:'West Ham vs Leeds United',                    league:'epl',        stage:'Matchday 38 — Final Day',  saleDate:'2026-03-25', saleTime:'10:00', matchDate:'2026-05-24', matchTime:'17:00 BST', venue:'London Stadium',                   link:'https://www.whufc.com/tickets', status:'soldout', hot:false, priceFrom:'£35'},
-  // ── CHAMPIONS LEAGUE FINAL 2026 ──
-  {id:8,  match:'Arsenal vs PSG — UCL Final 🏆',              league:'ucl',        stage:'Grand Final',              saleDate:'2026-05-07', saleTime:'13:00', matchDate:'2026-05-30', matchTime:'17:00 UK', venue:'Puskás Aréna, Budapest, Hungary',  link:'https://www.uefa.com/uefachampionsleague/tickets/', status:'open', hot:true, priceFrom:'€70', priceNote:'Face-value €70–€950 · Resale from £5,200+'},
-  {id:9,  match:'Arsenal vs PSG — UCL Final (UEFA Resale)',   league:'ucl',        stage:'Grand Final — Resale',     saleDate:'2026-04-02', saleTime:'11:00', matchDate:'2026-05-30', matchTime:'17:00 UK', venue:'Puskás Aréna, Budapest, Hungary',  link:'https://www.uefa.com/uefachampionsleague/tickets/', status:'open', hot:true, priceFrom:'€70', priceNote:'Official UEFA Resale Portal — open now'},
-  // ── FIFA WORLD CUP 2026 ──
-  {id:10, match:'FIFA World Cup 2026 — Last-Minute Sales Phase', league:'fifa',    stage:'All Matches — On Sale Now', saleDate:'2026-04-01', saleTime:'00:00', matchDate:'2026-06-11', venue:'USA / Canada / Mexico (16 cities)',link:'https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/tickets', status:'open', hot:true, priceFrom:'$60', priceNote:'First-come first-served · From $60 group stage · up to $6,730 final'},
-  {id:11, match:'FIFA Official Resale Marketplace',            league:'fifa',       stage:'All Matches',              saleDate:'2026-04-02', saleTime:'11:00', matchDate:'2026-06-11', venue:'USA / Canada / Mexico',           link:'https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/tickets', status:'open', hot:false, priceNote:'FIFA.com/tickets official resale — open until 1hr before each match'},
-  {id:12, match:'World Cup Opening Match — USA vs TBD',        league:'fifa',       stage:'Group Stage',              saleDate:'2026-04-01', saleTime:'00:00', matchDate:'2026-06-11', matchTime:'TBD', venue:'SoFi Stadium, Los Angeles',        link:'https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/tickets', status:'open', hot:true, priceFrom:'$150+', priceNote:'Resale only · High demand'},
-  {id:13, match:'World Cup Final — TBD vs TBD',               league:'fifa',       stage:'Final',                    saleDate:'2025-10-27', saleTime:'00:00', matchDate:'2026-07-19', matchTime:'TBD', venue:'MetLife Stadium, New Jersey',      link:'https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/tickets', status:'soldout', hot:true, priceFrom:'$6,730', priceNote:'Official ballot closed · Resale only'},
-  // ── LA LIGA ──
-  {id:14, match:'Real Madrid vs Villarreal',                   league:'laliga',     stage:'Matchday 37',              saleDate:'2026-05-18', saleTime:'10:00', matchDate:'2026-05-24', matchTime:'21:00 CEST', venue:'Santiago Bernabéu, Madrid',    link:'https://www.realmadrid.com/en/fans/tickets', status:'open', hot:false, priceFrom:'€30'},
-  {id:15, match:'Barcelona vs Espanyol',                       league:'laliga',     stage:'Matchday 37',              saleDate:'2026-05-15', saleTime:'10:00', matchDate:'2026-05-23', matchTime:'18:30 CEST', venue:'Estadi Olímpic Lluís, Barcelona',link:'https://www.fcbarcelona.com/en/tickets', status:'open', hot:false, priceFrom:'€35'},
-  // ── BUNDESLIGA ──
-  {id:16, match:'Bayer Leverkusen vs Dortmund',                league:'bundesliga', stage:'Matchday 34 — Final Day',  saleDate:'2026-05-10', saleTime:'10:00', matchDate:'2026-05-23', matchTime:'15:30 CEST', venue:'BayArena, Leverkusen',          link:'https://www.bayer04.de/en/tickets', status:'open', hot:false, priceFrom:'€25'},
-  // ── SERIE A ──
-  {id:17, match:'Inter Milan vs Lazio',                        league:'seriea',     stage:'Matchday 38 — Final Day',  saleDate:'2026-05-10', saleTime:'10:00', matchDate:'2026-05-24', matchTime:'18:00 CEST', venue:'San Siro, Milan',               link:'https://www.inter.it/en/tickets', status:'open', hot:false, priceFrom:'€30'},
-  {id:18, match:'AC Milan vs Roma',                            league:'seriea',     stage:'Matchday 38 — Final Day',  saleDate:'2026-05-10', saleTime:'10:00', matchDate:'2026-05-24', matchTime:'18:00 CEST', venue:'San Siro, Milan',               link:'https://www.acmilan.com/en/tickets', status:'open', hot:false, priceFrom:'€30'},
-  // ── LIGUE 1 ──
-  {id:19, match:'PSG vs Metz',                                 league:'ligue1',     stage:'Matchday 34 — Final Day',  saleDate:'2026-05-12', saleTime:'10:00', matchDate:'2026-05-23', matchTime:'21:00 CEST', venue:'Parc des Princes, Paris',       link:'https://www.psg.fr/en/tickets', status:'open', hot:false, priceFrom:'€35'},
-  // ── FA CUP FINAL 2026 ──
-  {id:20, match:'Chelsea vs Manchester City — FA Cup Final',   league:'facup',      stage:'Final 🏆',                 saleDate:'2026-04-01', saleTime:'09:00', matchDate:'2026-05-16', matchTime:'15:00 BST', venue:'Wembley Stadium, London',         link:'https://www.thefa.com/tickets', status:'soldout', hot:true, priceFrom:'£45', priceNote:'Official allocation SOLD OUT — resale via Ticketmaster'},
-];
+// ── Auto-status helper: calculate real status from today's date ──
+function calcSaleStatus(matchDate, saleDate){
+  const now   = new Date();
+  const today = now.toISOString().slice(0,10);
+  if(matchDate < today) return 'soldout';           // match already happened
+  if(saleDate <= today) return 'open';              // sale started, match upcoming
+  return 'upcoming';                                // sale not started yet
+}
+function calcHot(matchDate, status){
+  if(status === 'soldout') return false;
+  const daysUntil = (new Date(matchDate) - new Date()) / 86400000;
+  return daysUntil <= 14;
+}
+
+const DEFAULT_SALES = (() => {
+  // ── CHAMPIONS LEAGUE FINAL — 30 May 2026 (TODAY — LIVE DAY!) ──
+  const raw = [
+  {id:8,  match:'Arsenal vs PSG — UCL Final 🏆',              league:'ucl',   stage:'Grand Final',           saleDate:'2026-05-07', saleTime:'13:00', matchDate:'2026-05-30', matchTime:'17:00 UK',   venue:'Puskás Aréna, Budapest, Hungary',          link:'https://www.uefa.com/uefachampionsleague/tickets/', hot:true,  priceFrom:'€70',  priceNote:'Face-value €70–€950 · Resale from £5,200+'},
+  {id:9,  match:'UCL Final — UEFA Official Resale',           league:'ucl',   stage:'Grand Final — Resale',  saleDate:'2026-05-20', saleTime:'11:00', matchDate:'2026-05-30', matchTime:'17:00 UK',   venue:'Puskás Aréna, Budapest, Hungary',          link:'https://www.uefa.com/uefachampionsleague/tickets/', hot:true,  priceFrom:'€150', priceNote:'Official UEFA Resale Portal — last chance'},
+
+  // ── EPL 2026-27 PRE-SEASON (season starts Aug 2026) ──
+  {id:1,  match:'Manchester City vs Arsenal — Community Shield',league:'epl', stage:'Community Shield 2026', saleDate:'2026-06-01', saleTime:'10:00', matchDate:'2026-08-02', matchTime:'15:00 BST', venue:'Wembley Stadium, London',                  link:'https://www.thefa.com/tickets',                    hot:true,  priceFrom:'£35',  priceNote:'General sale opens 1 June'},
+  {id:2,  match:'Liverpool vs Chelsea — EPL Opening Day',      league:'epl', stage:'Matchday 1 2026-27',    saleDate:'2026-06-15', saleTime:'10:00', matchDate:'2026-08-15', matchTime:'12:30 BST', venue:'Anfield, Liverpool',                       link:'https://www.liverpoolfc.com/tickets',               hot:true,  priceFrom:'£45'},
+  {id:3,  match:'Manchester United vs Tottenham',              league:'epl', stage:'Matchday 1 2026-27',    saleDate:'2026-06-15', saleTime:'10:00', matchDate:'2026-08-15', matchTime:'15:00 BST', venue:'Old Trafford, Manchester',                 link:'https://www.manutd.com/en/fans/fan-experience/tickets', hot:false, priceFrom:'£50'},
+  {id:4,  match:'Arsenal vs Newcastle United',                 league:'epl', stage:'Matchday 1 2026-27',    saleDate:'2026-06-15', saleTime:'10:00', matchDate:'2026-08-16', matchTime:'14:00 BST', venue:'Emirates Stadium, London',                 link:'https://www.arsenal.com/tickets',                  hot:false, priceFrom:'£40'},
+  {id:5,  match:'Manchester City vs Sunderland',               league:'epl', stage:'Matchday 1 2026-27',    saleDate:'2026-06-15', saleTime:'10:00', matchDate:'2026-08-16', matchTime:'16:30 BST', venue:'Etihad Stadium, Manchester',               link:'https://www.mancity.com/tickets',                  hot:false, priceFrom:'£40'},
+  {id:6,  match:'Chelsea vs Aston Villa',                      league:'epl', stage:'Matchday 2 2026-27',    saleDate:'2026-07-01', saleTime:'10:00', matchDate:'2026-08-22', matchTime:'15:00 BST', venue:'Stamford Bridge, London',                  link:'https://www.chelseafc.com/en/tickets',              hot:false, priceFrom:'£45'},
+  {id:7,  match:'Tottenham vs Manchester City',                league:'epl', stage:'Matchday 2 2026-27',    saleDate:'2026-07-01', saleTime:'10:00', matchDate:'2026-08-23', matchTime:'16:30 BST', venue:'Tottenham Hotspur Stadium',                link:'https://www.tottenhamhotspur.com/tickets/',         hot:false, priceFrom:'£50'},
+
+  // ── FIFA WORLD CUP 2026 (Jun–Jul 2026) ──
+  {id:10, match:'FIFA World Cup 2026 — Tickets On Sale Now',  league:'fifa', stage:'All Matches',           saleDate:'2026-04-01', saleTime:'00:00', matchDate:'2026-06-11', matchTime:'TBD',       venue:'USA / Canada / Mexico — 16 cities',        link:'https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/tickets', hot:true, priceFrom:'$60', priceNote:'From $60 group stage · up to $6,730 final'},
+  {id:11, match:'World Cup — Group Stage (All matches)',       league:'fifa', stage:'Group Stage',           saleDate:'2026-04-01', saleTime:'00:00', matchDate:'2026-06-11', matchTime:'TBD',       venue:'USA / Canada / Mexico',                    link:'https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/tickets', hot:false, priceFrom:'$60', priceNote:'60 group matches across 16 cities'},
+  {id:12, match:'World Cup Opening Match — Mexico vs TBD',    league:'fifa', stage:'Group Stage — MD1',     saleDate:'2026-05-01', saleTime:'00:00', matchDate:'2026-06-11', matchTime:'20:00 ET',  venue:'SoFi Stadium, Los Angeles',                link:'https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/tickets', hot:true,  priceFrom:'$150', priceNote:'Resale only · Very high demand'},
+  {id:21, match:'World Cup — Quarter Final #1',               league:'fifa', stage:'Quarter Final',         saleDate:'2026-05-01', saleTime:'00:00', matchDate:'2026-07-03', matchTime:'TBD',       venue:'AT&T Stadium, Dallas',                     link:'https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/tickets', hot:true,  priceFrom:'$400', priceNote:'High demand · limited resale'},
+  {id:13, match:'World Cup Final — TBD vs TBD',               league:'fifa', stage:'Final 🏆',              saleDate:'2025-10-27', saleTime:'00:00', matchDate:'2026-07-19', matchTime:'18:00 ET',  venue:'MetLife Stadium, New Jersey',              link:'https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/tickets', hot:true,  priceFrom:'$6,730', priceNote:'Official ballot closed · Resale only'},
+
+  // ── LA LIGA 2025-26 PLAYOFF / 2026-27 PRE-SEASON ──
+  {id:14, match:'Real Madrid vs Athletic Club',               league:'laliga', stage:'La Liga Playoff',      saleDate:'2026-05-28', saleTime:'10:00', matchDate:'2026-06-01', matchTime:'21:00 CEST', venue:'Santiago Bernabéu, Madrid',              link:'https://www.realmadrid.com/en/fans/tickets',       hot:true,  priceFrom:'€40'},
+  {id:15, match:'Barcelona vs Real Sociedad',                 league:'laliga', stage:'La Liga Playoff',      saleDate:'2026-05-27', saleTime:'10:00', matchDate:'2026-06-01', matchTime:'19:00 CEST', venue:'Estadi Olímpic Lluís, Barcelona',        link:'https://www.fcbarcelona.com/en/tickets',           hot:false, priceFrom:'€35'},
+  {id:22, match:'Atletico Madrid vs Sevilla',                 league:'laliga', stage:'La Liga Playoff',      saleDate:'2026-05-28', saleTime:'10:00', matchDate:'2026-06-01', matchTime:'19:00 CEST', venue:'Civitas Metropolitano, Madrid',          link:'https://www.atleticodemadrid.com/entradas',        hot:false, priceFrom:'€30'},
+
+  // ── BUNDESLIGA 2026-27 PRE-SEASON ──
+  {id:16, match:'Bayern Munich vs Borussia Dortmund',         league:'bundesliga', stage:'DFL Supercup 2026', saleDate:'2026-06-10', saleTime:'10:00', matchDate:'2026-08-02', matchTime:'18:00 CEST', venue:'Allianz Arena, Munich',                link:'https://fcbayern.com/en/club/ticketing',           hot:true,  priceFrom:'€25', priceNote:'Der Klassiker — early sale'},
+  {id:23, match:'Bayer Leverkusen vs RB Leipzig',             league:'bundesliga', stage:'Matchday 1 2026-27', saleDate:'2026-07-01', saleTime:'10:00', matchDate:'2026-08-15', matchTime:'15:30 CEST', venue:'BayArena, Leverkusen',               link:'https://www.bayer04.de/en/tickets',                hot:false, priceFrom:'€22'},
+
+  // ── SERIE A 2026-27 PRE-SEASON ──
+  {id:17, match:'Inter Milan vs Juventus — Serie A Opener',   league:'seriea', stage:'Matchday 1 2026-27',   saleDate:'2026-06-20', saleTime:'10:00', matchDate:'2026-08-23', matchTime:'20:45 CEST', venue:'San Siro, Milan',                       link:'https://www.inter.it/en/tickets',                  hot:true,  priceFrom:'€35', priceNote:'Derby d\'Italia — opening day'},
+  {id:18, match:'AC Milan vs Napoli',                         league:'seriea', stage:'Matchday 1 2026-27',   saleDate:'2026-06-20', saleTime:'10:00', matchDate:'2026-08-23', matchTime:'18:00 CEST', venue:'San Siro, Milan',                       link:'https://www.acmilan.com/en/tickets',                hot:false, priceFrom:'€30'},
+
+  // ── LIGUE 1 2026-27 PRE-SEASON ──
+  {id:19, match:'PSG vs Marseille — Ligue 1 Opener',         league:'ligue1', stage:'Matchday 1 2026-27',    saleDate:'2026-06-20', saleTime:'10:00', matchDate:'2026-08-16', matchTime:'21:00 CEST', venue:'Parc des Princes, Paris',               link:'https://www.psg.fr/en/tickets',                    hot:true,  priceFrom:'€40', priceNote:'Le Classique — first match of season'},
+  {id:24, match:'Lyon vs Monaco',                            league:'ligue1', stage:'Matchday 1 2026-27',    saleDate:'2026-06-25', saleTime:'10:00', matchDate:'2026-08-16', matchTime:'17:00 CEST', venue:'Groupama Stadium, Lyon',                link:'https://www.olweb.fr/en/tickets',                  hot:false, priceFrom:'€25'},
+
+  // ── FA CUP / COMMUNITY SHIELD 2026 ──
+  {id:20, match:'FA Community Shield 2026',                  league:'facup', stage:'Community Shield',        saleDate:'2026-06-01', saleTime:'10:00', matchDate:'2026-08-02', matchTime:'15:00 BST', venue:'Wembley Stadium, London',                link:'https://www.thefa.com/tickets',                    hot:true,  priceFrom:'£30', priceNote:'New season opener — general sale opens June'},
+  ];
+
+  // Auto-calculate status and hot for every entry based on today's real date
+  return raw.map(e => ({
+    ...e,
+    status: calcSaleStatus(e.matchDate, e.saleDate),
+    hot:    calcHot(e.matchDate, calcSaleStatus(e.matchDate, e.saleDate)),
+  }));
+})();
 
 let TS_DATA = [];
 let tsFilter = 'all';
@@ -10060,10 +10094,40 @@ let tsEditId = null;
 let tsNotified = new Set(JSON.parse(localStorage.getItem('ts_notified')||'[]'));
 
 function loadTsData(){
-  try{const r=localStorage.getItem(TS_KEY);if(r){TS_DATA=JSON.parse(r);return;}}catch(e){}
-  TS_DATA=JSON.parse(JSON.stringify(DEFAULT_SALES));
+  // ── Always clear stale cache and reload fresh DEFAULT_SALES ──
+  // This ensures dates/statuses are always accurate to today
+  try{
+    const cached = JSON.parse(localStorage.getItem(TS_KEY)||'null');
+    if(cached && Array.isArray(cached) && cached.length > 0){
+      // Keep any admin-added custom entries (id >= 1000) but refresh statuses
+      const adminEntries = cached.filter(e => e.id >= 1000);
+      // Merge: start with fresh default (auto-status recalculated), add admin entries
+      const freshDefaults = JSON.parse(JSON.stringify(DEFAULT_SALES));
+      // Recalculate status for admin-added entries too
+      const refreshedAdmin = adminEntries.map(e => ({
+        ...e,
+        status: calcSaleStatus(e.matchDate||'2099-01-01', e.saleDate||'2020-01-01'),
+        hot:    calcHot(e.matchDate||'2099-01-01', calcSaleStatus(e.matchDate||'2099-01-01', e.saleDate||'2020-01-01')),
+      }));
+      TS_DATA = [...freshDefaults, ...refreshedAdmin];
+      saveTsData();
+      return;
+    }
+  }catch(e){}
+  TS_DATA = JSON.parse(JSON.stringify(DEFAULT_SALES));
   saveTsData();
 }
+// Recalculate all statuses every 60s so they stay accurate throughout the session
+setInterval(function(){
+  const today = new Date().toISOString().slice(0,10);
+  let changed = false;
+  TS_DATA.forEach(e => {
+    const newStatus = calcSaleStatus(e.matchDate||'2099-01-01', e.saleDate||'2020-01-01');
+    const newHot    = calcHot(e.matchDate||'2099-01-01', newStatus);
+    if(e.status !== newStatus || e.hot !== newHot){ e.status = newStatus; e.hot = newHot; changed = true; }
+  });
+  if(changed){ saveTsData(); if(window.currentLeague==='ticketsales') _tsRerender(); }
+}, 60000);
 function saveTsData(){try{localStorage.setItem(TS_KEY,JSON.stringify(TS_DATA));}catch(e){}}
 function saveNotified(){localStorage.setItem('ts_notified',JSON.stringify([...tsNotified]));}
 loadTsData();
@@ -12264,15 +12328,12 @@ console.log('🚀 MatchDay ULTRA loaded — Prediction Engine, Liquid Glass UI')
 <script>
 (function(){
 'use strict';
-var REFRESH_MS=3*60*1000,LIVE_MS=60*1000;
-var CACHE_KEY='matchday_realdata_v1',CACHE_TS='matchday_realdata_ts_v1',TTL=2*60*1000;
+var REFRESH_MS=10*1000,LIVE_MS=10*1000;
+var CACHE_KEY='matchday_realdata_v1',CACHE_TS='matchday_realdata_ts_v1',TTL=9*1000;
 function setDot(state){
-  var pill=document.getElementById('autoRefreshPill'),dot=document.getElementById('arPillDot'),txt=document.getElementById('arPillText');
-  if(!pill)return;
-  pill.style.cssText='display:flex;align-items:center;gap:5px;padding:3px 8px;border-radius:8px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04)';
-  var c={fetching:'#ffc107',ok:'#00ff87',error:'#ff4060',cached:'#c4b5fd'}[state]||'#c4b5fd';
-  if(dot){dot.style.background=c;dot.style.boxShadow='0 0 7px '+c;}
-  if(txt)txt.textContent='LIVE';
+  // Auto-refresh pill is intentionally hidden — do not display it
+  var pill=document.getElementById('autoRefreshPill');
+  if(pill) pill.style.display='none';
 }
 function todayIST(){var ist=new Date(Date.now()+(5*60+30)*60*1000);return ist.toISOString().slice(0,10);}
 function hasLive(){
@@ -12325,7 +12386,7 @@ async function fetchData(force){
   }
   setDot('fetching');
   var today=todayIST();
-  var prompt='Today is '+today+' (IST). Search the web RIGHT NOW for current football scores. Return ONLY valid JSON, no markdown.\n\nGet real confirmed results for:\n1. EPL 2025/26 Matchday 38 Final Day (May 25 2026) - all 10 simultaneous matches\n2. UEFA Champions League Final 2026: PSG vs Arsenal (May 30 Munich) - real score if played\n3. FIFA World Cup 2026 matches (starts Jun 11) - any live or finished\n\nExact JSON format:\n{"epl":{"matches":[{"home":"Brighton and Hove Albion","away":"Manchester United","scoreH":1,"scoreA":0,"status":"final","time":"Sun May 25, 8:30 PM IST","stage":"Matchday 38 - Final Day"}]},"ucl":{"matches":[{"home":"Paris Saint-Germain","away":"Arsenal FC","scoreH":null,"scoreA":null,"status":"scheduled","time":"Sat May 30, 9:30 PM IST","stage":"UCL Grand Final - Allianz Arena Munich"}]},"fifa":{"matches":[]}}\n\nRULES: status MUST be final/live/scheduled. Use numbers for score when final/live, null when scheduled. Only real verified scores.';
+  var prompt='Today is '+today+' (IST). Use web_search to find CURRENT confirmed football scores RIGHT NOW. Return ONLY raw JSON — no markdown, no explanation.\n\nSearch for:\n1. EPL 2025/26 Matchday 38 Final Day (May 25 2026) all 10 simultaneous results\n2. UEFA Champions League Final 2026 result (PSG vs Arsenal, May 31 Munich) — real confirmed score\n3. Any live FIFA World Cup 2026 matches (starts Jun 11 2026)\n\nExact format:\n{"epl":{"matches":[{"home":"Team Name","away":"Team Name","scoreH":1,"scoreA":0,"status":"final","time":"Sun May 25, 8:30 PM IST","stage":"Matchday 38"}]},"ucl":{"matches":[{"home":"Paris Saint-Germain","away":"Arsenal FC","scoreH":1,"scoreA":0,"status":"final","time":"Sat May 31, 9:30 PM IST","stage":"UCL Final — Munich"}]},"fifa":{"matches":[]}}\n\nRULES: status = final|live|scheduled. Use integer scores when final/live, null when scheduled. Only real verified scores from official sources.';
   try{
     var resp=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',headers:{'Content-Type':'application/json'},
@@ -12357,12 +12418,12 @@ function scheduleNext(){
   clearTimeout(_rt);
   _rt=setTimeout(function(){fetchData(false).finally(scheduleNext);},hasLive()?LIVE_MS:REFRESH_MS);
 }
-setTimeout(function(){fetchData(false).finally(scheduleNext);},2500);
+setTimeout(function(){fetchData(false).finally(scheduleNext);},500);
 window.forceRefreshAPI=function(){return fetchData(true).finally(scheduleNext);};
 document.addEventListener('visibilitychange',function(){
   if(!document.hidden){var ts=parseInt(localStorage.getItem(CACHE_TS)||'0');if(Date.now()-ts>TTL)fetchData(false).finally(scheduleNext);}
 });
-console.log('MatchDay AutoRefresher ready - 3min refresh, 60s when live');
+console.log('MatchDay AutoRefresher ready - 10s real-time refresh via Anthropic API + web search');
 })();
 </script>
 </body>
